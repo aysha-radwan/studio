@@ -6,7 +6,7 @@
 <title>Studio — ALKOUN</title>
 <!-- Installable app (iPhone home screen + Android/Chrome PWA) -->
 <link rel="manifest" href="manifest.json" />
-<meta name="theme-color" content="#1a1a1a" />
+<meta name="theme-color" content="#0a0e24" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 <meta name="apple-mobile-web-app-title" content="Studio" />
@@ -14,20 +14,26 @@
 <link rel="icon" type="image/png" sizes="512x512" href="icons/icon-512.png" />
 <style>
   :root {
-    /* ALKOUN palette — modeled on alkoun.ai: near-white, charcoal ink, restrained gold */
-    --bg: #faf9f6;
-    --bg-top: #ffffff;
-    --panel: #ffffff;
-    --panel-2: #f4f3ee;
-    --line: #e8e6df;
-    --line-soft: rgba(26,26,26,0.06);
-    --ink: #1a1a1a;
-    --ink-2: #3a3a37;
-    --muted: #78766f;
-    --faint: #a9a69d;
-    --gold: #b8893a;
-    --gold-soft: rgba(184,137,58,0.10);
-    --danger: #b5573f;
+    /* ALKOUN cosmic palette — "the universe": deep-space blue, peach + light-purple stars */
+    --bg: #0a0e24;            /* deep space navy (dark blue) */
+    --bg-2: #0c1130;
+    --bg-top: #18204c;        /* lifted nebula glow toward the top */
+    --panel: #141a3a;         /* card surface */
+    --panel-2: #1c2350;       /* raised input / hover surface */
+    --line: rgba(255,255,255,0.10);
+    --line-soft: rgba(255,255,255,0.055);
+    --ink: #ffffff;           /* white */
+    --ink-2: #e7eafc;         /* near-white */
+    --muted: #abb2da;         /* very light gray / lavender */
+    --faint: #737aa6;         /* dim starlight */
+    --peach: #f7b79c;         /* peach — primary warm accent */
+    --peach-soft: rgba(247,183,156,0.14);
+    --violet: #bfa9f2;        /* light purple — secondary accent */
+    --violet-soft: rgba(191,169,242,0.16);
+    /* keep --gold as an alias so every existing rule recolors to peach automatically */
+    --gold: #f7b79c;
+    --gold-soft: rgba(247,183,156,0.13);
+    --danger: #f0897a;
     --radius: 14px;
     --font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif;
     --serif: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", sans-serif;
@@ -289,6 +295,148 @@
   .doc .rn { color: var(--faint); cursor: pointer; opacity: 0; font-size: 13px; }
   .doc:hover .rn { opacity: 1; }
   .doc .rn:hover { color: var(--gold); }
+
+  /* ============================================================
+     COSMIC OVERRIDES — dark "the universe" theme (peach + purple)
+     Overrides the few hardcoded light values from the original.
+     ============================================================ */
+  html, body { background: #0a0e24; overflow-x: hidden; max-width: 100%; }
+  /* deep-space backdrop: two nebula glows (peach + violet) over navy */
+  body::before {
+    content: ""; position: fixed; inset: 0; z-index: -2; pointer-events: none;
+    background:
+      radial-gradient(1200px 760px at 82% -12%, rgba(191,169,242,0.16), transparent 62%),
+      radial-gradient(1000px 680px at 6% 112%, rgba(247,183,156,0.12), transparent 60%),
+      linear-gradient(180deg, #0b1030, #090c20 60%, #0a0e26);
+  }
+  /* a quiet starfield */
+  body::after {
+    content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none; opacity: .5;
+    background-image:
+      radial-gradient(1.4px 1.4px at 12% 18%, #fff, transparent),
+      radial-gradient(1.2px 1.2px at 28% 62%, #dfe4ff, transparent),
+      radial-gradient(1.6px 1.6px at 46% 12%, #fff, transparent),
+      radial-gradient(1.1px 1.1px at 63% 44%, #cfd6ff, transparent),
+      radial-gradient(1.5px 1.5px at 78% 26%, #fff, transparent),
+      radial-gradient(1.2px 1.2px at 88% 68%, #e7d6ff, transparent),
+      radial-gradient(1.1px 1.1px at 36% 84%, #fff, transparent),
+      radial-gradient(1.3px 1.3px at 70% 88%, #ffe6d8, transparent),
+      radial-gradient(1.1px 1.1px at 54% 72%, #fff, transparent),
+      radial-gradient(1.2px 1.2px at 20% 40%, #fff, transparent);
+  }
+  .sidebar { background: linear-gradient(180deg, rgba(20,26,58,0.92), rgba(11,16,44,0.92)); border-right-color: var(--line); backdrop-filter: blur(6px); }
+  .main { background: transparent; }
+  header { background: linear-gradient(180deg, rgba(12,17,44,0.92), rgba(10,14,36,0.55)); border-bottom-color: var(--line); }
+  .card { box-shadow: 0 1px 3px rgba(0,0,0,0.35); }
+  .card:hover { box-shadow: 0 16px 40px rgba(0,0,0,0.45); border-color: rgba(247,183,156,0.35); }
+  button.primary { color: #0a0e24; box-shadow: 0 2px 16px rgba(247,183,156,0.28); }
+  button.primary:hover { color: #0a0e24; }
+  .check.done::after { color: #0a0e24; }
+  .add-row input:focus, .field input:focus, .field textarea:focus, .field select:focus { background: var(--panel); }
+  .doc:hover { background: #232c5c; }
+  .prio-1 { color: #ffc9a3; border-color: rgba(247,183,156,.45); background: var(--peach-soft); }
+  .prio-2 { color: #b7c0ee; border-color: rgba(191,169,242,.40); background: var(--violet-soft); }
+  /* Creative Fuel covers → nebula gradients (peach) */
+  .issue { box-shadow: 0 1px 3px rgba(0,0,0,0.35); }
+  .issue:hover { box-shadow: 0 16px 40px rgba(0,0,0,0.5); }
+  .issue .cover { background: linear-gradient(150deg, #2a2350, #1a1c46); border-bottom-color: var(--line); }
+  .issue.latest .cover { background: linear-gradient(150deg, #3a2a53, #241d4d); }
+  .issue .cover .big { color: #fff; }
+  .issue .tag-new { color: #0a0e24; }
+  /* Daily Magnific covers → violet nebula to distinguish the "team" spark */
+  .issue.magnific .cover { background: linear-gradient(150deg, #2b2140, #14142e); border-bottom-color: rgba(191,169,242,.25); }
+  .issue.magnific.latest .cover { background: linear-gradient(150deg, #362449, #1a1636); }
+  .issue.magnific .cover .big { color: #f3ecff; }
+  .issue.magnific .cover .eyebrow { color: var(--violet); }
+  .doc-card:hover { border-color: rgba(247,183,156,0.4); }
+  .overlay { background: rgba(5,8,22,0.6); }
+  .modal { box-shadow: 0 24px 70px rgba(0,0,0,0.6); }
+  .swatches .sw.sel { border-color: #fff; }
+  /* toast: light chip on dark */
+  .saved-flash { background: var(--peach); border-color: var(--peach); color: #0a0e24; font-weight: 600; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+  .empty .big { color: var(--muted); }
+
+  /* ---------- Mission Control (Overview) ---------- */
+  .mc-hero { padding: 22px 34px 6px; display: flex; align-items: flex-start; justify-content: space-between; gap: 18px; }
+  .mc-greet { font-family: var(--serif); font-size: 27px; font-weight: 600; letter-spacing: -0.4px; color: #fff; }
+  .mc-tag { color: var(--muted); font-size: 13.5px; margin-top: 5px; max-width: 560px; line-height: 1.5; }
+  .mc-live { flex-shrink: 0; display: inline-flex; align-items: center; gap: 8px; font-size: 12px; color: var(--muted);
+    border: 1px solid var(--line); border-radius: 20px; padding: 7px 13px; background: rgba(255,255,255,0.03); white-space: nowrap; }
+  .mc-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--faint); }
+  .mc-live.on .mc-dot { background: #57d6a6; box-shadow: 0 0 0 0 rgba(87,214,166,0.6); animation: pulse 2s infinite; }
+  .mc-live.on { color: var(--ink-2); border-color: rgba(87,214,166,0.35); }
+  .mc-live.quiet .mc-dot { background: var(--faint); }
+  @keyframes pulse { 0%{box-shadow:0 0 0 0 rgba(87,214,166,0.55)} 70%{box-shadow:0 0 0 7px rgba(87,214,166,0)} 100%{box-shadow:0 0 0 0 rgba(87,214,166,0)} }
+
+  .mc-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; padding: 16px 34px 6px; }
+  .mc-stat { border: 1px solid var(--line); border-radius: 14px; padding: 15px 17px; background: linear-gradient(160deg, rgba(255,255,255,0.045), rgba(255,255,255,0.015)); }
+  .mc-stat .n { font-family: var(--serif); font-size: 27px; color: #fff; line-height: 1; }
+  .mc-stat .n.peach { color: var(--peach); }
+  .mc-stat .n.violet { color: var(--violet); }
+  .mc-stat .l { font-size: 10.5px; letter-spacing: 1.4px; text-transform: uppercase; color: var(--faint); margin-top: 8px; }
+
+  .mc-sec-head { padding: 24px 34px 0; font-family: var(--serif); font-size: 15px; font-weight: 600; color: var(--ink-2); }
+  .mc-sec-head .fx { color: var(--peach); margin-right: 6px; }
+  .mc-sec-head .mc-sub { font-family: var(--font); font-weight: 400; font-size: 12.5px; color: var(--faint); letter-spacing: 0; }
+
+  .mc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; padding: 14px 34px 4px; align-items: start; }
+
+  .mc-card { position: relative; border: 1px solid var(--line); border-radius: 14px; padding: 16px 17px 15px; overflow: hidden;
+    background: linear-gradient(160deg, rgba(255,255,255,0.05), rgba(255,255,255,0.018)); transition: border-color .15s, transform .15s; }
+  .mc-card:hover { transform: translateY(-2px); }
+  .mc-card .top { display: flex; align-items: center; gap: 9px; }
+  .mc-card .glyph { width: 30px; height: 30px; border-radius: 9px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 15px; }
+  .mc-card .nm { flex: 1; font-size: 14.5px; font-weight: 600; color: #fff; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .mc-card .role { font-size: 11px; color: var(--muted); margin-top: 1px; }
+  .mc-card .doing { font-size: 13px; color: var(--ink-2); line-height: 1.5; margin-top: 12px; }
+  .mc-card .foot { display: flex; align-items: center; justify-content: space-between; margin-top: 13px; }
+  .mc-card .since { font-size: 11px; color: var(--faint); }
+  .pill { font-size: 10px; letter-spacing: .6px; text-transform: uppercase; font-weight: 700; padding: 4px 10px; border-radius: 20px; }
+  .pill.working { color: #0a0e24; background: var(--peach); }
+  .pill.standby { color: var(--violet); background: var(--violet-soft); border: 1px solid rgba(191,169,242,0.3); }
+
+  /* terminal (workstation) cards — peach, live */
+  .mc-card.term { border-color: rgba(247,183,156,0.28); }
+  .mc-card.term::before { content:""; position:absolute; inset:0; z-index:-1; background: radial-gradient(420px 150px at 100% 0, rgba(247,183,156,0.10), transparent 70%); }
+  .mc-card.term .glyph { background: var(--peach-soft); color: var(--peach); }
+  .mc-card.term .livedot { width:7px; height:7px; border-radius:50%; background:#57d6a6; box-shadow:0 0 0 0 rgba(87,214,166,.6); animation: pulse 2s infinite; flex-shrink:0; }
+
+  /* team (agent) cards — violet */
+  .mc-card.agent .glyph { background: var(--violet-soft); color: var(--violet); }
+  .mc-card.agent.on { border-color: rgba(247,183,156,0.5); }
+  .mc-card.agent.on::before { content:""; position:absolute; inset:0; z-index:-1; background: radial-gradient(420px 160px at 100% 0, rgba(247,183,156,0.12), transparent 70%); }
+
+  @media (max-width: 720px) {
+    .mc-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .mc-hero { flex-direction: column; gap: 12px; }
+  }
+
+  /* ---------- Mobile / phone layout ---------- */
+  @media (max-width: 760px) {
+    .app { flex-direction: column; width: 100%; max-width: 100vw; overflow-x: hidden; }
+    .sidebar, .main { width: 100%; max-width: 100vw; min-width: 0; overflow-x: hidden; }
+    .view, .mc-hero, .mc-stats, .mc-grid, .board { max-width: 100%; overflow-x: hidden; }
+    .mc-stats > *, .mc-grid > *, .board > * { min-width: 0; }
+    .sidebar {
+      width: 100%; height: auto; position: sticky; top: 0; z-index: 60;
+      flex-direction: column; padding: 12px 16px 10px;
+      border-right: 0; border-bottom: 1px solid var(--line);
+    }
+    .side-brand { padding: 0 4px 10px; }
+    .side-nav { flex-direction: row; gap: 6px; overflow-x: auto; -webkit-overflow-scrolling: touch; padding-bottom: 2px; }
+    .side-nav::-webkit-scrollbar { display: none; }
+    .nav-item { white-space: nowrap; padding: 8px 13px; border: 1px solid var(--line); flex-shrink: 0; }
+    .nav-item.active { border-color: rgba(247,183,156,0.4); }
+    .side-note, .side-foot { display: none; }
+    .main { min-height: auto; }
+    header { padding: 16px 20px 12px; }
+    header h2 { font-size: 19px; }
+    .toolbar, .hint, .view-intro, .mc-hero, .mc-stats, .mc-sec-head,
+    .mc-grid, .board, .fuel-grid, .fuel-h, .fuel-sub, .docs-wrap { padding-left: 20px; padding-right: 20px; }
+    .board, .mc-grid { grid-template-columns: minmax(0, 1fr); }
+    .mc-greet { font-size: 23px; }
+    .mc-live { align-self: flex-start; }
+  }
 </style>
 </head>
 <body>
@@ -300,11 +448,12 @@
         <span class="sub">ALKOUN</span>
       </div>
       <nav class="side-nav" id="sideNav">
-        <button class="nav-item active" data-view="projects"><span class="nic">▦</span><span>Projects</span></button>
+        <button class="nav-item active" data-view="overview"><span class="nic">◎</span><span>Mission Control</span></button>
+        <button class="nav-item" data-view="projects"><span class="nic">▦</span><span>Projects</span></button>
         <button class="nav-item" data-view="fuel"><span class="nic">✦</span><span>Creative Fuel</span></button>
         <button class="nav-item" data-view="docs"><span class="nic">▤</span><span>Documents</span></button>
       </nav>
-      <div class="side-note">Your studio, all in one place. Creative Fuel refreshes every Sunday.</div>
+      <div class="side-note">Your studio, all in one place. You’re the manager — here’s everything in motion.</div>
       <div class="side-foot">
         <div class="side-stat"><span class="n" id="statProjects">0</span><span class="l">Projects</span></div>
         <div class="side-stat"><span class="n" id="statTodos">0</span><span class="l">Tasks</span></div>
@@ -319,8 +468,26 @@
         <div class="datenote" id="dateNote"></div>
       </header>
 
+      <!-- ---- MISSION CONTROL (OVERVIEW) ---- -->
+      <section id="view-overview" class="view">
+        <div class="mc-hero">
+          <div>
+            <div class="mc-greet" id="mcGreet">Welcome back</div>
+            <div class="mc-tag">Your studio, in motion. You’re the manager — here’s the whole operation.</div>
+          </div>
+          <div class="mc-live" id="mcLive"><span class="mc-dot"></span><span id="mcLiveText">Syncing…</span></div>
+        </div>
+        <div class="mc-stats" id="mcStats"></div>
+
+        <div class="mc-sec-head"><span class="fx">▹</span> Workstations <span class="mc-sub">— projects you’re actively working</span></div>
+        <div class="mc-grid" id="mcTerminals"></div>
+
+        <div class="mc-sec-head"><span class="fx">✦</span> Your team <span class="mc-sub">— agents working to finish the projects</span></div>
+        <div class="mc-grid" id="mcAgents"></div>
+      </section>
+
       <!-- ---- PROJECTS VIEW ---- -->
-      <section id="view-projects" class="view">
+      <section id="view-projects" class="view" hidden>
         <div class="toolbar">
           <button class="primary" onclick="openNew()">＋ New project</button>
           <div class="spacer"></div>
@@ -405,7 +572,7 @@ let pickedColor = COLORS[0];
 let uploadTargetId = null;
 let draggedId = null;
 let draggedDoc = null;
-let currentView = "projects";
+let currentView = "overview";
 
 // ---------- GitHub backend ----------
 // Your studio lives in your own private GitHub folders. This static page is just
@@ -523,12 +690,13 @@ function showFlash(msg = "Saved") {
 const uid = () => Math.random().toString(36).slice(2, 9);
 
 // ---------- view switching ----------
-const VIEW_TITLES = { projects: "Projects", fuel: "Creative Fuel", docs: "Documents" };
+const VIEW_TITLES = { overview: "Mission Control", projects: "Projects", fuel: "Creative Fuel", docs: "Documents" };
 function switchView(name) {
   currentView = name;
   document.querySelectorAll(".view").forEach(v => { v.hidden = (v.id !== "view-" + name); });
   document.querySelectorAll(".nav-item").forEach(b => b.classList.toggle("active", b.dataset.view === name));
   document.getElementById("viewTitle").textContent = VIEW_TITLES[name] || "Studio";
+  if (name === "overview") renderOverview();
   if (name === "fuel") renderFuel();
   if (name === "docs") renderDocs();
 }
@@ -972,12 +1140,113 @@ document.getElementById("sortSeg").querySelectorAll("button").forEach(b=>{
 function esc(s){ return String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
 
 // deep-linking: /#fuel, /#docs, /#projects
-const VALID_VIEWS = ["projects", "fuel", "docs"];
+const VALID_VIEWS = ["overview", "projects", "fuel", "docs"];
 function applyHash() {
   const v = (location.hash || "").replace("#", "");
   if (VALID_VIEWS.includes(v) && v !== currentView) switchView(v);
 }
+function bootView() {
+  const v = (location.hash || "").replace("#", "");
+  switchView(VALID_VIEWS.includes(v) ? v : "overview");
+}
 window.addEventListener("hashchange", applyHash);
+
+// ---------- Mission Control (Overview) ----------
+// Live "who/what is running" is published by a helper on the Mac to a `status`
+// branch of studio-data; the app overlays it on the standing team roster below.
+const STATUS = { repo: CFG.dataRepo, path: "status.json", ref: "status" };
+const TEAM = [
+  { name: "Daily Magnific Creative", role: "Creative scout — a fresh spark each morning", glyph: "✦", schedule: "Daily · 9:00 AM" },
+  { name: "Sunday Creative Fuel",    role: "Weekly strategist — reflection + inspiration", glyph: "☼", schedule: "Sundays · 10:00 AM" },
+];
+function agoText(iso){
+  if(!iso) return "";
+  const s = Math.max(0,(Date.now()-new Date(iso).getTime())/1000);
+  if(s<60) return "just now";
+  if(s<3600) return Math.floor(s/60)+"m ago";
+  if(s<86400) return Math.floor(s/3600)+"h ago";
+  return Math.floor(s/86400)+"d ago";
+}
+function sinceText(iso){
+  if(!iso) return "";
+  const s = Math.max(0,(Date.now()-new Date(iso).getTime())/1000);
+  if(s<60) return "just started";
+  if(s<3600) return "running "+Math.floor(s/60)+"m";
+  return "running "+Math.floor(s/3600)+"h "+Math.floor((s%3600)/60)+"m";
+}
+function greeting(){
+  const h = new Date().getHours();
+  return h<5?"Still up":h<12?"Good morning":h<18?"Good afternoon":"Good evening";
+}
+let mcTimer = null;
+async function renderOverview(){
+  document.getElementById("mcGreet").textContent = greeting()+", Aysha";
+  let status = null;
+  try { status = JSON.parse(b64decodeUtf8(await GH.getB64(STATUS.repo, STATUS.path, STATUS.ref))); }
+  catch(e){ status = null; }
+  const fresh = status && status.updated && (Date.now()-new Date(status.updated).getTime() < 4*60*1000);
+  const terminals = (fresh && Array.isArray(status.terminals)) ? status.terminals : [];
+  const liveAgents = (status && Array.isArray(status.agents)) ? status.agents : [];
+
+  const live = document.getElementById("mcLive");
+  const lt = document.getElementById("mcLiveText");
+  if (fresh) { live.className = "mc-live on"; lt.textContent = "Live · updated "+agoText(status.updated); }
+  else { live.className = "mc-live quiet"; lt.textContent = status ? ("Quiet · last seen "+agoText(status.updated)) : "Quiet · Mac offline"; }
+
+  const team = TEAM.map(t => {
+    const l = liveAgents.find(a => a.name === t.name) || {};
+    const working = l.status === "working";
+    return { ...t, working, doing: l.doing || (working ? "Working now…" : "On standby · next "+t.schedule) };
+  });
+  liveAgents.forEach(a => { if (!TEAM.find(t => t.name === a.name)) team.push({ name:a.name, role:a.role||"Assistant", glyph:"✦", working:a.status==="working", doing:a.doing||"" }); });
+
+  const workingCount = team.filter(t => t.working).length;
+  const openTasks = state.projects.reduce((s,p)=>s+(p.todos||[]).filter(t=>!t.done).length,0);
+
+  document.getElementById("mcStats").innerHTML = `
+    <div class="mc-stat"><div class="n peach">${terminals.length}</div><div class="l">Workstations live</div></div>
+    <div class="mc-stat"><div class="n ${workingCount?'violet':''}">${workingCount}</div><div class="l">Team working</div></div>
+    <div class="mc-stat"><div class="n">${state.projects.length}</div><div class="l">Projects</div></div>
+    <div class="mc-stat"><div class="n">${openTasks}</div><div class="l">Open tasks</div></div>`;
+
+  const tg = document.getElementById("mcTerminals");
+  if (!terminals.length) {
+    tg.innerHTML = `<div class="empty" style="padding:34px 20px"><div class="big">All quiet.</div>No workstations running right now — open a terminal and it’ll appear here, live.</div>`;
+  } else {
+    tg.innerHTML = "";
+    terminals.forEach(t => {
+      const el = document.createElement("div");
+      el.className = "mc-card term";
+      el.innerHTML = `
+        <div class="top">
+          <div class="glyph">▹</div>
+          <div style="flex:1;min-width:0"><div class="nm">${esc(t.title || t.project || "Session")}</div><div class="role">${esc(t.project||"")}</div></div>
+          <div class="livedot" title="live"></div>
+        </div>
+        <div class="doing">${esc(t.doing || "Working…")}</div>
+        <div class="foot"><span class="since">${esc(sinceText(t.since))}</span><span class="pill working">Working</span></div>`;
+      tg.appendChild(el);
+    });
+  }
+
+  const ag = document.getElementById("mcAgents");
+  ag.innerHTML = "";
+  team.forEach(t => {
+    const el = document.createElement("div");
+    el.className = "mc-card agent" + (t.working ? " on" : "");
+    el.innerHTML = `
+      <div class="top">
+        <div class="glyph">${esc(t.glyph||"✦")}</div>
+        <div style="flex:1;min-width:0"><div class="nm">${esc(t.name)}</div><div class="role">${esc(t.role||"")}</div></div>
+        <span class="pill ${t.working?'working':'standby'}">${t.working?'Working':'Standby'}</span>
+      </div>
+      <div class="doing">${esc(t.doing||"")}</div>`;
+    ag.appendChild(el);
+  });
+
+  clearTimeout(mcTimer);
+  mcTimer = setTimeout(() => { if (currentView === "overview") renderOverview(); }, 60000);
+}
 
 // ---------- key gate (unlock with a GitHub token, stored only in this browser) ----------
 function showKeyGate(msg = "") {
@@ -999,25 +1268,30 @@ function showKeyGate(msg = "") {
     document.body.appendChild(g);
     const style = document.createElement("style");
     style.textContent = `
-      #keyGate{position:fixed;inset:0;z-index:9999;background:#faf9f6;display:flex;align-items:center;justify-content:center;font-family:var(--font)}
-      #keyGate .kg-card{width:340px;text-align:center;padding:8px}
-      #keyGate .kg-mark{font-family:var(--serif);font-size:52px;color:#b8893a;line-height:1}
-      #keyGate h1{font-family:var(--serif);font-weight:400;font-size:23px;margin:14px 0 2px;color:#1a1a1a}
-      #keyGate .kg-sub{color:#8a8378;font-size:12px;letter-spacing:2px;text-transform:uppercase;margin-bottom:20px}
-      #keyGate .kg-note{color:#6f6a60;font-size:13px;line-height:1.55;margin:0 0 18px}
-      #keyGate input{width:100%;padding:13px 15px;border:1px solid #e4ded2;border-radius:11px;font-size:15px;background:#fff;outline:none}
-      #keyGate input:focus{border-color:#b8893a}
-      #keyGate button{width:100%;margin-top:12px;padding:13px;border:0;border-radius:11px;background:#1a1a1a;color:#faf9f6;font-size:15px;font-weight:600;cursor:pointer}
-      #keyGate button:hover{background:#000}
-      #keyGate .kg-err{color:#b5564f;font-size:13px;min-height:18px;margin-top:12px}
-      #keyGate .kg-help{display:inline-block;margin-top:6px;color:#b8893a;font-size:12.5px;text-decoration:none}`;
+      #keyGate{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;font-family:var(--font);
+        background:
+          radial-gradient(1000px 640px at 78% -10%, rgba(191,169,242,0.20), transparent 60%),
+          radial-gradient(820px 560px at 10% 112%, rgba(247,183,156,0.16), transparent 60%),
+          linear-gradient(180deg, #0b1030, #090c20 60%, #0a0e26)}
+      #keyGate .kg-card{width:340px;text-align:center;padding:8px;position:relative}
+      #keyGate .kg-mark{font-family:var(--serif);font-size:54px;color:#f7b79c;line-height:1;text-shadow:0 0 26px rgba(247,183,156,0.5)}
+      #keyGate h1{font-family:var(--serif);font-weight:500;font-size:24px;margin:14px 0 2px;color:#fff}
+      #keyGate .kg-sub{color:#bfa9f2;font-size:12px;letter-spacing:3px;text-transform:uppercase;margin-bottom:20px}
+      #keyGate .kg-note{color:#abb2da;font-size:13px;line-height:1.55;margin:0 0 18px}
+      #keyGate input{width:100%;padding:13px 15px;border:1px solid rgba(255,255,255,0.16);border-radius:11px;font-size:15px;background:rgba(255,255,255,0.04);color:#fff;outline:none}
+      #keyGate input::placeholder{color:#737aa6}
+      #keyGate input:focus{border-color:#f7b79c}
+      #keyGate button{width:100%;margin-top:12px;padding:13px;border:0;border-radius:11px;background:#f7b79c;color:#0a0e24;font-size:15px;font-weight:700;cursor:pointer}
+      #keyGate button:hover{filter:brightness(1.05)}
+      #keyGate .kg-err{color:#f0897a;font-size:13px;min-height:18px;margin-top:12px}
+      #keyGate .kg-help{display:inline-block;margin-top:6px;color:#bfa9f2;font-size:12.5px;text-decoration:none}`;
     document.head.appendChild(style);
     const submit = () => {
       const v = document.getElementById("kgInput").value.trim();
       if (!v) return;
       GH.token = v; localStorage.setItem("studio_gh_token", v);
       g.remove();
-      loadData().then(applyHash);
+      loadData().then(bootView);
     };
     document.getElementById("kgBtn").onclick = submit;
     document.getElementById("kgInput").onkeydown = (e) => { if (e.key === "Enter") submit(); };
@@ -1028,7 +1302,7 @@ function showKeyGate(msg = "") {
 }
 
 // boot
-if (GH.token) { loadData().then(applyHash); }
+if (GH.token) { loadData().then(bootView); }
 else { showKeyGate(); }
 </script>
 </body>
