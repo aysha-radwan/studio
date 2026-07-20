@@ -355,6 +355,13 @@
   /* toast: light chip on dark */
   .saved-flash { background: var(--peach); border-color: var(--peach); color: #0a0e24; font-weight: 600; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
   .empty .big { color: var(--muted); }
+  /* Learning cards */
+  .doc-group .topic-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--violet); display: inline-block; }
+  .learn-card { position: relative; }
+  .learn-card .dn { flex: 1; cursor: pointer; }
+  .learn-card .lx { color: var(--faint); cursor: pointer; opacity: 0; font-size: 16px; padding: 0 2px; }
+  .learn-card:hover .lx { opacity: 1; }
+  .learn-card .lx:hover { color: var(--danger); }
 
   /* ---------- Mission Control (Overview) ---------- */
   .mc-hero { padding: 22px 34px 6px; display: flex; align-items: flex-start; justify-content: space-between; gap: 18px; }
@@ -451,6 +458,7 @@
         <button class="nav-item active" data-view="overview"><span class="nic">◎</span><span>Mission Control</span></button>
         <button class="nav-item" data-view="projects"><span class="nic">▦</span><span>Projects</span></button>
         <button class="nav-item" data-view="fuel"><span class="nic">✦</span><span>Creative Fuel</span></button>
+        <button class="nav-item" data-view="learning"><span class="nic">◫</span><span>Learning</span></button>
         <button class="nav-item" data-view="docs"><span class="nic">▤</span><span>Documents</span></button>
       </nav>
       <div class="side-note">Your studio, all in one place. You’re the manager — here’s everything in motion.</div>
@@ -512,6 +520,16 @@
         <h3 class="fuel-h"><span class="fx">✦</span>Weekly Creative Fuel</h3>
         <div class="fuel-sub">A reflection on last week + fresh ways to spark your creativity, every Sunday at 10am.</div>
         <div class="fuel-grid" id="fuelGrid"></div>
+      </section>
+
+      <!-- ---- LEARNING VIEW ---- -->
+      <section id="view-learning" class="view" hidden>
+        <div class="view-intro">Things you&rsquo;re learning from &mdash; save links, articles, and PDFs, grouped by topic, and open them anytime.</div>
+        <div class="toolbar">
+          <button class="primary" onclick="addLearningLink()">＋ Add link</button>
+          <button onclick="addLearningFile()">↥ Add file</button>
+        </div>
+        <div class="docs-wrap" id="learnWrap"></div>
       </section>
 
       <!-- ---- DOCUMENTS VIEW ---- -->
@@ -658,6 +676,7 @@ async function loadData() {
   try { state = await GH.getData(); }
   catch (e) { if (e.auth) { showKeyGate("Your key was rejected. Paste a valid one."); return; } throw e; }
   if (!state.projects) state.projects = [];
+  if (!state.learning) state.learning = [];
   if (state.sortMode) sortMode = state.sortMode;
   render();
 }
@@ -690,7 +709,7 @@ function showFlash(msg = "Saved") {
 const uid = () => Math.random().toString(36).slice(2, 9);
 
 // ---------- view switching ----------
-const VIEW_TITLES = { overview: "Mission Control", projects: "Projects", fuel: "Creative Fuel", docs: "Documents" };
+const VIEW_TITLES = { overview: "Mission Control", projects: "Projects", fuel: "Creative Fuel", learning: "Learning", docs: "Documents" };
 function switchView(name) {
   currentView = name;
   document.querySelectorAll(".view").forEach(v => { v.hidden = (v.id !== "view-" + name); });
@@ -698,6 +717,7 @@ function switchView(name) {
   document.getElementById("viewTitle").textContent = VIEW_TITLES[name] || "Studio";
   if (name === "overview") renderOverview();
   if (name === "fuel") renderFuel();
+  if (name === "learning") renderLearning();
   if (name === "docs") renderDocs();
 }
 document.getElementById("sideNav").querySelectorAll(".nav-item").forEach(b => {
@@ -1040,6 +1060,80 @@ function renderDocs() {
   }
 }
 
+// ---------- Learning view (resources & files, grouped by topic) ----------
+function renderLearning() {
+  const wrap = document.getElementById("learnWrap");
+  wrap.innerHTML = "";
+  const items = state.learning || [];
+  if (!items.length) {
+    wrap.innerHTML = `<div class="empty"><div class="big">Your learning shelf is empty.</div>Add a link or a PDF above — tutorials, articles, guides — and they’ll collect here by topic.</div>`;
+    return;
+  }
+  const groups = {};
+  items.forEach(it => { const t = (it.topic || "").trim() || "General"; (groups[t] = groups[t] || []).push(it); });
+  const topics = Object.keys(groups).sort((a, b) => a === "General" ? 1 : b === "General" ? -1 : a.localeCompare(b));
+  for (const t of topics) {
+    const group = document.createElement("div");
+    group.className = "doc-group";
+    group.innerHTML = `<h4><span class="topic-dot"></span>${esc(t)} <span class="gcount">${groups[t].length}</span></h4><div class="doc-list"></div>`;
+    const list = group.querySelector(".doc-list");
+    for (const it of groups[t]) {
+      const isLink = it.kind === "link";
+      const c = document.createElement("div");
+      c.className = "doc-card learn-card";
+      c.innerHTML = `<span class="ic">${isLink ? "🔗" : "📄"}</span><span class="dn" title="${esc(it.title)}">${esc(it.title)}</span><span class="lx" title="Remove">×</span>`;
+      c.querySelector(".dn").onclick = () => openLearning(it);
+      c.querySelector(".lx").onclick = (e) => { e.stopPropagation(); removeLearning(it.id); };
+      list.appendChild(c);
+    }
+    wrap.appendChild(group);
+  }
+}
+function addLearningLink() {
+  let url = (prompt("Paste the link (URL):", "https://") || "").trim();
+  if (!url || url === "https://") return;
+  if (!/^https?:\/\//i.test(url)) url = "https://" + url;
+  const title = (prompt("Title — what is it?", "") || "").trim() || url.replace(/^https?:\/\//i, "").slice(0, 46);
+  const topic = (prompt("Topic (optional, e.g. Editing, Prompting):", "") || "").trim();
+  state.learning.push({ id: uid(), kind: "link", url, title, topic });
+  save(); renderLearning();
+}
+function addLearningFile() {
+  const inp = document.createElement("input");
+  inp.type = "file"; inp.accept = "application/pdf,.pdf,image/*";
+  inp.onchange = () => { const f = inp.files[0]; if (f) uploadLearningFile(f); };
+  inp.click();
+}
+async function uploadLearningFile(file) {
+  showFlash("Uploading…");
+  try {
+    let name = file.name.replace(/[^\w.\- ()]/g, "_");
+    while (await GH.fileSha(`files/learning/${name}`)) {
+      name = name.replace(/(\.[^.]+)?$/, (m) => " (2)" + (m || ""));
+    }
+    const b64 = await fileToB64(file);
+    await GH.putFile(`files/learning/${name}`, b64);
+    const topic = (prompt("Topic for this file (optional):", "") || "").trim();
+    state.learning.push({ id: uid(), kind: "file", filename: name, title: file.name.replace(/\.[^.]+$/, ""), topic });
+    save(); renderLearning();
+  } catch (e) { showFlash("Upload failed"); }
+}
+function openLearning(it) {
+  if (it.kind === "link") {
+    let u = it.url; if (!/^https?:\/\//i.test(u)) u = "https://" + u;
+    window.open(u, "_blank");
+  } else {
+    openBlob(CFG.dataRepo, `files/learning/${it.filename}`);
+  }
+}
+async function removeLearning(id) {
+  const it = (state.learning || []).find(x => x.id === id);
+  if (!it) return;
+  state.learning = state.learning.filter(x => x.id !== id);
+  save(); renderLearning();
+  if (it.kind === "file") { try { await GH.deleteFile(`files/learning/${it.filename}`); } catch (e) {} }
+}
+
 // ---------- uploads ----------
 const hiddenFile = document.getElementById("hiddenFile");
 function triggerUpload(pid) { uploadTargetId = pid; hiddenFile.value = ""; hiddenFile.click(); }
@@ -1140,7 +1234,7 @@ document.getElementById("sortSeg").querySelectorAll("button").forEach(b=>{
 function esc(s){ return String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
 
 // deep-linking: /#fuel, /#docs, /#projects
-const VALID_VIEWS = ["overview", "projects", "fuel", "docs"];
+const VALID_VIEWS = ["overview", "projects", "fuel", "learning", "docs"];
 function applyHash() {
   const v = (location.hash || "").replace("#", "");
   if (VALID_VIEWS.includes(v) && v !== currentView) switchView(v);
