@@ -1564,6 +1564,9 @@ function showKeyGate(msg = "") {
 }
 
 // boot
+// Always-fresh: register a network-first service worker so the app never serves a stale cached version.
+if ('serviceWorker' in navigator) { navigator.serviceWorker.register('sw.js').catch(() => {}); }
+
 if (GH.token) { loadData().then(bootView); }
 else { showKeyGate(); }
 </script>
