@@ -558,12 +558,7 @@
 
       <!-- ---- CREATIVE FUEL VIEW ---- -->
       <section id="view-fuel" class="view" hidden>
-        <div class="view-intro">Your <b>Creative Fuel</b> — a fresh <b>Daily Magnific</b> spark every morning, plus a deeper <b>weekly reflection</b> each Sunday. Fuel for creating with AI, without the overwhelm.</div>
-        <h3 class="fuel-h"><span class="fx">✦</span>Daily Magnific</h3>
-        <div class="fuel-sub">A new creative spark every morning at 9am.</div>
-        <div class="fuel-grid" id="magnificGrid"></div>
-        <h3 class="fuel-h"><span class="fx">✦</span>Weekly Creative Fuel</h3>
-        <div class="fuel-sub">A reflection on last week + fresh ways to spark your creativity, every Sunday at 10am.</div>
+        <div class="view-intro">Your weekly <b>Creative Fuel</b> — a reflection on last week plus fresh ways to spark your creativity with AI. A new issue lands every <b>Sunday at 10am</b>.</div>
         <div class="fuel-grid" id="fuelGrid"></div>
       </section>
 
@@ -1031,7 +1026,6 @@ function shortDate(iso) {
   return dt.toLocaleDateString(undefined, { month:"short", day:"numeric" });
 }
 async function renderFuel() {
-  renderMagnific();
   const grid = document.getElementById("fuelGrid");
   grid.innerHTML = `<div class="empty">Loading…</div>`;
   let issues;
@@ -1425,7 +1419,6 @@ window.addEventListener("hashchange", applyHash);
 // branch of studio-data; the app overlays it on the standing team roster below.
 const STATUS = { repo: CFG.dataRepo, path: "status.json", ref: "status" };
 const TEAM = [
-  { name: "Daily Magnific Creative", role: "Creative scout — a fresh spark each morning", glyph: "✦", schedule: "Daily · 9:00 AM" },
   { name: "Sunday Creative Fuel",    role: "Weekly strategist — reflection + inspiration", glyph: "☼", schedule: "Sundays · 10:00 AM" },
 ];
 function agoText(iso){
