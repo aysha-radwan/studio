@@ -472,9 +472,11 @@
       border-right: 0; border-bottom: 1px solid var(--line);
     }
     .side-brand { padding: 0 4px 10px; }
-    .side-nav { flex-direction: row; gap: 6px; overflow-x: auto; -webkit-overflow-scrolling: touch; padding-bottom: 2px; }
+    .side-nav { flex-direction: row; flex-wrap: wrap; gap: 6px; padding-bottom: 2px; }
     .side-nav::-webkit-scrollbar { display: none; }
-    .nav-item { white-space: nowrap; padding: 8px 13px; border: 1px solid var(--line); flex-shrink: 0; }
+    .nav-item { width: auto; flex: 0 0 auto; white-space: nowrap; padding: 7px 11px; font-size: 13.5px;
+      gap: 7px; border: 1px solid var(--line); }
+    .nav-item .nic { font-size: 13px; width: 14px; }
     .nav-item.active { border-color: rgba(247,183,156,0.4); }
     .side-note, .side-foot { display: none; }
     .main { min-height: auto; }
