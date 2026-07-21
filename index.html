@@ -363,6 +363,48 @@
   .learn-card:hover .lx { opacity: 1; }
   .learn-card .lx:hover { color: var(--danger); }
 
+  /* ---------- Health ---------- */
+  .hl-wrap { padding: 16px 34px 24px; }
+  .hl-h { font-family: var(--serif); font-size: 16px; font-weight: 600; color: var(--ink); margin: 26px 0 12px; display: flex; align-items: baseline; gap: 10px; }
+  .hl-sub { font-size: 12.5px; font-weight: 400; color: var(--muted); }
+  .hl-block { border: 1px solid var(--line); border-radius: 16px; padding: 20px 22px;
+    background: linear-gradient(150deg, rgba(247,183,156,0.10), rgba(191,169,242,0.07) 55%, rgba(255,255,255,0.02)); }
+  .hl-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+  .hl-title { font-family: var(--serif); font-size: 22px; font-weight: 600; color: #fff; letter-spacing: -0.3px; }
+  .hl-note { color: var(--muted); font-size: 13px; margin-top: 4px; max-width: 460px; line-height: 1.5; }
+  .hl-week { flex-shrink: 0; text-align: right; }
+  .hl-week .wn { font-family: var(--serif); font-size: 30px; color: var(--peach); line-height: 1; }
+  .hl-week .wl { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-top: 4px; }
+  .hl-phase { display: inline-block; margin-top: 8px; font-size: 11px; font-weight: 600; letter-spacing: 0.06em;
+    padding: 4px 10px; border-radius: 20px; border: 1px solid rgba(191,169,242,0.4); color: var(--violet); background: var(--violet-soft); }
+  .hl-bar { height: 7px; border-radius: 20px; background: rgba(255,255,255,0.07); margin: 18px 0 6px; overflow: hidden; }
+  .hl-bar i { display: block; height: 100%; border-radius: 20px; background: linear-gradient(90deg, var(--peach), var(--violet)); }
+  .hl-bar-lbl { display: flex; justify-content: space-between; font-size: 11px; color: var(--muted); }
+  .hl-sess { display: grid; grid-template-columns: repeat(4, 1fr); gap: 11px; margin-top: 18px; }
+  .hl-day { border: 1px solid var(--line); border-radius: 13px; padding: 13px 14px; background: rgba(255,255,255,0.03);
+    cursor: pointer; transition: border-color .12s, background .12s, transform .12s; user-select: none; }
+  .hl-day:hover { border-color: rgba(247,183,156,0.45); transform: translateY(-1px); }
+  .hl-day .dk { display: flex; align-items: center; justify-content: space-between; }
+  .hl-day .dl { font-family: var(--serif); font-size: 20px; color: #fff; }
+  .hl-day .dw { font-size: 11px; letter-spacing: 0.13em; text-transform: uppercase; color: var(--muted); margin-top: 5px; }
+  .hl-day .dn2 { font-size: 12.5px; color: var(--ink-2); margin-top: 3px; }
+  .hl-day .tick { width: 20px; height: 20px; border-radius: 50%; border: 1px solid var(--line); flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center; font-size: 12px; color: transparent; }
+  .hl-day.done { background: rgba(247,183,156,0.13); border-color: rgba(247,183,156,0.5); }
+  .hl-day.done .tick { background: var(--peach); border-color: var(--peach); color: #0a0e24; font-weight: 700; }
+  .hl-day.opt .dl { color: var(--violet); }
+  .hl-plans { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; }
+  .hl-plan { display: flex; align-items: center; gap: 13px; padding: 15px 16px; border: 1px solid var(--line);
+    border-radius: 13px; background: var(--panel); cursor: pointer; transition: border-color .12s, background .12s; }
+  .hl-plan:hover { border-color: rgba(247,183,156,0.45); background: var(--panel-2); }
+  .hl-plan .pic { font-size: 20px; }
+  .hl-plan .pt { font-weight: 600; color: var(--ink); font-size: 14px; }
+  .hl-plan .ps { color: var(--muted); font-size: 12px; margin-top: 2px; }
+  @media (max-width: 760px) {
+    .hl-wrap { padding-left: 20px; padding-right: 20px; }
+    .hl-sess { grid-template-columns: repeat(2, 1fr); }
+  }
+
   /* ---------- Mission Control (Overview) ---------- */
   .mc-hero { padding: 22px 34px 6px; display: flex; align-items: flex-start; justify-content: space-between; gap: 18px; }
   .mc-greet { font-family: var(--serif); font-size: 27px; font-weight: 600; letter-spacing: -0.4px; color: #fff; }
@@ -458,6 +500,7 @@
         <button class="nav-item active" data-view="overview"><span class="nic">◎</span><span>Mission Control</span></button>
         <button class="nav-item" data-view="projects"><span class="nic">▦</span><span>Projects</span></button>
         <button class="nav-item" data-view="fuel"><span class="nic">✦</span><span>Creative Fuel</span></button>
+        <button class="nav-item" data-view="health"><span class="nic">✚</span><span>Health</span></button>
         <button class="nav-item" data-view="learning"><span class="nic">◫</span><span>Learning</span></button>
         <button class="nav-item" data-view="docs"><span class="nic">▤</span><span>Documents</span></button>
       </nav>
@@ -520,6 +563,22 @@
         <h3 class="fuel-h"><span class="fx">✦</span>Weekly Creative Fuel</h3>
         <div class="fuel-sub">A reflection on last week + fresh ways to spark your creativity, every Sunday at 10am.</div>
         <div class="fuel-grid" id="fuelGrid"></div>
+      </section>
+
+      <!-- ---- HEALTH VIEW ---- -->
+      <section id="view-health" class="view" hidden>
+        <div class="view-intro">Training, movement and recovery &mdash; the current block, this week&rsquo;s sessions, and everything you&rsquo;re following.</div>
+        <div class="hl-wrap">
+          <div class="hl-block" id="hlBlock"></div>
+          <h3 class="hl-h">The plans</h3>
+          <div class="hl-plans" id="hlPlans"></div>
+          <h3 class="hl-h">Saved <span class="hl-sub">links, PDFs, anything you&rsquo;re following</span></h3>
+          <div class="toolbar" style="padding-left:0;padding-right:0">
+            <button class="primary" onclick="addHealthLink()">＋ Add link</button>
+            <button onclick="addHealthFile()">↥ Add file</button>
+          </div>
+          <div id="hlShelf"></div>
+        </div>
       </section>
 
       <!-- ---- LEARNING VIEW ---- -->
@@ -677,6 +736,9 @@ async function loadData() {
   catch (e) { if (e.auth) { showKeyGate("Your key was rejected. Paste a valid one."); return; } throw e; }
   if (!state.projects) state.projects = [];
   if (!state.learning) state.learning = [];
+  if (!state.health) state.health = {};
+  if (!state.health.items) state.health.items = [];
+  if (!state.health.log) state.health.log = {};
   if (state.sortMode) sortMode = state.sortMode;
   render();
 }
@@ -709,7 +771,7 @@ function showFlash(msg = "Saved") {
 const uid = () => Math.random().toString(36).slice(2, 9);
 
 // ---------- view switching ----------
-const VIEW_TITLES = { overview: "Mission Control", projects: "Projects", fuel: "Creative Fuel", learning: "Learning", docs: "Documents" };
+const VIEW_TITLES = { overview: "Mission Control", projects: "Projects", fuel: "Creative Fuel", health: "Health", learning: "Learning", docs: "Documents" };
 function switchView(name) {
   currentView = name;
   document.querySelectorAll(".view").forEach(v => { v.hidden = (v.id !== "view-" + name); });
@@ -717,6 +779,7 @@ function switchView(name) {
   document.getElementById("viewTitle").textContent = VIEW_TITLES[name] || "Studio";
   if (name === "overview") renderOverview();
   if (name === "fuel") renderFuel();
+  if (name === "health") renderHealth();
   if (name === "learning") renderLearning();
   if (name === "docs") renderDocs();
 }
@@ -1058,6 +1121,116 @@ function renderDocs() {
     }
     wrap.appendChild(group);
   }
+}
+
+// ---------- Health view (training block, week log, plans & shelf) ----------
+const HL_PLANS = [
+  { file: "Aysha-Training-Plan-Back-to-Strong.pdf", title: "Back to Strong — My Plan", sub: "6 pages · full body, 3–4 days" },
+  { file: "Sister-Training-Plan-Back-to-Strong.pdf", title: "Back to Strong — Sister's Plan", sub: "6 pages · machine-first variant" },
+];
+const HL_SESSIONS = [
+  { k: "A", day: "Mon", name: "Squat + Press" },
+  { k: "B", day: "Wed", name: "Hinge + Pull" },
+  { k: "C", day: "Fri", name: "Full-body volume" },
+  { k: "D", day: "Sat", name: "Optional", opt: true },
+];
+const HL_PHASES = { 1: "Re-entry", 2: "Re-entry", 3: "Build", 4: "Build", 5: "Build", 6: "Build", 7: "Deload" };
+function hlMonday(d = new Date()) {
+  const x = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+  x.setDate(x.getDate() - ((x.getDay() + 6) % 7));
+  return x;
+}
+const hlKey = (d) => { const m = hlMonday(d); return m.getFullYear() + "-" + String(m.getMonth() + 1).padStart(2, "0") + "-" + String(m.getDate()).padStart(2, "0"); };
+function hlWeekNo() {
+  if (!state.health.start) { state.health.start = hlKey(); save(false); }
+  const [y, m, d] = state.health.start.split("-").map(Number);
+  const diff = Math.round((hlMonday() - new Date(y, m - 1, d)) / 604800000);
+  return Math.min(7, Math.max(1, diff + 1));
+}
+function renderHealth() {
+  const wk = hlWeekNo(), key = hlKey(), done = state.health.log[key] || [];
+  document.getElementById("hlBlock").innerHTML = `
+    <div class="hl-top">
+      <div>
+        <div class="hl-title">Back to Strong</div>
+        <div class="hl-note">Full body, 3 fixed days + 1 optional. Free weights for the skill, machines for the volume. Three is the win — Saturday is a bonus, never a debt.</div>
+        <span class="hl-phase">${HL_PHASES[wk]} phase</span>
+      </div>
+      <div class="hl-week"><div class="wn">${wk}</div><div class="wl">of 7 weeks</div></div>
+    </div>
+    <div class="hl-bar"><i style="width:${Math.round(wk / 7 * 100)}%"></i></div>
+    <div class="hl-bar-lbl"><span>Week 1 — light on purpose</span><span>Week 7 — deload</span></div>
+    <div class="hl-sess">${HL_SESSIONS.map(s => `
+      <div class="hl-day ${s.opt ? "opt" : ""} ${done.includes(s.k) ? "done" : ""}" data-k="${s.k}">
+        <div class="dk"><span class="dl">${s.k}</span><span class="tick">✓</span></div>
+        <div class="dn2">${esc(s.name)}</div><div class="dw">${s.day}</div>
+      </div>`).join("")}</div>
+    <div class="hl-bar-lbl" style="margin-top:12px"><span>${done.filter(k => k !== "D").length} of 3 core sessions done this week</span><span>Tap a day when it's finished</span></div>`;
+  document.querySelectorAll("#hlBlock .hl-day").forEach(el => { el.onclick = () => hlToggle(el.dataset.k); });
+
+  document.getElementById("hlPlans").innerHTML = HL_PLANS.map(p => `
+    <div class="hl-plan" data-f="${esc(p.file)}"><span class="pic">📄</span>
+      <div><div class="pt">${esc(p.title)}</div><div class="ps">${esc(p.sub)}</div></div></div>`).join("");
+  document.querySelectorAll("#hlPlans .hl-plan").forEach(el => {
+    el.onclick = () => openBlob(CFG.dataRepo, `files/health/${el.dataset.f}`);
+  });
+
+  const shelf = document.getElementById("hlShelf");
+  const items = state.health.items || [];
+  if (!items.length) {
+    shelf.innerHTML = `<div class="empty"><div class="big">Nothing saved yet.</div>Add a link or a PDF above — recipes, mobility routines, anything you're following.</div>`;
+  } else {
+    shelf.innerHTML = `<div class="doc-list"></div>`;
+    const list = shelf.querySelector(".doc-list");
+    for (const it of items) {
+      const c = document.createElement("div");
+      c.className = "doc-card learn-card";
+      c.innerHTML = `<span class="ic">${it.kind === "link" ? "🔗" : "📄"}</span><span class="dn" title="${esc(it.title)}">${esc(it.title)}</span><span class="lx" title="Remove">×</span>`;
+      c.querySelector(".dn").onclick = () => it.kind === "link"
+        ? window.open(/^https?:\/\//i.test(it.url) ? it.url : "https://" + it.url, "_blank")
+        : openBlob(CFG.dataRepo, `files/health/${it.filename}`);
+      c.querySelector(".lx").onclick = (e) => { e.stopPropagation(); removeHealth(it.id); };
+      list.appendChild(c);
+    }
+  }
+}
+function hlToggle(k) {
+  const key = hlKey(), done = state.health.log[key] || [];
+  state.health.log[key] = done.includes(k) ? done.filter(x => x !== k) : [...done, k];
+  save(); renderHealth();
+}
+function addHealthLink() {
+  let url = (prompt("Paste the link (URL):", "https://") || "").trim();
+  if (!url || url === "https://") return;
+  if (!/^https?:\/\//i.test(url)) url = "https://" + url;
+  const title = (prompt("Title — what is it?", "") || "").trim() || url.replace(/^https?:\/\//i, "").slice(0, 46);
+  state.health.items.push({ id: uid(), kind: "link", url, title });
+  save(); renderHealth();
+}
+function addHealthFile() {
+  const inp = document.createElement("input");
+  inp.type = "file"; inp.accept = "application/pdf,.pdf,image/*";
+  inp.onchange = () => { const f = inp.files[0]; if (f) uploadHealthFile(f); };
+  inp.click();
+}
+async function uploadHealthFile(file) {
+  showFlash("Uploading…");
+  try {
+    let name = file.name.replace(/[^\w.\- ()]/g, "_");
+    while (await GH.fileSha(`files/health/${name}`)) {
+      name = name.replace(/(\.[^.]+)?$/, (m) => " (2)" + (m || ""));
+    }
+    await GH.putFile(`files/health/${name}`, await fileToB64(file));
+    state.health.items.push({ id: uid(), kind: "file", filename: name, title: file.name.replace(/\.[^.]+$/, "") });
+    save(); renderHealth();
+  } catch (e) { showFlash("Upload failed"); }
+}
+async function removeHealth(id) {
+  const it = (state.health.items || []).find(x => x.id === id);
+  if (!it) return;
+  state.health.items = state.health.items.filter(x => x.id !== id);
+  save(); renderHealth();
+  if (it.kind === "file") { try { await GH.deleteFile(`files/health/${it.filename}`); } catch (e) {} }
 }
 
 // ---------- Learning view (resources & files, grouped by topic) ----------
