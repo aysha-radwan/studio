@@ -1409,7 +1409,7 @@ document.getElementById("sortSeg").querySelectorAll("button").forEach(b=>{
 function esc(s){ return String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
 
 // deep-linking: /#fuel, /#docs, /#projects
-const VALID_VIEWS = ["overview", "projects", "fuel", "learning", "docs"];
+const VALID_VIEWS = ["overview", "projects", "fuel", "health", "learning", "docs"];
 function applyHash() {
   const v = (location.hash || "").replace("#", "");
   if (VALID_VIEWS.includes(v) && v !== currentView) switchView(v);
