@@ -71,6 +71,11 @@
   .nav-item.active { background: var(--gold-soft); color: var(--gold); font-weight: 600; }
   .nav-item .nic { font-size: 15px; width: 18px; text-align: center; flex-shrink: 0; }
   .side-note { margin: 14px 11px 0; font-size: 11px; line-height: 1.5; color: var(--faint); }
+  .link-phone { margin: 14px 6px 0; padding: 9px 10px; display: flex; align-items: center; gap: 8px;
+    background: transparent; border: 1px solid var(--line); border-radius: 10px; color: var(--muted);
+    font-family: var(--font); font-size: 12.5px; cursor: pointer; text-align: left; }
+  .link-phone:hover { border-color: var(--violet); color: var(--violet); }
+  .link-phone span { font-size: 13px; }
   .side-foot { margin-top: auto; display: flex; gap: 4px; padding: 14px 6px 2px; border-top: 1px solid var(--line); }
   .side-stat { flex: 1; text-align: center; }
   .side-stat .n { display: block; font-family: var(--serif); font-size: 19px; color: var(--gold); line-height: 1.1; }
@@ -478,7 +483,7 @@
       gap: 7px; border: 1px solid var(--line); }
     .nav-item .nic { font-size: 13px; width: 14px; }
     .nav-item.active { border-color: rgba(247,183,156,0.4); }
-    .side-note, .side-foot { display: none; }
+    .side-note, .side-foot, .link-phone { display: none; }
     .main { min-height: auto; }
     header { padding: 16px 20px 12px; }
     header h2 { font-size: 19px; }
@@ -507,6 +512,7 @@
         <button class="nav-item" data-view="docs"><span class="nic">▤</span><span>Documents</span></button>
       </nav>
       <div class="side-note">Your studio, all in one place. You’re the manager — here’s everything in motion.</div>
+      <button class="link-phone" id="linkPhoneBtn"><span>▢</span> Link my phone</button>
       <div class="side-foot">
         <div class="side-stat"><span class="n" id="statProjects">0</span><span class="l">Projects</span></div>
         <div class="side-stat"><span class="n" id="statTodos">0</span><span class="l">Tasks</span></div>
@@ -1521,10 +1527,17 @@ function showKeyGate(msg = "") {
         <div class="kg-mark">S</div>
         <h1>Aysha&rsquo;s Studio</h1>
         <div class="kg-sub">Alkoun</div>
-        <p class="kg-note">Paste your personal key to unlock your studio. It stays on this device only.</p>
+        <p class="kg-note">Unlock your studio. Your key stays on this device only.</p>
+        <button id="kgScan" class="kg-scan">◱&nbsp; Scan the code from my Mac</button>
+        <div class="kg-or"><span>or paste it</span></div>
         <input id="kgInput" type="password" placeholder="GitHub key (starts with github_pat…)" autocomplete="off" />
         <button id="kgBtn">Unlock</button>
         <div class="kg-err"></div>
+        <div class="kg-cam" id="kgCam">
+          <video id="kgVideo" playsinline muted></video>
+          <div class="kg-camnote">Point at the code on your Mac</div>
+          <button id="kgCamCancel" class="kg-scan">Cancel</button>
+        </div>
         <a class="kg-help" href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">How do I get a key? →</a>
       </div>`;
     document.body.appendChild(g);
@@ -1546,7 +1559,16 @@ function showKeyGate(msg = "") {
       #keyGate button{width:100%;margin-top:12px;padding:13px;border:0;border-radius:11px;background:#f7b79c;color:#0a0e24;font-size:15px;font-weight:700;cursor:pointer}
       #keyGate button:hover{filter:brightness(1.05)}
       #keyGate .kg-err{color:#f0897a;font-size:13px;min-height:18px;margin-top:12px}
-      #keyGate .kg-help{display:inline-block;margin-top:6px;color:#bfa9f2;font-size:12.5px;text-decoration:none}`;
+      #keyGate .kg-help{display:inline-block;margin-top:6px;color:#bfa9f2;font-size:12.5px;text-decoration:none}
+      #keyGate .kg-scan{background:transparent;border:1px solid rgba(191,169,242,0.55);color:#bfa9f2;font-weight:600;margin-top:0}
+      #keyGate .kg-scan:hover{background:rgba(191,169,242,0.12);filter:none}
+      #keyGate .kg-or{display:flex;align-items:center;gap:10px;margin:16px 0 14px;color:#737aa6;font-size:11.5px;
+        text-transform:uppercase;letter-spacing:1.5px}
+      #keyGate .kg-or:before,#keyGate .kg-or:after{content:"";flex:1;height:1px;background:rgba(255,255,255,0.12)}
+      #keyGate .kg-cam{display:none;margin-top:16px}
+      #keyGate .kg-cam.on{display:block}
+      #keyGate .kg-cam video{width:100%;border-radius:12px;background:#000;aspect-ratio:1/1;object-fit:cover}
+      #keyGate .kg-camnote{color:#abb2da;font-size:12.5px;margin:10px 0 12px}`;
     document.head.appendChild(style);
     const submit = () => {
       const v = document.getElementById("kgInput").value.trim();
@@ -1557,11 +1579,157 @@ function showKeyGate(msg = "") {
     };
     document.getElementById("kgBtn").onclick = submit;
     document.getElementById("kgInput").onkeydown = (e) => { if (e.key === "Enter") submit(); };
+
+    // Scan the code shown on her Mac, so she never types a 90-character key on a phone.
+    const cam = document.getElementById("kgCam");
+    const video = document.getElementById("kgVideo");
+    let stream = null, scanning = false;
+
+    const stopCam = () => {
+      scanning = false;
+      if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null; }
+      cam.classList.remove("on");
+    };
+    document.getElementById("kgCamCancel").onclick = stopCam;
+
+    document.getElementById("kgScan").onclick = async () => {
+      const err = g.querySelector(".kg-err");
+      err.textContent = "";
+      try {
+        await loadScript("jsqr.js");
+        stream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: "environment" }, audio: false
+        });
+      } catch (e) {
+        err.textContent = "Can’t open the camera here — paste the key instead.";
+        stopCam();
+        return;
+      }
+      cam.classList.add("on");
+      video.srcObject = stream;
+      await video.play().catch(() => {});
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d", { willReadFrequently: true });
+      scanning = true;
+      const tick = () => {
+        if (!scanning) return;
+        if (video.readyState === video.HAVE_ENOUGH_DATA) {
+          canvas.width = video.videoWidth; canvas.height = video.videoHeight;
+          ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+          const img = ctx.getImageData(0, 0, canvas.width, canvas.height);
+          const hit = window.jsQR(img.data, img.width, img.height, { inversionAttempts: "dontInvert" });
+          if (hit && hit.data) {
+            const tok = extractKey(hit.data);
+            if (tok) {
+              stopCam();
+              GH.token = tok;
+              try { localStorage.setItem("studio_gh_token", tok); } catch (e) {}
+              g.remove();
+              loadData().then(bootView);
+              return;
+            }
+          }
+        }
+        requestAnimationFrame(tick);
+      };
+      requestAnimationFrame(tick);
+    };
   }
   g.querySelector(".kg-err").textContent = msg;
   const inp = document.getElementById("kgInput");
   if (inp) { inp.value = ""; setTimeout(() => inp.focus(), 60); }
 }
+
+// ---------- link a phone (hand this device's key over by QR) ----------
+// The key never leaves her devices: it rides in the URL *fragment*, which browsers
+// never send to a server, and the receiving device strips it from the URL on arrival.
+const loadedScripts = {};
+function loadScript(src) {
+  if (loadedScripts[src]) return loadedScripts[src];
+  loadedScripts[src] = new Promise((res, rej) => {
+    const s = document.createElement("script");
+    s.src = src; s.onload = res;
+    s.onerror = () => { delete loadedScripts[src]; rej(new Error("load failed")); };
+    document.head.appendChild(s);
+  });
+  return loadedScripts[src];
+}
+
+// Accepts either a full studio link (…#key=TOKEN) or a bare key.
+function extractKey(text) {
+  const s = (text || "").trim();
+  const m = s.match(/#key=(.+)$/);
+  if (m) { try { return decodeURIComponent(m[1]).trim(); } catch (e) { return m[1].trim(); } }
+  return /^gh[pousr]_|^github_pat_/.test(s) ? s : "";
+}
+
+function openLinkPhone() {
+  let ov = document.getElementById("linkOverlay");
+  if (!ov) {
+    ov = document.createElement("div");
+    ov.id = "linkOverlay"; ov.className = "overlay";
+    ov.innerHTML = `
+      <div class="modal" style="width:400px;text-align:center;max-height:88vh;overflow-y:auto">
+        <h2 style="margin-bottom:6px">Link my phone</h2>
+        <p style="color:var(--muted);font-size:13px;line-height:1.6;margin:0 0 20px">
+          Same studio, second screen. Everything you change here shows up there, and back.</p>
+        <div id="qrBox" style="background:#fff;border-radius:14px;padding:16px;display:inline-block;min-height:180px;min-width:180px"></div>
+        <ol style="text-align:left;color:var(--ink-2);font-size:13.5px;line-height:1.75;margin:20px 0 0;padding-left:20px">
+          <li>On your iPhone, open <b>Safari</b> to
+              <span style="color:var(--peach)">aysha-radwan.github.io/studio</span></li>
+          <li>Tap <b>Share</b> <span style="color:var(--muted)">(the box with the arrow)</span>, then
+              <b>Add to Home Screen</b>. Open Studio from your home screen.</li>
+          <li>On the unlock screen, tap <b>Scan the code from my Mac</b> and point your phone
+              at this code. That’s it — same studio, both devices.</li>
+        </ol>
+        <p style="color:var(--faint);font-size:12px;line-height:1.6;margin:16px 0 0">
+          This code carries your private key — don’t screenshot or share it.</p>
+        <div class="modal-foot">
+          <button class="btn" id="linkCopy">Copy key instead</button>
+          <button class="btn" id="linkClose">Done</button>
+        </div>
+      </div>`;
+    document.body.appendChild(ov);
+    ov.querySelector("#linkClose").onclick = () => ov.classList.remove("show");
+    const copyBtn = ov.querySelector("#linkCopy");
+    copyBtn.onclick = async () => {
+      try {
+        await navigator.clipboard.writeText(GH.token);
+        copyBtn.textContent = "Copied — paste it on your phone";
+      } catch (e) { copyBtn.textContent = "Couldn’t copy"; }
+      setTimeout(() => { copyBtn.textContent = "Copy key instead"; }, 3000);
+    };
+    ov.onclick = (e) => { if (e.target === ov) ov.classList.remove("show"); };
+  }
+  ov.classList.add("show");
+
+  const box = ov.querySelector("#qrBox");
+  box.innerHTML = `<div style="color:#666;font-size:13px;padding:70px 20px">Making your code…</div>`;
+  loadScript("qr.js").then(() => {
+    const url = location.origin + location.pathname + "#key=" + encodeURIComponent(GH.token);
+    const qr = qrcode(0, "L");
+    qr.addData(url);
+    qr.make();
+    box.innerHTML = qr.createSvgTag({ cellSize: 4, margin: 0, scalable: true });
+    const svg = box.querySelector("svg");
+    if (svg) { svg.style.width = "200px"; svg.style.height = "200px"; svg.style.display = "block"; }
+  }).catch(() => {
+    box.innerHTML = `<div style="color:#a33;font-size:13px;padding:70px 14px">Couldn’t build the code — check your connection.</div>`;
+  });
+}
+document.getElementById("linkPhoneBtn").onclick = openLinkPhone;
+
+// A device arriving with a key handed to it: take the key, then scrub it from the URL
+// so it never lingers in history or gets shared by accident.
+(function claimHandedKey() {
+  const m = location.hash.match(/^#key=(.+)$/);
+  if (!m) return;
+  const tok = decodeURIComponent(m[1]).trim();
+  history.replaceState(null, "", location.pathname + location.search);
+  if (!tok) return;
+  GH.token = tok;
+  try { localStorage.setItem("studio_gh_token", tok); } catch (e) {}
+})();
 
 // boot
 // Always-fresh: register a network-first service worker so the app never serves a stale cached version.
