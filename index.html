@@ -209,6 +209,27 @@
   .card-foot button { font-size: 12px; padding: 6px 11px; background: transparent; }
 
   /* ---------- Creative Fuel view ---------- */
+  /* ---------- The Plan ---------- */
+  .plan-wrap { padding: 14px 34px 34px; }
+  .plan-bar { display: flex; align-items: center; gap: 14px; margin-bottom: 12px; flex-wrap: wrap; }
+  .plan-dates { font-size: 12.5px; color: var(--faint); letter-spacing: 0.2px; }
+  .plan-bar button {
+    margin-left: auto; background: var(--panel-2); color: var(--ink-2);
+    border: 1px solid var(--line); border-radius: 9px; padding: 7px 13px;
+    font: inherit; font-size: 13px; cursor: pointer;
+  }
+  .plan-bar button:hover { border-color: var(--peach); color: var(--peach); }
+  #planFrame {
+    width: 100%; height: calc(100vh - 208px); min-height: 480px;
+    border: 1px solid var(--line); border-radius: var(--radius);
+    background: var(--bg); display: block;
+  }
+  .plan-loading { padding: 26px 2px; color: var(--faint); font-size: 13.5px; }
+  @media (max-width: 760px) {
+    .plan-wrap { padding: 12px 16px 26px; }
+    #planFrame { height: calc(100vh - 250px); }
+  }
+
   .view-intro { padding: 18px 34px 2px; color: var(--muted); font-size: 13.5px; line-height: 1.55; max-width: 640px; }
   .view-intro b { color: var(--ink-2); font-weight: 600; }
   .fuel-grid {
@@ -521,6 +542,7 @@
       </div>
       <nav class="side-nav" id="sideNav">
         <button class="nav-item active" data-view="overview"><span class="nic">◎</span><span>Mission Control</span></button>
+        <button class="nav-item" data-view="plan"><span class="nic">✧</span><span>The Plan</span></button>
         <button class="nav-item" data-view="projects"><span class="nic">▦</span><span>Projects</span></button>
         <button class="nav-item" data-view="fuel"><span class="nic">✦</span><span>Creative Fuel</span></button>
         <button class="nav-item" data-view="health"><span class="nic">✚</span><span>Health</span></button>
@@ -599,6 +621,19 @@
             <button onclick="addHealthFile()">↥ Add file</button>
           </div>
           <div id="hlShelf"></div>
+        </div>
+      </section>
+
+      <!-- ---- THE PLAN VIEW ---- -->
+      <section id="view-plan" class="view" hidden>
+        <div class="view-intro">Aug 1, 2026 &rarr; Dec 31, 2027. <b>Intentions, not goals</b> &mdash; the frame everything else in this studio sits inside. Private to you.</div>
+        <div class="plan-wrap">
+          <div class="plan-bar">
+            <span class="plan-dates">Rebuild &middot; Aug&ndash;Dec 2026 &nbsp;|&nbsp; Grow &middot; all of 2027</span>
+            <button onclick="openPlanFull()">Open full page &#8599;</button>
+          </div>
+          <iframe id="planFrame" title="The Plan"></iframe>
+          <div class="plan-loading" id="planLoading">Opening your plan&hellip;</div>
         </div>
       </section>
 
@@ -792,13 +827,14 @@ function showFlash(msg = "Saved") {
 const uid = () => Math.random().toString(36).slice(2, 9);
 
 // ---------- view switching ----------
-const VIEW_TITLES = { overview: "Mission Control", projects: "Projects", fuel: "Creative Fuel", health: "Health", learning: "Learning", docs: "Documents" };
+const VIEW_TITLES = { overview: "Mission Control", plan: "The Plan", projects: "Projects", fuel: "Creative Fuel", health: "Health", learning: "Learning", docs: "Documents" };
 function switchView(name) {
   currentView = name;
   document.querySelectorAll(".view").forEach(v => { v.hidden = (v.id !== "view-" + name); });
   document.querySelectorAll(".nav-item").forEach(b => b.classList.toggle("active", b.dataset.view === name));
   document.getElementById("viewTitle").textContent = VIEW_TITLES[name] || "Studio";
   if (name === "overview") renderOverview();
+  if (name === "plan") renderPlan();
   if (name === "fuel") renderFuel();
   if (name === "health") renderHealth();
   if (name === "learning") renderLearning();
@@ -807,6 +843,25 @@ function switchView(name) {
 document.getElementById("sideNav").querySelectorAll(".nav-item").forEach(b => {
   b.onclick = () => switchView(b.dataset.view);
 });
+
+// ---------- render (The Plan) ----------
+// The plan lives in the PRIVATE data repo, so it's fetched with her key and
+// shown from a blob URL — never a public link. Loaded once per session.
+const PLAN_PATH = "files/plan/The-Plan-2026-2027.html";
+let planLoaded = false;
+function openPlanFull() { openBlob(CFG.dataRepo, PLAN_PATH); }
+async function renderPlan() {
+  if (planLoaded) return;
+  const frame = document.getElementById("planFrame");
+  const note = document.getElementById("planLoading");
+  try {
+    frame.src = await GH.blobUrl(CFG.dataRepo, PLAN_PATH);
+    planLoaded = true;
+    note.hidden = true;
+  } catch (e) {
+    note.textContent = "Couldn't load the plan — check your key still has access to your data repo.";
+  }
+}
 
 // ---------- render (Projects) ----------
 function sortedProjects() {
@@ -1474,7 +1529,7 @@ document.getElementById("sortSeg").querySelectorAll("button").forEach(b=>{
 function esc(s){ return String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
 
 // deep-linking: /#fuel, /#docs, /#projects
-const VALID_VIEWS = ["overview", "projects", "fuel", "health", "learning", "docs"];
+const VALID_VIEWS = ["overview", "plan", "projects", "fuel", "health", "learning", "docs"];
 function applyHash() {
   const v = (location.hash || "").replace("#", "");
   if (VALID_VIEWS.includes(v) && v !== currentView) switchView(v);
