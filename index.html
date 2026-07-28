@@ -797,9 +797,8 @@ async function openBlob(repo, path, ref){
 }
 
 // ---------- data ----------
-async function loadData() {
-  try { state = await GH.getData(); }
-  catch (e) { if (e.auth) { showKeyGate("Your key was rejected. Paste a valid one."); return; } throw e; }
+function adoptState(fresh, refreshView = false) {
+  state = fresh;
   if (!state.projects) state.projects = [];
   if (!state.learning) state.learning = [];
   if (!state.health) state.health = {};
@@ -807,7 +806,34 @@ async function loadData() {
   if (!state.health.log) state.health.log = {};
   if (state.sortMode) sortMode = state.sortMode;
   render();
+  if (refreshView && currentView && currentView !== "projects") switchView(currentView);  // refresh whichever view she's on
 }
+async function loadData() {
+  try { adoptState(await GH.getData()); }
+  catch (e) { if (e.auth) { showKeyGate("Your key was rejected. Paste a valid one."); return; } throw e; }
+}
+
+// ---------- live sync (this device ⇄ her other device) ----------
+// Every edit is a commit to studio-data, so "live" = notice when the OTHER
+// device has committed and pull it in. Polls only while the app is visible.
+const LIVE_MS = 45000;
+async function liveSync() {
+  if (!GH.token || document.hidden) return;
+  if (saving || saveTimer) return;                                  // our own edit is mid-flight
+  if (document.getElementById("keyGate")) return;                   // locked
+  if (document.querySelector(".overlay.show")) return;              // she's in a modal — don't yank it away
+  const known = GH.dataSha;
+  try {
+    const fresh = await GH.getData();                               // updates GH.dataSha
+    if (known && GH.dataSha !== known) {
+      adoptState(fresh, true);
+      showFlash("Updated from your other device");
+    }
+  } catch (e) { /* offline or rate-limited — try again next tick */ }
+}
+setInterval(liveSync, LIVE_MS);
+document.addEventListener("visibilitychange", () => { if (!document.hidden) liveSync(); });
+window.addEventListener("focus", liveSync);
 let saveTimer = null, saving = false, saveAgain = false;
 function save(flash = true) {
   clearTimeout(saveTimer);
