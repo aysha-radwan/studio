@@ -391,13 +391,29 @@
   .hl-day:hover { border-color: rgba(247,183,156,0.45); transform: translateY(-1px); }
   .hl-day .dk { display: flex; align-items: center; justify-content: space-between; }
   .hl-day .dl { font-family: var(--serif); font-size: 20px; color: #fff; }
-  .hl-day .dw { font-size: 11px; letter-spacing: 0.13em; text-transform: uppercase; color: var(--muted); margin-top: 5px; }
   .hl-day .dn2 { font-size: 12.5px; color: var(--ink-2); margin-top: 3px; }
   .hl-day .tick { width: 20px; height: 20px; border-radius: 50%; border: 1px solid var(--line); flex-shrink: 0;
     display: flex; align-items: center; justify-content: center; font-size: 12px; color: transparent; }
   .hl-day.done { background: rgba(247,183,156,0.13); border-color: rgba(247,183,156,0.5); }
   .hl-day.done .tick { background: var(--peach); border-color: var(--peach); color: #0a0e24; font-weight: 700; }
   .hl-day.opt .dl { color: var(--violet); }
+  .hl-cheer { pointer-events: none; opacity: 0; transform: translateY(6px) scale(0.94);
+    max-height: 0; margin-top: 0; padding: 0 12px; overflow: hidden; border: 0 solid rgba(247,183,156,0.35);
+    transition: opacity .18s ease, transform .18s cubic-bezier(.2,1.5,.4,1), max-height .2s ease, margin-top .2s ease, padding .2s ease;
+    text-align: center; font-family: var(--serif); font-size: 15px; color: var(--peach);
+    background: rgba(247,183,156,0.1); border-radius: 12px; }
+  .hl-cheer.show { opacity: 1; transform: translateY(0) scale(1); max-height: 70px; margin-top: 14px; padding: 10px 12px; border-width: 1px; }
+  .hl-prog-note { color: var(--muted); font-size: 13px; line-height: 1.6; max-width: 720px; margin-bottom: 14px; }
+  .hl-prog { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 12px; }
+  .hl-card { border: 1px solid var(--line); border-radius: 14px; padding: 15px 17px; background: rgba(255,255,255,0.03); }
+  .hl-card .hc-top { display: flex; align-items: baseline; gap: 9px; margin-bottom: 10px; }
+  .hl-card .hc-k { font-family: var(--serif); font-size: 19px; color: var(--peach); }
+  .hl-card.opt .hc-k { color: var(--violet); }
+  .hl-card .hc-n { font-size: 13px; color: var(--ink); font-weight: 600; }
+  .hl-card ul { list-style: none; margin: 0; padding: 0; }
+  .hl-card li { font-size: 12.5px; color: var(--ink-2); line-height: 1.5; padding: 5px 0 5px 14px; position: relative; border-top: 1px solid rgba(255,255,255,0.05); }
+  .hl-card li:first-child { border-top: 0; }
+  .hl-card li:before { content: ""; position: absolute; left: 2px; top: 12px; width: 4px; height: 4px; border-radius: 50%; background: rgba(247,183,156,0.55); }
   .hl-plans { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; }
   .hl-plan { display: flex; align-items: center; gap: 13px; padding: 15px 16px; border: 1px solid var(--line);
     border-radius: 13px; background: var(--panel); cursor: pointer; transition: border-color .12s, background .12s; }
@@ -573,7 +589,9 @@
         <div class="view-intro">Training, movement and recovery &mdash; the current block, this week&rsquo;s sessions, and everything you&rsquo;re following.</div>
         <div class="hl-wrap">
           <div class="hl-block" id="hlBlock"></div>
-          <h3 class="hl-h">The plans</h3>
+          <h3 class="hl-h">This week <span class="hl-sub">what each session actually is</span></h3>
+          <div id="hlProgram"></div>
+          <h3 class="hl-h">The plan</h3>
           <div class="hl-plans" id="hlPlans"></div>
           <h3 class="hl-h">Saved <span class="hl-sub">links, PDFs, anything you&rsquo;re following</span></h3>
           <div class="toolbar" style="padding-left:0;padding-right:0">
@@ -1128,14 +1146,26 @@ function renderDocs() {
 // ---------- Health view (training block, week log, plans & shelf) ----------
 const HL_PLANS = [
   { file: "Aysha-Training-Plan-Back-to-Strong.pdf", title: "Back to Strong — My Plan", sub: "Los Angeles · weights in lb" },
-  { file: "Gadeer-Training-Plan-Back-to-Strong.pdf", title: "Back to Strong — Gadeer's Plan", sub: "Saudi · weights in kg" },
 ];
 const HL_SESSIONS = [
-  { k: "A", day: "Mon", name: "Squat + Press" },
-  { k: "B", day: "Wed", name: "Hinge + Pull" },
-  { k: "C", day: "Fri", name: "Full-body volume" },
-  { k: "D", day: "Sat", name: "Optional", opt: true },
+  { k: "A", name: "Squat + Press" },
+  { k: "B", name: "Hinge + Pull" },
+  { k: "C", name: "Full-body volume" },
+  { k: "D", name: "Optional", opt: true },
 ];
+// This week's actual program — rewritten each week. `week` must match the block week
+// number for it to show; otherwise the shelf asks for a fresh one.
+const HL_PROGRAM = {
+  week: 2,
+  note: "Week 1 you hit all four — so week 2 keeps the same movements and adds a little: one more set on the primaries, ~5 lb lower body / ~2.5 lb upper only where the last set of week 1 still had 3+ reps in the tank. Still re-entry: stop 3 reps short, every set. Shoulder & low-back rules unchanged — landmine and neutral grip only, nothing from the floor.",
+  sessions: {
+    A: ["Goblet squat — 3 × 8 @ 3 RIR", "Landmine press — 3 × 8 each side", "Leg press — 2 × 12", "Chest-supported row — 3 × 10", "Neutral-grip DB incline press — 2 × 10", "Pallof press — 2 × 12 each side", "Dead bug — 2 × 8 each side"],
+    B: ["RDL from blocks (knee height, never the floor) — 3 × 8", "Neutral-grip lat pulldown — 3 × 10", "Hip thrust — 3 × 10", "Seated cable row — 3 × 12", "Hamstring curl — 2 × 12", "Face pull / rear delt — 2 × 15", "Suitcase carry — 3 × 30 s each side"],
+    C: ["Leg press — 3 × 12", "Chest press machine — 3 × 12", "Assisted pull-up or pulldown — 3 × 10", "DB walking lunge — 2 × 10 each side", "Cable lateral raise — 3 × 15", "Rope triceps + cable curl superset — 2 × 12 each", "Incline walk — 12 min easy"],
+    D: ["Only if you want it — never a debt", "20–30 min zone-2 walk or bike", "Hips + T-spine mobility — 10 min", "Band pull-apart & external rotation — 2 × 15"],
+  },
+};
+const HL_CHEERS = ["Good job 💪", "That's one 👏", "Nice — logged ✨", "Yes. Showed up 🙌", "Strong 🔥", "Proud of you 💫"];
 const HL_PHASES = { 1: "Re-entry", 2: "Re-entry", 3: "Build", 4: "Build", 5: "Build", 6: "Build", 7: "Deload" };
 function hlMonday(d = new Date()) {
   const x = new Date(d.getFullYear(), d.getMonth(), d.getDate());
@@ -1155,7 +1185,7 @@ function renderHealth() {
     <div class="hl-top">
       <div>
         <div class="hl-title">Back to Strong</div>
-        <div class="hl-note">Full body, 3 fixed days + 1 optional. Free weights for the skill, machines for the volume. Three is the win — Saturday is a bonus, never a debt.</div>
+        <div class="hl-note">Full body, 3 sessions + 1 optional — any days that fit your week. Free weights for the skill, machines for the volume. Three is the win; the fourth is a bonus, never a debt.</div>
         <span class="hl-phase">${HL_PHASES[wk]} phase</span>
       </div>
       <div class="hl-week"><div class="wn">${wk}</div><div class="wl">of 7 weeks</div></div>
@@ -1165,10 +1195,13 @@ function renderHealth() {
     <div class="hl-sess">${HL_SESSIONS.map(s => `
       <div class="hl-day ${s.opt ? "opt" : ""} ${done.includes(s.k) ? "done" : ""}" data-k="${s.k}">
         <div class="dk"><span class="dl">${s.k}</span><span class="tick">✓</span></div>
-        <div class="dn2">${esc(s.name)}</div><div class="dw">${s.day}</div>
+        <div class="dn2">${esc(s.name)}</div>
       </div>`).join("")}</div>
-    <div class="hl-bar-lbl" style="margin-top:12px"><span>${done.filter(k => k !== "D").length} of 3 core sessions done this week</span><span>Tap a day when it's finished</span></div>`;
+    <div class="hl-bar-lbl" style="margin-top:12px"><span>${done.filter(k => k !== "D").length} of 3 core sessions done this week</span><span>Tap a session when it's finished</span></div>
+    <div class="hl-cheer" id="hlCheer"></div>`;
   document.querySelectorAll("#hlBlock .hl-day").forEach(el => { el.onclick = () => hlToggle(el.dataset.k); });
+
+  renderHealthProgram(wk);
 
   document.getElementById("hlPlans").innerHTML = HL_PLANS.map(p => `
     <div class="hl-plan" data-f="${esc(p.file)}"><span class="pic">📄</span>
@@ -1196,10 +1229,42 @@ function renderHealth() {
     }
   }
 }
+function renderHealthProgram(wk) {
+  const wrap = document.getElementById("hlProgram");
+  if (!wrap) return;
+  if (HL_PROGRAM.week !== wk) {
+    wrap.innerHTML = `<div class="empty"><div class="big">Week ${wk} isn't written yet.</div>Ask me to revise this week's program and it'll appear here.</div>`;
+    return;
+  }
+  wrap.innerHTML = `
+    <div class="hl-prog-note">${esc(HL_PROGRAM.note)}</div>
+    <div class="hl-prog">${HL_SESSIONS.map(s => `
+      <div class="hl-card ${s.opt ? "opt" : ""}">
+        <div class="hc-top"><span class="hc-k">${s.k}</span><span class="hc-n">${esc(s.name)}</span></div>
+        <ul>${(HL_PROGRAM.sessions[s.k] || []).map(x => `<li>${esc(x)}</li>`).join("")}</ul>
+      </div>`).join("")}</div>`;
+}
 function hlToggle(k) {
   const key = hlKey(), done = state.health.log[key] || [];
-  state.health.log[key] = done.includes(k) ? done.filter(x => x !== k) : [...done, k];
+  const nowDone = !done.includes(k);
+  state.health.log[key] = nowDone ? [...done, k] : done.filter(x => x !== k);
+  const core = state.health.log[key].filter(x => x !== "D").length;
   save(); renderHealth();
+  if (nowDone) hlCheer(k, core);
+}
+function hlCheer(k, core) {
+  const el = document.getElementById("hlCheer");
+  if (!el) return;
+  let msg;
+  if (k === "D") msg = "Bonus session. Above and beyond 🌟";
+  else if (core === 3) msg = "Three for three — that's the week 🎉";
+  else msg = HL_CHEERS[Math.floor(Math.random() * HL_CHEERS.length)];
+  el.textContent = msg;
+  el.classList.remove("show");
+  void el.offsetWidth;           // restart the animation on rapid taps
+  el.classList.add("show");
+  clearTimeout(el._t);
+  el._t = setTimeout(() => el.classList.remove("show"), 2000);
 }
 function addHealthLink() {
   let url = (prompt("Paste the link (URL):", "https://") || "").trim();
