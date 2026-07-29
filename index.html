@@ -242,6 +242,25 @@
   .jr-text:focus { border-color: rgba(247,183,156,0.5); }
   .jr-text::placeholder { color: var(--faint); }
 
+  /* gratitude */
+  .jr-grat { margin-top: 22px; padding: 20px 22px; background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); }
+  .jr-grat-head { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 15px; }
+  .jr-grat h3 { font-family: var(--serif); font-size: 16px; font-weight: 600; color: var(--ink); letter-spacing: -0.2px; }
+  .jr-grat-sub { font-size: 12.5px; color: var(--faint); margin-top: 4px; line-height: 1.45; }
+  .jr-grat-count { margin-left: auto; font-size: 12.5px; color: var(--faint); white-space: nowrap; padding-top: 3px; }
+  .jr-grat-count.full { color: var(--violet); }
+  .jr-grat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 18px; }
+  .jr-g { display: flex; align-items: center; gap: 10px; }
+  .jr-g span { font-size: 12px; color: var(--faint); width: 15px; text-align: right; flex-shrink: 0; font-variant-numeric: tabular-nums; }
+  .jr-g input {
+    flex: 1; min-width: 0; background: none; border: none;
+    border-bottom: 1px solid var(--line-soft); color: var(--ink-2);
+    font: inherit; font-size: 14.5px; padding: 7px 2px; outline: none;
+  }
+  .jr-g input:focus { border-bottom-color: var(--violet); }
+  .jr-g input::placeholder { color: transparent; }
+  .jr-g.done span { color: var(--violet); }
+
   .jr-foot { display: flex; align-items: center; gap: 14px; margin-top: 14px; flex-wrap: wrap; }
   .jr-strip { display: flex; gap: 5px; align-items: center; }
   .jr-strip i {
@@ -267,6 +286,9 @@
     .jr-modes { grid-template-columns: 1fr; gap: 8px; }
     .jr-text { min-height: 40vh; font-size: 16px; }
     .jr-rd { width: 110px; }
+    .jr-grat { padding: 16px 15px; }
+    .jr-grat-grid { grid-template-columns: 1fr; gap: 2px; }
+    .jr-g input { font-size: 16px; }   /* 16px stops iOS zooming on focus */
   }
 
   /* ---------- The Plan ---------- */
@@ -720,6 +742,17 @@
 
           <textarea id="jrText" class="jr-text" placeholder="Start anywhere. It's allowed to be ugly."></textarea>
 
+          <div class="jr-grat">
+            <div class="jr-grat-head">
+              <div>
+                <h3>Grateful for</h3>
+                <div class="jr-grat-sub">Ten things. They're allowed to be tiny, and they're allowed to be the same as yesterday.</div>
+              </div>
+              <div class="jr-grat-count" id="jrGratCount"></div>
+            </div>
+            <div class="jr-grat-grid" id="jrGratGrid"></div>
+          </div>
+
           <div class="jr-foot">
             <div class="jr-strip" id="jrStrip"></div>
             <button class="jr-past" onclick="toggleJrPast()">Past entries</button>
@@ -1006,6 +1039,18 @@ let jrToday = null, jrMode = null, jrTimer = null, jrLoaded = false, jrDirty = f
 
 function jrModeName(id) { const m = JR_MODES.find(x => x.id === id); return m ? m.name : ""; }
 
+const GRAT_HEAD = "## Grateful for";
+const GRAT_N = 10;
+
+// One file per day holds both halves: the writing, then the gratitude list.
+function splitEntry(body) {
+  const i = body.lastIndexOf(GRAT_HEAD);
+  if (i < 0) return { text: body.replace(/\s+$/, ""), grats: [] };
+  const grats = body.slice(i + GRAT_HEAD.length).split("\n")
+    .map(l => l.replace(/^\s*\d+[.)]\s*/, "").trim()).filter(Boolean);
+  return { text: body.slice(0, i).replace(/\s+$/, ""), grats };
+}
+
 async function renderJournal() {
   jrToday = jrKey(new Date());
   document.getElementById("jrDate").textContent =
@@ -1014,16 +1059,65 @@ async function renderJournal() {
   renderJrStrip();
   if (jrLoaded) return;
   const ta = document.getElementById("jrText");
+  let grats = [];
   try {
-    const b64 = await GH.getB64(CFG.brainRepo, jrPath(jrToday));
-    const body = b64decodeUtf8(b64);
-    const m = body.match(/^---\nmode:\s*(\w+)[\s\S]*?---\n?/);
+    const raw = b64decodeUtf8(await GH.getB64(CFG.brainRepo, jrPath(jrToday)));
+    const m = raw.match(/^---\n[\s\S]*?\bmode:\s*(\w+)[\s\S]*?---\n?/);
     if (m) { jrMode = m[1]; renderJrModes(); }
-    ta.value = body.replace(/^---\n[\s\S]*?---\n?/, "");
+    const parts = splitEntry(raw.replace(/^---\n[\s\S]*?---\n?/, ""));
+    ta.value = parts.text;
+    grats = parts.grats;
   } catch (e) { ta.value = ""; }           // nothing written yet today
+  renderJrGrat(grats);
   jrLoaded = true;
-  ta.oninput = () => { jrDirty = true; setJrSave("Saving…"); clearTimeout(jrTimer); jrTimer = setTimeout(saveJournal, 2500); };
+  ta.oninput = () => touchJournal();
   ta.onblur = () => { if (jrDirty) { clearTimeout(jrTimer); saveJournal(); } };
+}
+
+function touchJournal() {
+  jrDirty = true;
+  setJrSave("Saving…");
+  clearTimeout(jrTimer);
+  jrTimer = setTimeout(saveJournal, 2500);
+}
+
+function renderJrGrat(values) {
+  const grid = document.getElementById("jrGratGrid");
+  grid.innerHTML = "";
+  for (let i = 0; i < GRAT_N; i++) {
+    const row = document.createElement("div");
+    row.className = "jr-g";
+    const inp = document.createElement("input");
+    inp.type = "text";
+    inp.value = values[i] || "";
+    inp.dataset.i = i;
+    inp.setAttribute("aria-label", "Grateful for, " + (i + 1));
+    inp.oninput = () => { row.classList.toggle("done", !!inp.value.trim()); updateGratCount(); touchJournal(); };
+    inp.onblur = () => { if (jrDirty) { clearTimeout(jrTimer); saveJournal(); } };
+    // Enter drops to the next line instead of doing nothing
+    inp.onkeydown = (e) => {
+      if (e.key !== "Enter") return;
+      e.preventDefault();
+      const next = grid.querySelector(`input[data-i="${i + 1}"]`);
+      if (next) next.focus(); else inp.blur();
+    };
+    row.innerHTML = `<span>${i + 1}</span>`;
+    if (inp.value.trim()) row.classList.add("done");
+    row.appendChild(inp);
+    grid.appendChild(row);
+  }
+  updateGratCount();
+}
+
+function gratValues() {
+  return [...document.querySelectorAll("#jrGratGrid input")].map(i => i.value.trim());
+}
+
+function updateGratCount() {
+  const n = gratValues().filter(Boolean).length;
+  const el = document.getElementById("jrGratCount");
+  el.textContent = n ? `${n} of ${GRAT_N}` : "";
+  el.classList.toggle("full", n >= GRAT_N);
 }
 
 function renderJrModes() {
@@ -1058,16 +1152,17 @@ function setJrSave(t, on) {
 }
 
 async function saveJournal() {
-  const ta = document.getElementById("jrText");
-  const body = ta.value;
-  if (!body.trim()) { setJrSave(""); jrDirty = false; return; }
-  const words = body.trim().split(/\s+/).length;
-  const front = `---\ndate: ${jrToday}\nmode: ${jrMode || "free"}\nwords: ${words}\n---\n\n`;
+  const text = document.getElementById("jrText").value.replace(/\s+$/, "");
+  const grats = gratValues().filter(Boolean);
+  if (!text.trim() && !grats.length) { setJrSave(""); jrDirty = false; return; }
+  const words = text.trim() ? text.trim().split(/\s+/).length : 0;
+  const front = `---\ndate: ${jrToday}\nmode: ${jrMode || "free"}\nwords: ${words}\ngratitude: ${grats.length}\n---\n\n`;
+  const body = text + (grats.length ? `\n\n${GRAT_HEAD}\n` + grats.map((g, i) => `${i + 1}. ${g}`).join("\n") + "\n" : "\n");
   try {
     await GH.putFileIn(CFG.brainRepo, jrPath(jrToday), b64encodeUtf8(front + body), `journal: ${jrToday}`);
     jrDirty = false;
     setJrSave("Saved", true);
-    state.journal.days[jrToday] = { mode: jrMode || "free", words };
+    state.journal.days[jrToday] = { mode: jrMode || "free", words, gratitude: grats.length };
     renderJrStrip();
     await GH.putData(state);
   } catch (e) {
@@ -1086,7 +1181,7 @@ function renderJrStrip() {
     const dot = document.createElement("i");
     if (days[k]) dot.classList.add("w");
     if (k === jrToday) dot.classList.add("t");
-    dot.title = k + (days[k] ? ` · ${jrModeName(days[k].mode)}` : "");
+    dot.title = k + (days[k] ? ` · ${jrModeName(days[k].mode)}${days[k].gratitude ? ` · ${days[k].gratitude} grateful` : ""}` : "");
     strip.appendChild(dot);
   }
 }
@@ -1103,7 +1198,8 @@ function toggleJrPast() {
     const row = document.createElement("div");
     row.className = "jr-row";
     const pretty = new Date(k + "T12:00:00").toLocaleDateString(undefined, { weekday:"short", month:"short", day:"numeric", year:"numeric" });
-    row.innerHTML = `<span class="jr-rd">${esc(pretty)}</span><span class="jr-rm">${esc(jrModeName(info.mode))}${info.words ? " · " + info.words + " words" : ""}</span>`;
+    const bits = [jrModeName(info.mode), info.words ? info.words + " words" : "", info.gratitude ? info.gratitude + " grateful" : ""].filter(Boolean);
+    row.innerHTML = `<span class="jr-rd">${esc(pretty)}</span><span class="jr-rm">${esc(bits.join(" · "))}</span>`;
     row.onclick = () => openBlob(CFG.brainRepo, jrPath(k));
     list.appendChild(row);
   }
