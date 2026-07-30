@@ -242,6 +242,26 @@
   .jr-text:focus { border-color: rgba(247,183,156,0.5); }
   .jr-text::placeholder { color: var(--faint); }
 
+  /* split page — two columns */
+  .jr-split { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .jr-col { display: flex; flex-direction: column; }
+  .jr-col-label {
+    font-family: var(--serif); font-size: 13.5px; font-weight: 600;
+    padding: 0 2px 9px; letter-spacing: -0.1px;
+  }
+  .jr-col-fear { color: var(--muted); }
+  .jr-col-mine { color: var(--violet); }
+  .jr-split textarea {
+    flex: 1; min-height: 44vh; background: var(--panel); color: var(--ink-2);
+    border: 1px solid var(--line); border-radius: var(--radius);
+    padding: 17px 18px; font: inherit; font-size: 15px; line-height: 1.7;
+    resize: vertical; outline: none;
+  }
+  .jr-col-fear + textarea:focus { border-color: rgba(247,183,156,0.5); }
+  .jr-col-mine + textarea { border-color: rgba(191,169,242,0.28); }
+  .jr-col-mine + textarea:focus { border-color: var(--violet); }
+  .jr-split textarea::placeholder { color: var(--faint); }
+
   /* gratitude */
   .jr-grat { margin-top: 22px; padding: 20px 22px; background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); }
   .jr-grat-head { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 15px; }
@@ -297,6 +317,8 @@
     .jr-modes { grid-template-columns: 1fr; gap: 8px; }
     .jr-text { min-height: 40vh; font-size: 16px; }
     .jr-rd { width: 110px; }
+    .jr-split { grid-template-columns: 1fr; gap: 16px; }
+    .jr-split textarea { min-height: 28vh; font-size: 16px; }
     .jr-grat { padding: 16px 15px; }
     .jr-grat-grid { grid-template-columns: 1fr; gap: 2px; }
     .jr-g input { font-size: 16px; }   /* 16px stops iOS zooming on focus */
@@ -754,6 +776,17 @@
 
           <textarea id="jrText" class="jr-text" placeholder="Start anywhere. It's allowed to be ugly."></textarea>
 
+          <div class="jr-split" id="jrSplit" hidden>
+            <div class="jr-col">
+              <div class="jr-col-label jr-col-fear">What I'm afraid of</div>
+              <textarea id="jrSplitA" placeholder="All of it. The irrational ones too."></textarea>
+            </div>
+            <div class="jr-col">
+              <div class="jr-col-label jr-col-mine">What's actually mine to do today</div>
+              <textarea id="jrSplitB" placeholder="Only what's genuinely yours, today. Usually shorter."></textarea>
+            </div>
+          </div>
+
           <div class="jr-grat">
             <div class="jr-grat-head">
               <div>
@@ -1046,9 +1079,11 @@ const JR_MODES = [
     desc: "Three prompts: how you feel, what you're carrying, what you want.",
     scaffold: "How I actually feel right now:\n\nWhat I'm carrying into today:\n\nOne thing I want today:\n" },
   { id: "split", name: "The Split Page", time: "~5 min",
-    desc: "Two lists: everything you're afraid of, then what's actually yours to do.",
-    scaffold: "What I'm afraid of:\n- \n\nWhat's actually mine to do today:\n- \n" },
+    desc: "Two columns: everything you're afraid of, then what's actually yours to do.",
+    scaffold: "", columns: true },
 ];
+const SPLIT_A = "## What I'm afraid of";
+const SPLIT_B = "## What's actually mine to do today";
 const jrKey = (d) => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
 const jrPath = (k) => `journal/${k}.md`;
 let jrToday = null, jrMode = null, jrTimer = null, jrLoaded = false, jrDirty = false;
@@ -1097,11 +1132,12 @@ async function renderJournal() {
     grats = parts.grats;
   } catch (e) { ta.value = ""; gt.value = ""; }   // nothing written yet today
   renderJrGrat(grats);
+  applyModeUI();
   jrLoaded = true;
-  ta.oninput = () => touchJournal();
-  ta.onblur = () => { if (jrDirty) { clearTimeout(jrTimer); saveJournal(); } };
-  gt.oninput = () => touchJournal();
-  gt.onblur = () => { if (jrDirty) { clearTimeout(jrTimer); saveJournal(); } };
+  for (const el of [ta, gt, document.getElementById("jrSplitA"), document.getElementById("jrSplitB")]) {
+    el.oninput = () => touchJournal();
+    el.onblur = () => { if (jrDirty) { clearTimeout(jrTimer); saveJournal(); } };
+  }
 }
 
 function touchJournal() {
@@ -1166,29 +1202,91 @@ function renderJrModes() {
 // True when the box holds nothing but a scaffold she hasn't typed into yet — safe to swap.
 function isBareScaffold(v) {
   const t = v.replace(/\s+$/, "");
+  if (!t) return true;
   return JR_MODES.some(m => m.scaffold && m.scaffold.replace(/\s+$/, "") === t);
 }
 
+// The split page stores its two columns as headed sections; anything before the
+// first heading is ordinary prose she wrote before switching modes.
+function splitColumns(text) {
+  const ia = text.indexOf(SPLIT_A);
+  if (ia < 0) return { prose: text, a: "", b: "" };
+  const prose = text.slice(0, ia).replace(/\s+$/, "");
+  const rest = text.slice(ia + SPLIT_A.length);
+  const ib = rest.indexOf(SPLIT_B);
+  if (ib < 0) return { prose, a: rest.trim(), b: "" };
+  return { prose, a: rest.slice(0, ib).trim(), b: rest.slice(ib + SPLIT_B.length).trim() };
+}
+
+// Show the right editor for the current mode, moving content across intact.
+function applyModeUI() {
+  const ta = document.getElementById("jrText");
+  const box = document.getElementById("jrSplit");
+  const A = document.getElementById("jrSplitA");
+  const B = document.getElementById("jrSplitB");
+  if (jrMode === "split") {
+    const parts = splitColumns(ta.value);
+    if (!A.value.trim() && !B.value.trim()) { A.value = parts.a; B.value = parts.b; }
+    ta.value = parts.prose;
+    ta.hidden = !parts.prose.trim();     // only keep the prose box if she used it
+    box.hidden = false;
+  } else {
+    // leaving split: fold any column content back into the single page
+    const composed = composeSplit(ta.value, A.value, B.value);
+    if (!box.hidden && (A.value.trim() || B.value.trim())) ta.value = composed;
+    A.value = ""; B.value = "";
+    ta.hidden = false;
+    box.hidden = true;
+  }
+}
+
+function composeSplit(prose, a, b) {
+  let out = (prose || "").replace(/\s+$/, "");
+  if (a.trim() || b.trim()) {
+    if (out) out += "\n\n";
+    out += `${SPLIT_A}\n${a.trim()}\n\n${SPLIT_B}\n${b.trim()}`;
+  }
+  return out;
+}
+
+// The whole day's writing, whichever editor produced it.
+function entryText() {
+  const ta = document.getElementById("jrText");
+  if (jrMode !== "split") return ta.value.replace(/\s+$/, "");
+  return composeSplit(ta.value, document.getElementById("jrSplitA").value,
+                                document.getElementById("jrSplitB").value);
+}
+
 function pickJrMode(m) {
+  const prev = jrMode;
   jrMode = m.id;
   const ta = document.getElementById("jrText");
+  if (prev === "split" && m.id !== "split") applyModeUI();   // fold columns back first
   const cur = ta.value;
-  const swappable = !cur.trim() || isBareScaffold(cur);
+  const swappable = isBareScaffold(cur);
   if (m.scaffold) {
     // Swap the prompts when nothing real is there; otherwise add them below her
     // writing rather than silently doing nothing (or destroying it).
     ta.value = swappable ? m.scaffold : cur.replace(/\s+$/, "") + "\n\n" + m.scaffold;
-  } else if (swappable) {
+  } else if (swappable && m.id !== "split") {
     ta.value = "";                      // Morning Pages wants a blank page
+  } else if (m.id === "split" && swappable) {
+    ta.value = "";                      // drop an untouched scaffold on the way in
   }
+  if (m.id === "split" || prev === "split") applyModeUI();
   renderJrModes();
-  ta.focus();
-  if (m.scaffold) {
-    const firstLine = m.scaffold.split("\n")[0];
-    const at = ta.value.lastIndexOf(firstLine) + firstLine.length;
-    ta.setSelectionRange(at, at);
+  if (m.columns) {
+    const A = document.getElementById("jrSplitA");
+    A.focus(); A.setSelectionRange(A.value.length, A.value.length);
   } else {
-    ta.setSelectionRange(ta.value.length, ta.value.length);
+    ta.focus();
+    if (m.scaffold) {
+      const firstLine = m.scaffold.split("\n")[0];
+      const at = ta.value.lastIndexOf(firstLine) + firstLine.length;
+      ta.setSelectionRange(at, at);
+    } else {
+      ta.setSelectionRange(ta.value.length, ta.value.length);
+    }
   }
   jrDirty = true;
   clearTimeout(jrTimer); jrTimer = setTimeout(saveJournal, 2500);
@@ -1200,7 +1298,7 @@ function setJrSave(t, on) {
 }
 
 async function saveJournal() {
-  const text = document.getElementById("jrText").value.replace(/\s+$/, "");
+  const text = entryText();
   const gfree = document.getElementById("jrGratText").value.replace(/\s+$/, "");
   const grats = gratValues().filter(Boolean);
   if (!text.trim() && !grats.length && !gfree.trim()) { setJrSave(""); jrDirty = false; return; }
