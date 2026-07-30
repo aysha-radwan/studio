@@ -261,6 +261,17 @@
   .jr-g input::placeholder { color: transparent; }
   .jr-g.done span { color: var(--violet); }
 
+  .jr-grat-free { margin-top: 20px; padding-top: 17px; border-top: 1px solid var(--line-soft); }
+  .jr-grat-free-label { font-size: 12px; letter-spacing: 0.9px; text-transform: uppercase; color: var(--faint); margin-bottom: 9px; }
+  .jr-grat-free textarea {
+    width: 100%; min-height: 120px; background: var(--bg); color: var(--ink-2);
+    border: 1px solid var(--line); border-radius: 11px;
+    padding: 14px 15px; font: inherit; font-size: 14.5px; line-height: 1.68;
+    resize: vertical; outline: none;
+  }
+  .jr-grat-free textarea:focus { border-color: var(--violet); }
+  .jr-grat-free textarea::placeholder { color: var(--faint); }
+
   .jr-foot { display: flex; align-items: center; gap: 14px; margin-top: 14px; flex-wrap: wrap; }
   .jr-strip { display: flex; gap: 5px; align-items: center; }
   .jr-strip i {
@@ -289,6 +300,7 @@
     .jr-grat { padding: 16px 15px; }
     .jr-grat-grid { grid-template-columns: 1fr; gap: 2px; }
     .jr-g input { font-size: 16px; }   /* 16px stops iOS zooming on focus */
+    .jr-grat-free textarea { font-size: 16px; }
   }
 
   /* ---------- The Plan ---------- */
@@ -751,6 +763,10 @@
               <div class="jr-grat-count" id="jrGratCount"></div>
             </div>
             <div class="jr-grat-grid" id="jrGratGrid"></div>
+            <div class="jr-grat-free">
+              <div class="jr-grat-free-label">In your own words</div>
+              <textarea id="jrGratText" placeholder="If one of them wants more than a line, give it more than a line."></textarea>
+            </div>
           </div>
 
           <div class="jr-foot">
@@ -1040,15 +1056,25 @@ let jrToday = null, jrMode = null, jrTimer = null, jrLoaded = false, jrDirty = f
 function jrModeName(id) { const m = JR_MODES.find(x => x.id === id); return m ? m.name : ""; }
 
 const GRAT_HEAD = "## Grateful for";
+const GRAT_FREE_HEAD = "## More on that";
 const GRAT_N = 10;
 
-// One file per day holds both halves: the writing, then the gratitude list.
+// One file per day, three parts: the morning writing, the ten lines, then whatever
+// she wanted to say at more length about any of them.
 function splitEntry(body) {
-  const i = body.lastIndexOf(GRAT_HEAD);
-  if (i < 0) return { text: body.replace(/\s+$/, ""), grats: [] };
-  const grats = body.slice(i + GRAT_HEAD.length).split("\n")
-    .map(l => l.replace(/^\s*\d+[.)]\s*/, "").trim()).filter(Boolean);
-  return { text: body.slice(0, i).replace(/\s+$/, ""), grats };
+  let text = body, grats = [], gfree = "";
+  const gi = body.lastIndexOf(GRAT_HEAD);
+  if (gi >= 0) {
+    text = body.slice(0, gi);
+    let tail = body.slice(gi + GRAT_HEAD.length);
+    const fi = tail.indexOf(GRAT_FREE_HEAD);
+    if (fi >= 0) { gfree = tail.slice(fi + GRAT_FREE_HEAD.length).trim(); tail = tail.slice(0, fi); }
+    grats = tail.split("\n").map(l => l.replace(/^\s*\d+[.)]\s*/, "").trim()).filter(Boolean);
+  } else {
+    const fi = body.lastIndexOf(GRAT_FREE_HEAD);
+    if (fi >= 0) { text = body.slice(0, fi); gfree = body.slice(fi + GRAT_FREE_HEAD.length).trim(); }
+  }
+  return { text: text.replace(/\s+$/, ""), grats, gfree };
 }
 
 async function renderJournal() {
@@ -1059,6 +1085,7 @@ async function renderJournal() {
   renderJrStrip();
   if (jrLoaded) return;
   const ta = document.getElementById("jrText");
+  const gt = document.getElementById("jrGratText");
   let grats = [];
   try {
     const raw = b64decodeUtf8(await GH.getB64(CFG.brainRepo, jrPath(jrToday)));
@@ -1066,12 +1093,15 @@ async function renderJournal() {
     if (m) { jrMode = m[1]; renderJrModes(); }
     const parts = splitEntry(raw.replace(/^---\n[\s\S]*?---\n?/, ""));
     ta.value = parts.text;
+    gt.value = parts.gfree;
     grats = parts.grats;
-  } catch (e) { ta.value = ""; }           // nothing written yet today
+  } catch (e) { ta.value = ""; gt.value = ""; }   // nothing written yet today
   renderJrGrat(grats);
   jrLoaded = true;
   ta.oninput = () => touchJournal();
   ta.onblur = () => { if (jrDirty) { clearTimeout(jrTimer); saveJournal(); } };
+  gt.oninput = () => touchJournal();
+  gt.onblur = () => { if (jrDirty) { clearTimeout(jrTimer); saveJournal(); } };
 }
 
 function touchJournal() {
@@ -1153,11 +1183,15 @@ function setJrSave(t, on) {
 
 async function saveJournal() {
   const text = document.getElementById("jrText").value.replace(/\s+$/, "");
+  const gfree = document.getElementById("jrGratText").value.replace(/\s+$/, "");
   const grats = gratValues().filter(Boolean);
-  if (!text.trim() && !grats.length) { setJrSave(""); jrDirty = false; return; }
+  if (!text.trim() && !grats.length && !gfree.trim()) { setJrSave(""); jrDirty = false; return; }
   const words = text.trim() ? text.trim().split(/\s+/).length : 0;
   const front = `---\ndate: ${jrToday}\nmode: ${jrMode || "free"}\nwords: ${words}\ngratitude: ${grats.length}\n---\n\n`;
-  const body = text + (grats.length ? `\n\n${GRAT_HEAD}\n` + grats.map((g, i) => `${i + 1}. ${g}`).join("\n") + "\n" : "\n");
+  let body = text;
+  if (grats.length) body += `\n\n${GRAT_HEAD}\n` + grats.map((g, i) => `${i + 1}. ${g}`).join("\n");
+  if (gfree.trim()) body += `\n\n${GRAT_FREE_HEAD}\n` + gfree;
+  body += "\n";
   try {
     await GH.putFileIn(CFG.brainRepo, jrPath(jrToday), b64encodeUtf8(front + body), `journal: ${jrToday}`);
     jrDirty = false;
