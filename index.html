@@ -1024,13 +1024,13 @@ document.getElementById("sideNav").querySelectorAll(".nav-item").forEach(b => {
 // them with no extra access, and the Mac's sync hook pulls copies down locally.
 const JR_MODES = [
   { id: "pages", name: "Morning Pages", time: "~20 min",
-    desc: "Empty the whole mind onto the page. No editing, no rereading.",
+    desc: "No prompts. Empty the whole mind onto the page until it goes quiet.",
     scaffold: "" },
   { id: "three", name: "Three Lines", time: "~2 min",
-    desc: "The floor. Never fails, never has to be impressive.",
-    scaffold: "What's here:\n\nWhat I'm carrying:\n\nOne thing I want today:\n" },
+    desc: "Three prompts: how you feel, what you're carrying, what you want.",
+    scaffold: "How I actually feel right now:\n\nWhat I'm carrying into today:\n\nOne thing I want today:\n" },
   { id: "split", name: "The Split Page", time: "~5 min",
-    desc: "For the loud mornings — sort the fear from what's actually yours.",
+    desc: "Two lists: everything you're afraid of, then what's actually yours to do.",
     scaffold: "What I'm afraid of:\n- \n\nWhat's actually mine to do today:\n- \n" },
 ];
 const jrKey = (d) => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
