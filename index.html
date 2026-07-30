@@ -1163,15 +1163,33 @@ function renderJrModes() {
   }
 }
 
+// True when the box holds nothing but a scaffold she hasn't typed into yet — safe to swap.
+function isBareScaffold(v) {
+  const t = v.replace(/\s+$/, "");
+  return JR_MODES.some(m => m.scaffold && m.scaffold.replace(/\s+$/, "") === t);
+}
+
 function pickJrMode(m) {
   jrMode = m.id;
   const ta = document.getElementById("jrText");
-  // only ever ADD a scaffold to an empty page — never overwrite what she's written
-  if (m.scaffold && !ta.value.trim()) ta.value = m.scaffold;
+  const cur = ta.value;
+  const swappable = !cur.trim() || isBareScaffold(cur);
+  if (m.scaffold) {
+    // Swap the prompts when nothing real is there; otherwise add them below her
+    // writing rather than silently doing nothing (or destroying it).
+    ta.value = swappable ? m.scaffold : cur.replace(/\s+$/, "") + "\n\n" + m.scaffold;
+  } else if (swappable) {
+    ta.value = "";                      // Morning Pages wants a blank page
+  }
   renderJrModes();
   ta.focus();
-  const p = ta.value.indexOf("\n");
-  if (m.scaffold) ta.setSelectionRange(p < 0 ? ta.value.length : p, p < 0 ? ta.value.length : p);
+  if (m.scaffold) {
+    const firstLine = m.scaffold.split("\n")[0];
+    const at = ta.value.lastIndexOf(firstLine) + firstLine.length;
+    ta.setSelectionRange(at, at);
+  } else {
+    ta.setSelectionRange(ta.value.length, ta.value.length);
+  }
   jrDirty = true;
   clearTimeout(jrTimer); jrTimer = setTimeout(saveJournal, 2500);
 }
