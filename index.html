@@ -335,16 +335,42 @@
     font: inherit; font-size: 13px; cursor: pointer;
   }
   .plan-bar button:hover { border-color: var(--peach); color: var(--peach); }
-  #planFrame {
+  #planFrame, #entFrame {
     width: 100%; height: calc(100vh - 208px); min-height: 480px;
     border: 1px solid var(--line); border-radius: var(--radius);
     background: var(--bg); display: block;
   }
+  #entFrame { height: calc(100vh - 300px); }
   .plan-loading { padding: 26px 2px; color: var(--faint); font-size: 13.5px; }
   @media (max-width: 760px) {
     .plan-wrap { padding: 12px 16px 26px; }
     #planFrame { height: calc(100vh - 250px); }
+    #entFrame { height: calc(100vh - 340px); }
   }
+
+  /* ---------- Entrepreneurship ---------- */
+  .ent-runway { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+  .ent-step {
+    flex: 1 1 132px; background: var(--panel); border: 1px solid var(--line);
+    border-radius: 12px; padding: 12px 14px;
+  }
+  .ent-step.now { border-color: rgba(247,183,156,0.55); background: rgba(247,183,156,0.08); }
+  .ent-step .em { font-size: 11px; letter-spacing: 1.3px; text-transform: uppercase; color: var(--faint); font-weight: 600; }
+  .ent-step.now .em { color: var(--peach); }
+  .ent-step .et { font-size: 14px; font-weight: 600; color: var(--ink); margin-top: 6px; letter-spacing: -0.2px; }
+  .ent-step .ed { font-size: 11.5px; color: var(--muted); margin-top: 4px; line-height: 1.45; }
+  .ent-doss {
+    display: flex; align-items: center; gap: 13px; padding: 15px 16px; margin-bottom: 14px;
+    border: 1px solid rgba(191,169,242,0.35); background: var(--panel-2); border-radius: 12px;
+  }
+  .ent-doss .di { font-size: 20px; }
+  .ent-doss .dt { font-weight: 600; color: var(--ink); font-size: 14.5px; }
+  .ent-doss .ds { color: var(--muted); font-size: 12px; margin-top: 3px; }
+  .ent-doss .pill {
+    margin-left: auto; font-size: 11px; letter-spacing: 0.6px; text-transform: uppercase;
+    color: var(--violet); border: 1px solid rgba(191,169,242,0.4); border-radius: 999px; padding: 5px 11px; font-weight: 600;
+  }
+  @media (max-width: 760px) { .ent-doss .pill { display: none; } }
 
   .view-intro { padding: 18px 34px 2px; color: var(--muted); font-size: 13.5px; line-height: 1.55; max-width: 640px; }
   .view-intro b { color: var(--ink-2); font-weight: 600; }
@@ -666,6 +692,7 @@
       <nav class="side-nav" id="sideNav">
         <button class="nav-item active" data-view="overview"><span class="nic">◎</span><span>Mission Control</span></button>
         <button class="nav-item" data-view="plan"><span class="nic">✧</span><span>The Plan</span></button>
+        <button class="nav-item" data-view="entre"><span class="nic">◈</span><span>Entrepreneurship</span></button>
         <button class="nav-item" data-view="journal"><span class="nic">❧</span><span>Journal</span></button>
         <button class="nav-item" data-view="projects"><span class="nic">▦</span><span>Projects</span></button>
         <button class="nav-item" data-view="fuel"><span class="nic">✦</span><span>Creative Fuel</span></button>
@@ -758,6 +785,28 @@
           </div>
           <iframe id="planFrame" title="The Plan"></iframe>
           <div class="plan-loading" id="planLoading">Opening your plan&hellip;</div>
+        </div>
+      </section>
+
+      <!-- ---- ENTREPRENEURSHIP VIEW ---- -->
+      <section id="view-entre" class="view" hidden>
+        <div class="view-intro">The business side. Research, ventures and the money &mdash; kept separate from the creative work on purpose. <b>Venture 01: a caf&eacute; in Riyadh.</b></div>
+        <div class="plan-wrap">
+          <div class="ent-runway" id="entRunway"></div>
+          <div class="ent-doss">
+            <span class="di">&#9728;</span>
+            <div>
+              <div class="dt">Coffee in Riyadh &mdash; the founder&rsquo;s dossier</div>
+              <div class="ds">Market, money, licences, the map, and your next five months</div>
+            </div>
+            <span class="pill">Researching</span>
+          </div>
+          <div class="plan-bar">
+            <span class="plan-dates">Compiled Aug 2026 &nbsp;|&nbsp; anchor date: Coffee &amp; Chocolate Expo, Riyadh, 2&ndash;6 Dec</span>
+            <button onclick="openEntreFull()">Open full page &#8599;</button>
+          </div>
+          <iframe id="entFrame" title="Riyadh Coffee dossier"></iframe>
+          <div class="plan-loading" id="entLoading">Opening your dossier&hellip;</div>
         </div>
       </section>
 
@@ -1049,7 +1098,7 @@ function showFlash(msg = "Saved") {
 const uid = () => Math.random().toString(36).slice(2, 9);
 
 // ---------- view switching ----------
-const VIEW_TITLES = { overview: "Mission Control", plan: "The Plan", journal: "Journal", projects: "Projects", fuel: "Creative Fuel", health: "Health", learning: "Learning", docs: "Documents" };
+const VIEW_TITLES = { overview: "Mission Control", plan: "The Plan", entre: "Entrepreneurship", journal: "Journal", projects: "Projects", fuel: "Creative Fuel", health: "Health", learning: "Learning", docs: "Documents" };
 function switchView(name) {
   currentView = name;
   document.querySelectorAll(".view").forEach(v => { v.hidden = (v.id !== "view-" + name); });
@@ -1057,6 +1106,7 @@ function switchView(name) {
   document.getElementById("viewTitle").textContent = VIEW_TITLES[name] || "Studio";
   if (name === "overview") renderOverview();
   if (name === "plan") renderPlan();
+  if (name === "entre") renderEntre();
   if (name === "journal") renderJournal();
   if (name === "fuel") renderFuel();
   if (name === "health") renderHealth();
@@ -1371,6 +1421,39 @@ async function renderPlan() {
     note.hidden = true;
   } catch (e) {
     note.textContent = "Couldn't load the plan — check your key still has access to your data repo.";
+  }
+}
+
+// ---------- render (Entrepreneurship) ----------
+// Same pattern as The Plan: the dossier lives in the PRIVATE data repo and is
+// fetched with her key into a blob URL, so nothing business-y sits in the public app.
+const ENT_PATH = "files/entrepreneurship/Riyadh-Coffee-Dossier.html";
+const ENT_RUNWAY = [
+  { m: "Aug", t: "Define",  d: "Structure answer from a lawyer · concept on one page" },
+  { m: "Sep", t: "Model",   d: "Build the numbers · pick two districts · book the trip" },
+  { m: "Oct", t: "Source",  d: "Roasters, fit-out quotes, POS, brokers" },
+  { m: "Nov", t: "Prepare", d: "Lock the schedule · 25-café scouting list" },
+  { m: "Dec", t: "Go",      d: "Riyadh · expo 2–6 Dec · sites + apartments" },
+];
+let entLoaded = false;
+function openEntreFull() { openBlob(CFG.dataRepo, ENT_PATH); }
+async function renderEntre() {
+  const nowM = new Date().getMonth();           // 7 = Aug … 11 = Dec
+  document.getElementById("entRunway").innerHTML = ENT_RUNWAY.map((s, i) => `
+    <div class="ent-step${nowM - 7 === i ? " now" : ""}">
+      <div class="em">${esc(s.m)}</div>
+      <div class="et">${esc(s.t)}</div>
+      <div class="ed">${esc(s.d)}</div>
+    </div>`).join("");
+  if (entLoaded) return;
+  const frame = document.getElementById("entFrame");
+  const note = document.getElementById("entLoading");
+  try {
+    frame.src = await GH.blobUrl(CFG.dataRepo, ENT_PATH);
+    entLoaded = true;
+    note.hidden = true;
+  } catch (e) {
+    note.textContent = "Couldn't load the dossier — check your key still has access to your data repo.";
   }
 }
 
@@ -2040,7 +2123,7 @@ document.getElementById("sortSeg").querySelectorAll("button").forEach(b=>{
 function esc(s){ return String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
 
 // deep-linking: /#fuel, /#docs, /#projects
-const VALID_VIEWS = ["overview", "plan", "journal", "projects", "fuel", "health", "learning", "docs"];
+const VALID_VIEWS = ["overview", "plan", "entre", "journal", "projects", "fuel", "health", "learning", "docs"];
 function applyHash() {
   const v = (location.hash || "").replace("#", "");
   if (VALID_VIEWS.includes(v) && v !== currentView) switchView(v);
