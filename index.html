@@ -359,18 +359,26 @@
   .ent-step.now .em { color: var(--peach); }
   .ent-step .et { font-size: 14px; font-weight: 600; color: var(--ink); margin-top: 6px; letter-spacing: -0.2px; }
   .ent-step .ed { font-size: 11.5px; color: var(--muted); margin-top: 4px; line-height: 1.45; }
+  .ent-docs { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 10px; margin-bottom: 16px; }
   .ent-doss {
-    display: flex; align-items: center; gap: 13px; padding: 15px 16px; margin-bottom: 14px;
-    border: 1px solid rgba(191,169,242,0.35); background: var(--panel-2); border-radius: 12px;
+    display: flex; align-items: flex-start; gap: 12px; padding: 15px 16px; text-align: left;
+    border: 1px solid var(--line); background: var(--panel); border-radius: 12px;
+    font: inherit; cursor: pointer; transition: border-color .15s, background .15s;
   }
-  .ent-doss .di { font-size: 20px; }
-  .ent-doss .dt { font-weight: 600; color: var(--ink); font-size: 14.5px; }
-  .ent-doss .ds { color: var(--muted); font-size: 12px; margin-top: 3px; }
+  .ent-doss:hover { border-color: rgba(247,183,156,0.45); }
+  .ent-doss.on { border-color: rgba(247,183,156,0.75); background: rgba(247,183,156,0.09); }
+  .ent-doss .di {
+    flex: 0 0 auto; width: 24px; height: 24px; border-radius: 7px; margin-top: 1px;
+    background: rgba(255,255,255,0.06); color: var(--muted);
+    display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700;
+  }
+  .ent-doss.on .di { background: var(--peach); color: #0a0e24; }
+  .ent-doss .dt { display: block; font-weight: 600; color: var(--ink); font-size: 14px; letter-spacing: -0.2px; }
+  .ent-doss .ds { display: block; color: var(--muted); font-size: 11.5px; margin-top: 4px; line-height: 1.45; }
   .ent-doss .pill {
-    margin-left: auto; font-size: 11px; letter-spacing: 0.6px; text-transform: uppercase;
-    color: var(--violet); border: 1px solid rgba(191,169,242,0.4); border-radius: 999px; padding: 5px 11px; font-weight: 600;
+    display: inline-block; margin-top: 8px; font-size: 10px; letter-spacing: 0.7px; text-transform: uppercase;
+    color: var(--violet); border: 1px solid rgba(191,169,242,0.4); border-radius: 999px; padding: 3px 9px; font-weight: 600;
   }
-  @media (max-width: 760px) { .ent-doss .pill { display: none; } }
 
   .view-intro { padding: 18px 34px 2px; color: var(--muted); font-size: 13.5px; line-height: 1.55; max-width: 640px; }
   .view-intro b { color: var(--ink-2); font-weight: 600; }
@@ -793,16 +801,9 @@
         <div class="view-intro">The business side. Research, ventures and the money &mdash; kept separate from the creative work on purpose. <b>Venture 01: a caf&eacute; in Riyadh.</b></div>
         <div class="plan-wrap">
           <div class="ent-runway" id="entRunway"></div>
-          <div class="ent-doss">
-            <span class="di">&#9728;</span>
-            <div>
-              <div class="dt">Coffee in Riyadh &mdash; the founder&rsquo;s dossier</div>
-              <div class="ds">Coffee by day, the room the rave crowd doesn&rsquo;t have by night &mdash; market, money, licences, the map</div>
-            </div>
-            <span class="pill">Researching</span>
-          </div>
+          <div class="ent-docs" id="entDocs"></div>
           <div class="plan-bar">
-            <span class="plan-dates">Compiled Aug 2026 &nbsp;|&nbsp; trip window: 24 Nov &ndash; 8 Dec &middot; XP Music Futures + Coffee Expo + Soundstorm 26</span>
+            <span class="plan-dates" id="entMeta"></span>
             <button onclick="openEntreFull()">Open full page &#8599;</button>
           </div>
           <iframe id="entFrame" title="Riyadh Coffee dossier"></iframe>
@@ -1427,7 +1428,24 @@ async function renderPlan() {
 // ---------- render (Entrepreneurship) ----------
 // Same pattern as The Plan: the dossier lives in the PRIVATE data repo and is
 // fetched with her key into a blob URL, so nothing business-y sits in the public app.
-const ENT_PATH = "files/entrepreneurship/Riyadh-Coffee-Dossier.html";
+const ENT_DOCS = [
+  { id: "cafe",  n: "1", path: "files/entrepreneurship/Riyadh-Coffee-Dossier.html",
+    title: "A café in Riyadh",
+    sub: "Coffee by day, the room the rave crowd doesn't have by night — market, money, licences, the map",
+    pill: "Researching",
+    meta: "Trip window 24 Nov – 8 Dec · XP Music Futures + Coffee Expo + Soundstorm 26" },
+  { id: "condo", n: "2", path: "files/entrepreneurship/Riyadh-Condo-Dossier.html",
+    title: "A condo in Riyadh",
+    sub: "Where to buy, what SAR 5,000/month buys, and every support you qualify for",
+    pill: "Sakani first",
+    meta: "Apply to Sakani this month · rent freeze runs to Sept 2030" },
+  { id: "which", n: "3", path: "files/entrepreneurship/Cafe-or-Condo.html",
+    title: "Which one first",
+    sub: "The comparison, the cost of waiting each way, and my recommendation",
+    pill: "Decide in Jan",
+    meta: "Short answer: condo first, café second — start the paperwork now" },
+];
+let entDoc = "cafe";
 const ENT_RUNWAY = [
   { m: "Aug", t: "Define",  d: "Structure answer from a lawyer · concept on one page" },
   { m: "Sep", t: "Model",   d: "Build the numbers · pick two districts · book the trip" },
@@ -1435,8 +1453,10 @@ const ENT_RUNWAY = [
   { m: "Nov", t: "Prepare", d: "Lock the schedule · 25-café scouting list" },
   { m: "Dec", t: "Go",      d: "Riyadh · XP + expo + Soundstorm · sites + apartments" },
 ];
-let entLoaded = false;
-function openEntreFull() { openBlob(CFG.dataRepo, ENT_PATH); }
+const entLoaded = {};
+function currentEntDoc() { return ENT_DOCS.find(d => d.id === entDoc) || ENT_DOCS[0]; }
+function openEntreFull() { openBlob(CFG.dataRepo, currentEntDoc().path); }
+function pickEntDoc(id) { entDoc = id; renderEntre(); }
 async function renderEntre() {
   const nowM = new Date().getMonth();           // 7 = Aug … 11 = Dec
   document.getElementById("entRunway").innerHTML = ENT_RUNWAY.map((s, i) => `
@@ -1445,15 +1465,32 @@ async function renderEntre() {
       <div class="et">${esc(s.t)}</div>
       <div class="ed">${esc(s.d)}</div>
     </div>`).join("");
-  if (entLoaded) return;
+  const doc = currentEntDoc();
+  document.getElementById("entDocs").innerHTML = ENT_DOCS.map(d => `
+    <button class="ent-doss${d.id === entDoc ? " on" : ""}" data-id="${d.id}">
+      <span class="di">${d.n}</span>
+      <span>
+        <span class="dt">${esc(d.title)}</span>
+        <span class="ds">${esc(d.sub)}</span>
+        <span class="pill">${esc(d.pill)}</span>
+      </span>
+    </button>`).join("");
+  document.querySelectorAll("#entDocs .ent-doss").forEach(b => {
+    b.onclick = () => pickEntDoc(b.dataset.id);
+  });
+  document.getElementById("entMeta").textContent = doc.meta;
+
   const frame = document.getElementById("entFrame");
   const note = document.getElementById("entLoading");
+  if (entLoaded[doc.id]) { frame.src = entLoaded[doc.id]; note.hidden = true; return; }
+  note.hidden = false;
+  note.textContent = "Opening\u2026";
   try {
-    frame.src = await GH.blobUrl(CFG.dataRepo, ENT_PATH);
-    entLoaded = true;
-    note.hidden = true;
+    const url = await GH.blobUrl(CFG.dataRepo, doc.path);
+    entLoaded[doc.id] = url;
+    if (currentEntDoc().id === doc.id) { frame.src = url; note.hidden = true; }
   } catch (e) {
-    note.textContent = "Couldn't load the dossier — check your key still has access to your data repo.";
+    note.textContent = "Couldn't load this one — check your key still has access to your data repo.";
   }
 }
 
