@@ -779,7 +779,7 @@
 
       <!-- ---- THE PLAN VIEW ---- -->
       <section id="view-plan" class="view" hidden>
-        <div class="view-intro">Aug 2026 &rarr; 2028. <b>The condo, then the caf&eacute;</b> &mdash; the plan built from your Entrepreneurship dossiers. Private to you.</div>
+        <div class="view-intro">Aug 2026 &rarr; 2028. <b>The condo, then the caf&eacute;</b> &mdash; the plan built from your Entrepreneurship guides. Private to you.</div>
         <div class="plan-wrap">
           <div class="plan-bar">
             <span class="plan-dates">Research &middot; Aug&ndash;Dec 2026 &nbsp;|&nbsp; Decide &middot; Jan 2027 &nbsp;|&nbsp; Buy &middot; 2027 &nbsp;|&nbsp; Open &middot; 2028</span>
@@ -792,7 +792,7 @@
 
       <!-- ---- ENTREPRENEURSHIP VIEW ---- -->
       <section id="view-entre" class="view" hidden>
-        <div class="view-intro">The business side. Research, ventures and the money &mdash; kept separate from the creative work on purpose. Two tracks running in parallel: <b>a caf&eacute; in Riyadh</b> and <b>a condo in Riyadh</b>, plus the call on which one starts first.</div>
+        <div class="view-intro">The business side. Research, ventures and the money &mdash; kept separate from the creative work on purpose. Three tracks running in parallel: <b>a caf&eacute; in Riyadh</b>, <b>a condo in Riyadh</b> and <b>the AI-UGC business</b>, plus the call on which one starts first.</div>
         <div class="plan-wrap">
           <div class="ent-docs" id="entDocs"></div>
           <div class="plan-bar">
@@ -800,8 +800,8 @@
             <button onclick="toggleEntFocus()" id="entFocusBtn">Read bigger &#10530;</button>
             <button onclick="openEntreFull()">Open full page &#8599;</button>
           </div>
-          <iframe id="entFrame" title="Riyadh Coffee dossier"></iframe>
-          <div class="plan-loading" id="entLoading">Opening your dossier&hellip;</div>
+          <iframe id="entFrame" title="Entrepreneurship guide"></iframe>
+          <div class="plan-loading" id="entLoading">Opening your guide&hellip;</div>
         </div>
       </section>
 
@@ -1420,7 +1420,7 @@ async function renderPlan() {
 }
 
 // ---------- render (Entrepreneurship) ----------
-// Same pattern as The Plan: the dossier lives in the PRIVATE data repo and is
+// Same pattern as The Plan: the guide lives in the PRIVATE data repo and is
 // fetched with her key into a blob URL, so nothing business-y sits in the public app.
 const ENT_DOCS = [
   { id: "cafe",  n: "1", path: "files/entrepreneurship/Riyadh-Coffee-Dossier.html",
@@ -1440,9 +1440,9 @@ const ENT_DOCS = [
     meta: "Short answer: condo first, café second — start the paperwork now" },
   { id: "ugc",   n: "4", path: "files/entrepreneurship/AI-UGC-Business-Plan.html",
     title: "The AI-UGC business, revised",
-    sub: "Sell creative volume, not videos — the market, the pay, the route, the line, Aug→Dec",
+    sub: "Sell creative volume, not videos — the market, the pay, the route, the tested ad framework, Aug→Dec",
     pill: "Active",
-    meta: "Build the line on Magnific · character sheet first · $1,200 test pack → $2,200/mo" },
+    meta: "3 angles × 5 hooks = 15 variants · never start from a blank page · $1,200 test pack → $2,200/mo" },
 ];
 let entDoc = "cafe";
 const entLoaded = {};
