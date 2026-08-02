@@ -341,28 +341,18 @@
     border: 1px solid var(--line); border-radius: var(--radius);
     background: var(--bg); display: block;
   }
-  #entFrame { height: calc(100vh - 300px); }
-  .ent-focus .ent-runway, .ent-focus .ent-docs { display: none; }
+  #entFrame { height: calc(100vh - 232px); }
+  .ent-focus .ent-docs { display: none; }
   .ent-focus #entFrame { height: calc(100vh - 150px); }
   .plan-loading { padding: 26px 2px; color: var(--faint); font-size: 13.5px; }
   @media (max-width: 760px) {
     .plan-wrap { padding: 12px 16px 26px; }
     #planFrame { height: calc(100vh - 250px); }
-    #entFrame { height: calc(100vh - 340px); }
+    #entFrame { height: calc(100vh - 272px); }
     .ent-focus #entFrame { height: calc(100vh - 170px); }
   }
 
   /* ---------- Entrepreneurship ---------- */
-  .ent-runway { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
-  .ent-step {
-    flex: 1 1 132px; background: var(--panel); border: 1px solid var(--line);
-    border-radius: 12px; padding: 12px 14px;
-  }
-  .ent-step.now { border-color: rgba(247,183,156,0.55); background: rgba(247,183,156,0.08); }
-  .ent-step .em { font-size: 11px; letter-spacing: 1.3px; text-transform: uppercase; color: var(--faint); font-weight: 600; }
-  .ent-step.now .em { color: var(--peach); }
-  .ent-step .et { font-size: 14px; font-weight: 600; color: var(--ink); margin-top: 6px; letter-spacing: -0.2px; }
-  .ent-step .ed { font-size: 11.5px; color: var(--muted); margin-top: 4px; line-height: 1.45; }
   .ent-docs { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 10px; margin-bottom: 16px; }
   .ent-doss {
     display: flex; align-items: flex-start; gap: 12px; padding: 15px 16px; text-align: left;
@@ -804,7 +794,6 @@
       <section id="view-entre" class="view" hidden>
         <div class="view-intro">The business side. Research, ventures and the money &mdash; kept separate from the creative work on purpose. Two tracks running in parallel: <b>a caf&eacute; in Riyadh</b> and <b>a condo in Riyadh</b>, plus the call on which one starts first.</div>
         <div class="plan-wrap">
-          <div class="ent-runway" id="entRunway"></div>
           <div class="ent-docs" id="entDocs"></div>
           <div class="plan-bar">
             <span class="plan-dates" id="entMeta"></span>
@@ -1456,13 +1445,6 @@ const ENT_DOCS = [
     meta: "Build the line on Magnific · character sheet first · $1,200 test pack → $2,200/mo" },
 ];
 let entDoc = "cafe";
-const ENT_RUNWAY = [
-  { m: "Aug", t: "Define",  d: "Structure answer from a lawyer · concept on one page" },
-  { m: "Sep", t: "Model",   d: "Build the numbers · pick two districts · book the trip" },
-  { m: "Oct", t: "Source",  d: "Roasters, fit-out quotes, brokers, GEA permit class" },
-  { m: "Nov", t: "Prepare", d: "Lock the schedule · 25-café scouting list" },
-  { m: "Dec", t: "Go",      d: "Riyadh · XP + expo + Soundstorm · sites + apartments" },
-];
 const entLoaded = {};
 function currentEntDoc() { return ENT_DOCS.find(d => d.id === entDoc) || ENT_DOCS[0]; }
 function openEntreFull() { openBlob(CFG.dataRepo, currentEntDoc().path); }
@@ -1473,13 +1455,6 @@ function toggleEntFocus() {
   document.getElementById("entFocusBtn").innerHTML = on ? "Show the tracks \u21B5" : "Read bigger \u2922";
 }
 async function renderEntre() {
-  const nowM = new Date().getMonth();           // 7 = Aug … 11 = Dec
-  document.getElementById("entRunway").innerHTML = ENT_RUNWAY.map((s, i) => `
-    <div class="ent-step${nowM - 7 === i ? " now" : ""}">
-      <div class="em">${esc(s.m)}</div>
-      <div class="et">${esc(s.t)}</div>
-      <div class="ed">${esc(s.d)}</div>
-    </div>`).join("");
   const doc = currentEntDoc();
   document.getElementById("entDocs").innerHTML = ENT_DOCS.map(d => `
     <button class="ent-doss${d.id === entDoc ? " on" : ""}" data-id="${d.id}">
