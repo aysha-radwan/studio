@@ -591,6 +591,65 @@
     .hl-sess { grid-template-columns: repeat(2, 1fr); }
   }
 
+  /* ---------- Cycle (post-Mirena) ---------- */
+  .cy-block { border: 1px solid var(--line); border-radius: 16px; padding: 20px 22px; background: var(--panel); }
+  .cy-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+  .cy-title { font-family: var(--serif); font-size: 22px; font-weight: 600; color: #fff; letter-spacing: -0.3px; }
+  .cy-note { color: var(--muted); font-size: 13px; margin-top: 4px; max-width: 500px; line-height: 1.55; }
+  .cy-day { flex-shrink: 0; text-align: right; }
+  .cy-day .dn { font-family: var(--serif); font-size: 30px; color: var(--peach); line-height: 1; }
+  .cy-day .dl { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-top: 4px; }
+  .cy-expect { margin-top: 16px; border-left: 2px solid var(--violet); padding: 2px 0 2px 14px;
+    font-size: 13.5px; color: var(--ink-2); line-height: 1.6; max-width: 640px; }
+
+  /* the five-month runway */
+  .cy-run { display: grid; grid-template-columns: repeat(5, 1fr); gap: 9px; margin-top: 20px; }
+  .cy-mo { border: 1px solid var(--line); border-radius: 12px; padding: 11px 12px; background: rgba(255,255,255,0.03); }
+  .cy-mo .mm { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--faint); }
+  .cy-mo .ml { font-size: 12.5px; color: var(--ink-2); margin-top: 5px; line-height: 1.4; }
+  .cy-mo.now { background: var(--peach-soft); border-color: rgba(247,183,156,0.5); }
+  .cy-mo.now .mm { color: var(--peach); }
+
+  /* daily check-in */
+  .cy-in { margin-top: 22px; border-top: 1px solid var(--line-soft); padding-top: 18px; }
+  .cy-in-h { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 4px; }
+  .cy-in-h .t { font-size: 14px; font-weight: 600; color: var(--ink); }
+  .cy-in-h .s { font-size: 12px; color: var(--faint); }
+  .cy-row { margin-top: 14px; }
+  .cy-lbl { font-size: 11px; letter-spacing: 0.11em; text-transform: uppercase; color: var(--faint); margin-bottom: 7px; }
+  .cy-chips { display: flex; flex-wrap: wrap; gap: 7px; }
+  .cy-chip { border: 1px solid var(--line); border-radius: 20px; padding: 6px 13px; font-size: 12.5px;
+    color: var(--ink-2); background: rgba(255,255,255,0.03); cursor: pointer; user-select: none;
+    transition: border-color .12s, background .12s, color .12s; font-family: inherit; }
+  .cy-chip:hover { border-color: rgba(247,183,156,0.4); }
+  .cy-chip.on { background: var(--peach-soft); border-color: rgba(247,183,156,0.6); color: #fff; }
+  .cy-chip.on.v { background: var(--violet-soft); border-color: rgba(191,169,242,0.6); }
+  .cy-energy { display: flex; gap: 8px; align-items: center; }
+  .cy-e { width: 34px; height: 34px; border-radius: 50%; border: 1px solid var(--line); background: rgba(255,255,255,0.03);
+    color: var(--muted); font-size: 13px; cursor: pointer; font-family: inherit; transition: all .12s; }
+  .cy-e.on { background: var(--peach); border-color: var(--peach); color: #0a0e24; font-weight: 700; }
+  .cy-e-lbl { font-size: 12px; color: var(--faint); margin-left: 6px; }
+  .cy-note-in { width: 100%; max-width: 640px; background: rgba(255,255,255,0.04); border: 1px solid var(--line);
+    border-radius: 11px; padding: 10px 13px; color: var(--ink); font-family: inherit; font-size: 13.5px; resize: vertical; }
+  .cy-note-in::placeholder { color: var(--faint); }
+  .cy-note-in:focus { outline: none; border-color: rgba(247,183,156,0.5); }
+
+  /* the quiet strip — last 5 weeks, no counts, no streaks */
+  .cy-strip { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 10px; }
+  .cy-dot { width: 13px; height: 13px; border-radius: 50%; border: 1px solid var(--line-soft); background: transparent; }
+  .cy-dot.logged { border-color: rgba(191,169,242,0.55); background: rgba(191,169,242,0.18); }
+  .cy-dot.b1 { background: rgba(247,183,156,0.28); border-color: rgba(247,183,156,0.5); }
+  .cy-dot.b2 { background: rgba(247,183,156,0.55); border-color: rgba(247,183,156,0.7); }
+  .cy-dot.b3 { background: var(--peach); border-color: var(--peach); }
+  .cy-dot.today { box-shadow: 0 0 0 2px rgba(255,255,255,0.28); }
+  .cy-legend { font-size: 11.5px; color: var(--faint); margin-top: 9px; }
+  .cy-hist { margin-top: 20px; border-top: 1px solid var(--line-soft); padding-top: 16px; font-size: 13px; color: var(--muted); line-height: 1.7; }
+  .cy-hist b { color: var(--peach); font-weight: 600; }
+  @media (max-width: 760px) {
+    .cy-run { grid-template-columns: repeat(2, 1fr); }
+    .cy-e { width: 42px; height: 42px; }
+  }
+
   /* ---------- Mission Control (Overview) ---------- */
   #view-overview { position: relative; }
   /* the alkoun mark, ghosted behind the greeting */
@@ -761,8 +820,11 @@
 
       <!-- ---- HEALTH VIEW ---- -->
       <section id="view-health" class="view" hidden>
-        <div class="view-intro">Training, movement and recovery &mdash; the current block, this week&rsquo;s sessions, and everything you&rsquo;re following.</div>
+        <div class="view-intro">Training, movement and recovery &mdash; your cycle, the current block, this week&rsquo;s sessions, and everything you&rsquo;re following.</div>
         <div class="hl-wrap">
+          <h3 class="hl-h">Your cycle <span class="hl-sub">coming off Mirena &middot; log the weather, not a verdict</span></h3>
+          <div class="cy-block" id="cyBlock"></div>
+          <h3 class="hl-h">Training block</h3>
           <div class="hl-block" id="hlBlock"></div>
           <h3 class="hl-h">This week <span class="hl-sub">what each session actually is</span></h3>
           <div id="hlProgram"></div>
@@ -1032,6 +1094,9 @@ function adoptState(fresh, refreshView = false) {
   if (!state.health) state.health = {};
   if (!state.health.items) state.health.items = [];
   if (!state.health.log) state.health.log = {};
+  if (!state.cycle) state.cycle = {};
+  if (!state.cycle.removal) state.cycle.removal = "2026-08-04";   // Mirena out, after 6 years
+  if (!state.cycle.days) state.cycle.days = {};   // "YYYY-MM-DD" -> { b, e, m, body[], n }
   if (!state.journal) state.journal = {};
   if (!state.journal.days) state.journal.days = {};   // "YYYY-MM-DD" -> { mode, words }
   if (state.sortMode) sortMode = state.sortMode;
@@ -1876,6 +1941,7 @@ function hlWeekNo() {
   return Math.min(7, Math.max(1, diff + 1));
 }
 function renderHealth() {
+  renderCycle();
   const wk = hlWeekNo(), key = hlKey(), done = state.health.log[key] || [];
   document.getElementById("hlBlock").innerHTML = `
     <div class="hl-top">
@@ -1994,6 +2060,198 @@ async function removeHealth(id) {
   state.health.items = state.health.items.filter(x => x.id !== id);
   save(); renderHealth();
   if (it.kind === "file") { try { await GH.deleteFile(`files/health/${it.filename}`); } catch (e) {} }
+}
+
+// ---------- Cycle (coming off Mirena) ----------
+// Deliberately quiet: no streaks, no completion counts, no "you missed a day".
+// It stores the weather of a day; patterns are only claimed once they repeat.
+const CY_GUIDE = "files/health/Coming-Off-Mirena.html";
+const CY_BLEED = [
+  { v: 0, t: "None" }, { v: 1, t: "Spotting" }, { v: 2, t: "Light" },
+  { v: 3, t: "Medium" }, { v: 4, t: "Heavy" },
+];
+const CY_MOOD = ["Steady", "Bright", "Flat", "Tender", "Irritable", "Anxious", "Heavy"];
+const CY_BODY = ["Cramps", "Sore breasts", "Bloated", "Headache", "Slept badly", "Achy", "Wired"];
+const CY_ENERGY_LBL = { 1: "empty", 2: "low", 3: "okay", 4: "good", 5: "flying" };
+// The five-month runway — the same map as the guide, one line each.
+const CY_RUNWAY = [
+  { ym: "2026-08", m: "Aug", l: "Settling. Hormone clears in a week." },
+  { ym: "2026-09", m: "Sep", l: "First real period likely. Heavier." },
+  { ym: "2026-10", m: "Oct", l: "A pattern starts to show." },
+  { ym: "2026-11", m: "Nov", l: "Regular, or close. Riyadh trip." },
+  { ym: "2026-12", m: "Dec", l: "Your actual baseline." },
+];
+// What's reasonable to expect, by week since removal. Never a prediction about her.
+const CY_EXPECT = [
+  { to: 1, t: "The first week. Cramping and spotting for a few days is ordinary, and the hormone is essentially out of your blood by the end of it. Any bleeding this soon is a withdrawal bleed, not a period. Fertility is already back." },
+  { to: 4, t: "Your lining is rebuilding after six years of being kept thin. Usually quiet weeks. A first bleed can arrive any time from here — anything between now and eight weeks out is normal." },
+  { to: 9, t: "The window where most first real periods arrive. Expect it heavier and crampier than Mirena ever gave you — that's the rebuilt lining, not a problem. Cycle length may be strange for a couple of rounds." },
+  { to: 14, t: "Second and third cycles. This is where repeats start to appear — similar length, the same two or three heavy days. Don't call anything a pattern until it has happened three times." },
+  { to: 22, t: "Most cycles are roughly predictable by now. If yours isn't yet, that's still inside normal. Good stretch to check ferritin if the bleeding has been heavy." },
+  { to: 999, t: "Enough cycles logged to know your own numbers rather than guess at them. This is the part you didn't have before." },
+];
+const cyKey = (d = new Date()) => d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+const cyParse = (k) => { const [y, m, d] = k.split("-").map(Number); return new Date(y, m - 1, d); };
+const cyDaysBetween = (a, b) => Math.round((cyParse(b) - cyParse(a)) / 86400000);
+function cyToday() {
+  const k = cyKey();
+  if (!state.cycle.days[k]) state.cycle.days[k] = {};
+  return state.cycle.days[k];
+}
+// A period starts on the first day of real bleeding after at least two clear days.
+// Future-dated entries are ignored so a mistyped day can't skew the count.
+function cyPeriodStarts() {
+  const today = cyKey();
+  const keys = Object.keys(state.cycle.days)
+    .filter(k => k <= today && (state.cycle.days[k].b || 0) >= 2).sort();
+  const starts = [];
+  for (const k of keys) {
+    const prev = starts.length ? starts[starts.length - 1] : null;
+    const d = cyParse(k);
+    const y = cyKey(new Date(d.getFullYear(), d.getMonth(), d.getDate() - 1));
+    const y2 = cyKey(new Date(d.getFullYear(), d.getMonth(), d.getDate() - 2));
+    const bled = (x) => ((state.cycle.days[x] || {}).b || 0) >= 2;
+    if (!bled(y) && !bled(y2) && (!prev || cyDaysBetween(prev, k) > 10)) starts.push(k);
+  }
+  return starts;
+}
+function renderCycle() {
+  const wrap = document.getElementById("cyBlock");
+  if (!wrap) return;
+  const today = cyKey(), t = state.cycle.days[today] || {};
+  const raw = cyDaysBetween(state.cycle.removal, today);   // negative before removal day
+  const sinceRemoval = Math.max(0, raw);
+  const weeks = Math.floor(sinceRemoval / 7);
+  const starts = cyPeriodStarts();
+  const lastStart = starts.length ? starts[starts.length - 1] : null;
+  const cd = lastStart ? cyDaysBetween(lastStart, today) + 1 : null;
+  const expect = raw < 0
+    ? "Removal is " + (raw === -1 ? "tomorrow" : "in " + (-raw) + " days") + ". Nothing to prepare beyond the practical: something for cramps, a pad for the day itself, and an easy evening after. You can start logging today if you want a before-picture."
+    : CY_EXPECT.find(x => weeks < x.to).t;
+  const thisYm = today.slice(0, 7);
+  const counter = raw < 0
+    ? { n: "—", l: raw === -1 ? "removal tomorrow" : "removal in " + (-raw) + " days" }
+    : raw === 0 ? { n: "0", l: "removal today" }
+    : { n: String(raw), l: raw === 1 ? "day since removal" : "days since removal" };
+
+  wrap.innerHTML = `
+    <div class="cy-top">
+      <div>
+        <div class="cy-title">${cd ? "Cycle day " + cd : "Finding your rhythm"}</div>
+        <div class="cy-note">${cd
+          ? `Counted from your last period starting ${esc(cyPretty(lastStart))}. ${starts.length < 3 ? "Too early to predict the next one — that needs three cycles, and guessing before then just invents worry." : "Enough cycles logged now that the length below means something."}`
+          : raw < 0
+            ? "Six years in, out tomorrow. This is where the next five months get tracked — half a minute a day, and no scores anywhere in it."
+            : "No period logged since removal yet. That's expected — most arrive between four and eight weeks out. Nothing to do but keep noting the days."}</div>
+      </div>
+      <div class="cy-day"><div class="dn">${counter.n}</div><div class="dl">${counter.l}</div></div>
+    </div>
+    <div class="cy-expect">${esc(expect)}</div>
+    <div class="cy-run">${CY_RUNWAY.map(r => `
+      <div class="cy-mo ${r.ym === thisYm ? "now" : ""}">
+        <div class="mm">${r.m}</div><div class="ml">${esc(r.l)}</div>
+      </div>`).join("")}</div>
+
+    <div class="cy-in">
+      <div class="cy-in-h">
+        <span class="t">Today</span>
+        <span class="s">${esc(cyPretty(today))} · takes half a minute · nothing here is a score</span>
+      </div>
+      <div class="cy-row">
+        <div class="cy-lbl">Bleeding</div>
+        <div class="cy-chips" id="cyBleed">${CY_BLEED.map(b => `
+          <button class="cy-chip ${t.b === b.v ? "on" : ""}" data-v="${b.v}">${b.t}</button>`).join("")}</div>
+      </div>
+      <div class="cy-row">
+        <div class="cy-lbl">Energy</div>
+        <div class="cy-energy" id="cyEnergy">
+          ${[1, 2, 3, 4, 5].map(n => `<button class="cy-e ${t.e === n ? "on" : ""}" data-v="${n}">${n}</button>`).join("")}
+          <span class="cy-e-lbl">${t.e ? esc(CY_ENERGY_LBL[t.e]) : "1 empty · 5 flying"}</span>
+        </div>
+      </div>
+      <div class="cy-row">
+        <div class="cy-lbl">Mood — the weather, not a verdict</div>
+        <div class="cy-chips" id="cyMood">${CY_MOOD.map(m => `
+          <button class="cy-chip v ${t.m === m ? "on" : ""}" data-v="${esc(m)}">${m}</button>`).join("")}</div>
+      </div>
+      <div class="cy-row">
+        <div class="cy-lbl">Body</div>
+        <div class="cy-chips" id="cyBody">${CY_BODY.map(b => `
+          <button class="cy-chip ${(t.body || []).includes(b) ? "on" : ""}" data-v="${esc(b)}">${b}</button>`).join("")}</div>
+      </div>
+      <div class="cy-row">
+        <div class="cy-lbl">Anything else</div>
+        <textarea class="cy-note-in" id="cyNote" rows="2" placeholder="A line if you want one. Skip it most days.">${esc(t.n || "")}</textarea>
+      </div>
+      <div class="cy-row">
+        <div class="cy-lbl">The last five weeks</div>
+        <div class="cy-strip" id="cyStrip"></div>
+        <div class="cy-legend">Peach = bleeding, deeper is heavier. Violet = a day you noted. Empty = a day you didn't, which is just a day.</div>
+      </div>
+      ${cyHistory(starts)}
+      <div class="cy-row">
+        <button class="cy-chip" onclick="openBlob(CFG.dataRepo, CY_GUIDE)">📄 Read the full guide — the next five months</button>
+      </div>
+    </div>`;
+
+  document.querySelectorAll("#cyBleed .cy-chip").forEach(el => {
+    el.onclick = () => { const d = cyToday(); const v = +el.dataset.v; d.b = d.b === v ? undefined : v; save(); renderCycle(); };
+  });
+  document.querySelectorAll("#cyEnergy .cy-e").forEach(el => {
+    el.onclick = () => { const d = cyToday(); const v = +el.dataset.v; d.e = d.e === v ? undefined : v; save(); renderCycle(); };
+  });
+  document.querySelectorAll("#cyMood .cy-chip").forEach(el => {
+    el.onclick = () => { const d = cyToday(); const v = el.dataset.v; d.m = d.m === v ? undefined : v; save(); renderCycle(); };
+  });
+  document.querySelectorAll("#cyBody .cy-chip").forEach(el => {
+    el.onclick = () => {
+      const d = cyToday(), v = el.dataset.v, cur = d.body || [];
+      d.body = cur.includes(v) ? cur.filter(x => x !== v) : [...cur, v];
+      if (!d.body.length) delete d.body;
+      save(); renderCycle();
+    };
+  });
+  const note = document.getElementById("cyNote");
+  if (note) note.oninput = () => {
+    const d = cyToday();
+    d.n = note.value.trim() || undefined;
+    clearTimeout(note._t); note._t = setTimeout(() => save(false), 900);
+  };
+  cyStrip();
+}
+function cyPretty(k) {
+  const d = cyParse(k);
+  return d.toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short" });
+}
+function cyStrip() {
+  const el = document.getElementById("cyStrip");
+  if (!el) return;
+  const today = new Date();
+  let html = "";
+  for (let i = 34; i >= 0; i--) {
+    const d = new Date(today.getFullYear(), today.getMonth(), today.getDate() - i);
+    const k = cyKey(d), day = state.cycle.days[k];
+    let cls = "cy-dot";
+    if (day) {
+      const b = day.b || 0;
+      if (b >= 3) cls += " b3"; else if (b === 2) cls += " b2"; else if (b === 1) cls += " b1";
+      else if (day.b === 0 || day.e || day.m || day.body || day.n) cls += " logged";
+    }
+    if (i === 0) cls += " today";
+    html += `<span class="${cls}" title="${esc(cyPretty(k))}"></span>`;
+  }
+  el.innerHTML = html;
+}
+// Only speaks once there is genuinely something to say.
+function cyHistory(starts) {
+  if (starts.length < 2) return "";
+  const lens = [];
+  for (let i = 1; i < starts.length; i++) lens.push(cyDaysBetween(starts[i - 1], starts[i]));
+  const avg = Math.round(lens.reduce((a, b) => a + b, 0) / lens.length);
+  const range = lens.length > 1 ? `${Math.min(...lens)}–${Math.max(...lens)} days` : `${lens[0]} days`;
+  return `<div class="cy-hist">${starts.length} periods logged since removal.
+    Cycle length so far: <b>${range}</b>${lens.length > 1 ? `, averaging <b>${avg}</b>` : ""}.
+    ${starts.length < 3 ? "Two is not a pattern yet — it's two." : "That's a real range now. It's yours, not an app's guess."}</div>`;
 }
 
 // ---------- Learning view (resources & files, grouped by topic) ----------
