@@ -726,6 +726,9 @@
   }
   .card .cover .veil { position: absolute; inset: 0;
     background: linear-gradient(180deg, rgba(10,14,36,0.10), rgba(10,14,36,0.72)); }
+  /* a real photograph carries its own mood — don't drown it */
+  .card .cover[data-cover] { height: 92px; }
+  .card .cover[data-cover] .veil { background: linear-gradient(180deg, rgba(10,14,36,0.02), rgba(10,14,36,0.42)); }
   .card .cover .glow { position: absolute; inset: -40% -10% auto -10%; height: 150%;
     filter: blur(26px); opacity: .85; }
   .card .cover .constel { position: absolute; inset: 0; width: 100%; height: 100%; opacity: .6; }
