@@ -710,7 +710,124 @@
     .mc-hero { flex-direction: column; gap: 12px; }
   }
 
+  /* ============================================================
+     UPLEVEL — rings, covers, horizon, momentum, the studio map
+     ============================================================ */
+
+  /* views fade in instead of snapping */
+  .view { animation: viewIn .34s cubic-bezier(.2,.7,.3,1); }
+  @keyframes viewIn { from { opacity: 0; transform: translateY(7px); } to { opacity: 1; transform: none; } }
+
+  /* ---- project card: cover + progress ring ---- */
+  .card .cover {
+    height: 74px; position: relative; overflow: hidden;
+    background-size: cover; background-position: center;
+    border-bottom: 1px solid var(--line-soft);
+  }
+  .card .cover .veil { position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(10,14,36,0.10), rgba(10,14,36,0.72)); }
+  .card .cover .glow { position: absolute; inset: -40% -10% auto -10%; height: 150%;
+    filter: blur(26px); opacity: .85; }
+  .card .cover .constel { position: absolute; inset: 0; width: 100%; height: 100%; opacity: .6; }
+  .ring { flex-shrink: 0; display: block; }
+  .ring text { font-family: var(--serif); font-size: 12.5px; font-weight: 600; fill: #fff; }
+  .ring .trk { fill: none; stroke: rgba(255,255,255,0.10); }
+  .ring .val { fill: none; stroke-linecap: round; transition: stroke-dasharray .5s cubic-bezier(.2,.8,.3,1); }
+
+  /* arriving at a card from the map / Mission Control */
+  .card.flash { animation: cardFlash 1.5s ease; }
+  @keyframes cardFlash {
+    0%   { box-shadow: 0 0 0 0 rgba(247,183,156,0.0); border-color: var(--line); }
+    18%  { box-shadow: 0 0 0 4px rgba(247,183,156,0.35); border-color: var(--peach); }
+    100% { box-shadow: 0 0 0 0 rgba(247,183,156,0); border-color: var(--line); }
+  }
+
+  .done-toggle {
+    margin-top: 9px; background: none; border: 0; padding: 4px 0; cursor: pointer;
+    color: var(--faint); font: inherit; font-size: 12px; letter-spacing: .3px;
+  }
+  .done-toggle:hover { color: var(--peach); border-color: transparent; }
+
+  /* ---- Mission Control: horizon timeline ---- */
+  .mc-horizon { padding: 8px 34px 4px; }
+  .hz {
+    position: relative; border: 1px solid var(--line); border-radius: 16px; padding: 26px 22px 18px;
+    background: linear-gradient(150deg, rgba(191,169,242,0.10), rgba(247,183,156,0.06) 60%, rgba(255,255,255,0.02));
+    overflow-x: auto;
+  }
+  .hz-line { position: relative; min-width: 620px; height: 2px; background: linear-gradient(90deg, var(--peach), var(--violet)); border-radius: 2px; margin: 30px 10px 0; }
+  .hz-node { position: absolute; top: -7px; transform: translateX(-50%); text-align: center; width: 128px; }
+  .hz-node i { display: block; width: 11px; height: 11px; border-radius: 50%; margin: 0 auto;
+    background: var(--bg-2); border: 2px solid var(--violet); }
+  .hz-node.soon i { border-color: var(--peach); background: var(--peach); box-shadow: 0 0 0 5px rgba(247,183,156,0.16); }
+  .hz-node.past i { border-color: var(--faint); background: var(--faint); opacity: .7; }
+  .hz-node .hd { font-size: 10.5px; letter-spacing: 1.2px; text-transform: uppercase; color: var(--faint); margin-top: 11px; }
+  .hz-node .ht { font-size: 12.5px; color: var(--ink-2); line-height: 1.35; margin-top: 4px; }
+  .hz-node.soon .hd { color: var(--peach); }
+  .hz-node .hn { font-size: 11px; color: var(--violet); margin-top: 4px; }
+  .hz-now { position: absolute; top: -30px; transform: translateX(-50%); font-size: 10.5px;
+    letter-spacing: 1.4px; text-transform: uppercase; color: var(--peach); white-space: nowrap; }
+  .hz-now:after { content: ""; display: block; width: 1px; height: 20px; margin: 5px auto 0;
+    background: linear-gradient(180deg, var(--peach), transparent); }
+  .hz-spacer { height: 92px; }
+
+  /* ---- Mission Control: projects at a glance ---- */
+  .mc-glance { display: grid; grid-template-columns: repeat(auto-fill, minmax(232px, 1fr)); gap: 14px; padding: 14px 34px 4px; }
+  .gl {
+    display: flex; align-items: center; gap: 14px; text-align: left; cursor: pointer;
+    border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px; font: inherit;
+    background: linear-gradient(160deg, rgba(255,255,255,0.05), rgba(255,255,255,0.015));
+    transition: transform .15s, border-color .15s;
+  }
+  .gl:hover { transform: translateY(-2px); border-color: rgba(247,183,156,0.4); }
+  .gl .glt { min-width: 0; }
+  .gl .gn { font-size: 14px; font-weight: 600; color: #fff; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .gl .gs { font-size: 11.5px; color: var(--muted); margin-top: 3px; }
+  .gl .gnext { font-size: 11.5px; color: var(--faint); margin-top: 6px; line-height: 1.4;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+
+  /* ---- Mission Control: momentum ---- */
+  .mc-mo { padding: 14px 34px 4px; }
+  .mo-box { border: 1px solid var(--line); border-radius: 16px; padding: 18px 20px 14px;
+    background: linear-gradient(160deg, rgba(255,255,255,0.045), rgba(255,255,255,0.015)); }
+  .mo-top { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 14px; }
+  .mo-top .mt { font-size: 13.5px; color: var(--ink-2); font-weight: 600; }
+  .mo-top .ms { font-size: 12px; color: var(--faint); }
+  .mo-bars { display: flex; align-items: flex-end; gap: 6px; height: 84px; }
+  .mo-day { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; gap: 6px; height: 100%; }
+  .mo-day .bar { width: 100%; max-width: 26px; border-radius: 6px 6px 3px 3px; min-height: 3px;
+    background: linear-gradient(180deg, var(--peach), rgba(247,183,156,0.32)); transition: height .5s cubic-bezier(.2,.8,.3,1); }
+  .mo-day.zero .bar { background: rgba(255,255,255,0.07); }
+  .mo-day.today .bar { background: linear-gradient(180deg, var(--violet), rgba(191,169,242,0.35)); }
+  .mo-day .dl { font-size: 9.5px; color: var(--faint); letter-spacing: .4px; }
+  .mo-empty { font-size: 12.5px; color: var(--faint); line-height: 1.6; }
+
+  /* ---- The Studio Map ---- */
+  .map-wrap { padding: 10px 34px 30px; }
+  .map-box { position: relative; border: 1px solid var(--line); border-radius: 18px; overflow: hidden;
+    background: radial-gradient(760px 460px at 50% 42%, rgba(191,169,242,0.13), rgba(10,14,36,0.25) 70%); }
+  #mapSvg { display: block; width: 100%; height: auto; }
+  #mapSvg .lnk { fill: none; stroke: rgba(255,255,255,0.16); stroke-width: 1.2; }
+  #mapSvg .lnk.pil { stroke: rgba(191,169,242,0.30); stroke-dasharray: 3 5; }
+  #mapSvg .leaf-lnk { stroke: rgba(255,255,255,0.13); stroke-width: 1; fill: none; }
+  #mapSvg .node { cursor: pointer; }
+  #mapSvg .node circle { transition: r .18s cubic-bezier(.2,1.4,.4,1), filter .18s; }
+  #mapSvg .node:hover circle.hit { filter: brightness(1.25); }
+  #mapSvg text { font-family: var(--font); fill: var(--ink-2); }
+  #mapSvg .nm { font-size: 13px; font-weight: 600; fill: #fff; }
+  #mapSvg .sub { font-size: 10.5px; fill: var(--muted); }
+  #mapSvg .leaf { font-size: 10.5px; fill: var(--muted); }
+  #mapSvg .ctr-n { font-family: var(--serif); font-size: 17px; font-weight: 600; fill: #fff; }
+  #mapSvg .ctr-s { font-size: 10px; letter-spacing: 2.2px; fill: var(--peach); }
+  .map-legend { display: flex; flex-wrap: wrap; gap: 16px; padding: 14px 4px 0; font-size: 12px; color: var(--faint); }
+  .map-legend b { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 7px; vertical-align: 1px; }
+
   /* ---------- Mobile / phone layout ---------- */
+  @media (max-width: 760px) {
+    .mc-horizon, .mc-glance, .mc-mo, .map-wrap { padding-left: 20px; padding-right: 20px; }
+    .hz { padding: 22px 14px 16px; }
+    .map-box { border-radius: 14px; }
+  }
   @media (max-width: 760px) {
     .app { flex-direction: column; width: 100%; max-width: 100vw; overflow-x: hidden; }
     .sidebar, .main { width: 100%; max-width: 100vw; min-width: 0; overflow-x: hidden; }
@@ -752,6 +869,7 @@
       </div>
       <nav class="side-nav" id="sideNav">
         <button class="nav-item active" data-view="overview"><span class="nic">◎</span><span>Mission Control</span></button>
+        <button class="nav-item" data-view="map"><span class="nic">❋</span><span>The Map</span></button>
         <button class="nav-item" data-view="plan"><span class="nic">✧</span><span>The Plan</span></button>
         <button class="nav-item" data-view="entre"><span class="nic">◈</span><span>Entrepreneurship</span></button>
         <button class="nav-item" data-view="journal"><span class="nic">❧</span><span>Journal</span></button>
@@ -788,11 +906,34 @@
         </div>
         <div class="mc-stats" id="mcStats"></div>
 
+        <div class="mc-sec-head"><span class="fx">◈</span> The horizon <span class="mc-sub">— where you are in the plan, and what’s next</span></div>
+        <div class="mc-horizon"><div class="hz" id="mcHorizon"></div></div>
+
+        <div class="mc-sec-head"><span class="fx">◍</span> Projects at a glance <span class="mc-sub">— progress, and the next thing on each</span></div>
+        <div class="mc-glance" id="mcGlance"></div>
+
+        <div class="mc-sec-head"><span class="fx">▮</span> Momentum <span class="mc-sub">— what you finished, day by day</span></div>
+        <div class="mc-mo"><div class="mo-box" id="mcMomentum"></div></div>
+
         <div class="mc-sec-head"><span class="fx">▹</span> Workstations <span class="mc-sub">— projects you’re actively working</span></div>
         <div class="mc-grid" id="mcTerminals"></div>
 
         <div class="mc-sec-head"><span class="fx">✦</span> Your team <span class="mc-sub">— agents working to finish the projects</span></div>
         <div class="mc-grid" id="mcAgents"></div>
+      </section>
+
+      <!-- ---- THE MAP (mind map of the whole studio) ---- -->
+      <section id="view-map" class="view" hidden>
+        <div class="view-intro">Everything you’re carrying, in one picture. The centre is you; the dotted orbit is the studio itself; the outer nodes are your projects, sized by how much is open — with the next thing on each hanging off it. <b>Click any node to go there.</b></div>
+        <div class="map-wrap">
+          <div class="map-box"><svg id="mapSvg" viewBox="0 0 1120 700" role="img" aria-label="A map of the studio"></svg></div>
+          <div class="map-legend">
+            <span><b style="background:var(--peach)"></b>You / the centre</span>
+            <span><b style="background:var(--violet)"></b>The studio’s rooms</span>
+            <span><b style="background:#8fd0c0"></b>Projects — bigger means more open</span>
+            <span><b style="background:rgba(255,255,255,0.3)"></b>Next actions</span>
+          </div>
+        </div>
       </section>
 
       <!-- ---- PROJECTS VIEW ---- -->
@@ -973,6 +1114,7 @@
   </div>
 
   <input type="file" id="hiddenFile" accept="application/pdf,.pdf" style="display:none" />
+  <input type="file" id="hiddenCover" accept="image/*" style="display:none" />
   <div class="saved-flash" id="flash">Saved</div>
 
 <script>
@@ -1158,13 +1300,14 @@ function showFlash(msg = "Saved") {
 const uid = () => Math.random().toString(36).slice(2, 9);
 
 // ---------- view switching ----------
-const VIEW_TITLES = { overview: "Mission Control", plan: "The Plan", entre: "Entrepreneurship", journal: "Journal", projects: "Projects", fuel: "Creative Fuel", health: "Health", learning: "Learning", docs: "Documents" };
+const VIEW_TITLES = { overview: "Mission Control", map: "The Map", plan: "The Plan", entre: "Entrepreneurship", journal: "Journal", projects: "Projects", fuel: "Creative Fuel", health: "Health", learning: "Learning", docs: "Documents" };
 function switchView(name) {
   currentView = name;
   document.querySelectorAll(".view").forEach(v => { v.hidden = (v.id !== "view-" + name); });
   document.querySelectorAll(".nav-item").forEach(b => b.classList.toggle("active", b.dataset.view === name));
   document.getElementById("viewTitle").textContent = VIEW_TITLES[name] || "Studio";
   if (name === "overview") renderOverview();
+  if (name === "map") renderMap();
   if (name === "plan") renderPlan();
   if (name === "entre") renderEntre();
   if (name === "journal") renderJournal();
@@ -1608,24 +1751,39 @@ function render() {
 function renderCard(p) {
   const el = document.createElement("div");
   el.className = "card";
-  const todos = (p.todos||[]).slice().sort((a,b)=> (a.done?1:0)-(b.done?1:0) || (a.priority||3)-(b.priority||3));
+  el.dataset.id = p.id;
+  const all = (p.todos||[]).slice().sort((a,b)=> (a.done?1:0)-(b.done?1:0) || (a.priority||3)-(b.priority||3));
+  const todos = all.filter(t => !t.done);
+  const doneTodos = all.filter(t => t.done);
   const docs = p.docs||[];
+  const col = p.color || "#f7b79c";
+  // cover: her own image if she's added one, otherwise a nebula built from the project colour
+  const cover = p.cover
+    ? `<div class="cover" data-cover="${esc(p.cover)}"><div class="veil"></div></div>`
+    : `<div class="cover" style="background:linear-gradient(135deg, ${col}2e, rgba(191,169,242,0.13) 55%, rgba(10,14,36,0.1))">
+         <div class="glow" style="background:radial-gradient(60% 100% at 22% 40%, ${col}66, transparent 70%)"></div>
+         ${constellation(p.id, col)}<div class="veil"></div>
+       </div>`;
 
   el.innerHTML = `
-    <div class="accent" style="background:${p.color}"></div>
+    <div class="accent" style="background:${col}"></div>
+    ${cover}
     <div class="card-head">
       <span class="drag" draggable="true" title="Drag to reorder">⠿</span>
-      <div class="swatch" style="background:${p.color}"></div>
       <div class="card-title">
         <h3>${esc(p.name)}</h3>
         ${p.notes ? `<div class="notes">${esc(p.notes)}</div>` : ""}
       </div>
-      <span class="prio-tag prio-${p.priority||3}">${prioLabel[p.priority||3]}</span>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:9px">
+        <span class="prio-tag prio-${p.priority||3}">${prioLabel[p.priority||3]}</span>
+        ${ringSvg(doneTodos.length, all.length, col, 44)}
+      </div>
     </div>
 
     <div class="card-section">
       <div class="section-label">To-do <span class="count">${openCount(p)} open</span></div>
       <div class="todos"></div>
+      ${doneTodos.length ? `<button class="done-toggle">✓ ${doneTodos.length} done — show</button><div class="done-list" hidden></div>` : ""}
       <div class="add-row">
         <input placeholder="Add a task…" />
         <button>Add</button>
@@ -1640,12 +1798,36 @@ function renderCard(p) {
 
     <div class="card-foot">
       <button onclick="openEdit('${p.id}')">✎ Edit</button>
+      <button onclick="triggerCover('${p.id}')" title="Use one of your own images as this card's cover">▣ Cover</button>
+      ${p.cover ? `<button onclick="clearCover('${p.id}')" title="Back to the generated cover">↺</button>` : ""}
     </div>
   `;
 
-  // todos
+  // todos — open ones always visible, finished ones folded away
   const todoWrap = el.querySelector(".todos");
   for (const t of todos) todoWrap.appendChild(renderTodo(p, t));
+  if (!todos.length) {
+    const q = document.createElement("div");
+    q.style.cssText = "font-size:13px;color:var(--faint);padding:6px 0 2px";
+    q.textContent = all.length ? "All clear here ✓" : "Nothing on this yet.";
+    todoWrap.appendChild(q);
+  }
+  const dToggle = el.querySelector(".done-toggle");
+  if (dToggle) {
+    const dList = el.querySelector(".done-list");
+    for (const t of doneTodos) dList.appendChild(renderTodo(p, t));
+    dToggle.onclick = () => {
+      dList.hidden = !dList.hidden;
+      dToggle.textContent = `✓ ${doneTodos.length} done — ${dList.hidden ? "show" : "hide"}`;
+    };
+  }
+  // a cover image she's uploaded lives in her private repo, so it needs her key
+  const coverEl = el.querySelector(".cover[data-cover]");
+  if (coverEl) {
+    GH.blobUrl(CFG.dataRepo, `files/${p.id}/${coverEl.dataset.cover}`)
+      .then(u => { coverEl.style.backgroundImage = `url("${u}")`; })
+      .catch(() => {});
+  }
 
   // add todo
   const inp = el.querySelector(".add-row input");
@@ -1757,7 +1939,11 @@ function renderTodo(p, t) {
     <div class="txt" contenteditable="true">${esc(t.text)}</div>
     <div class="x">×</div>
   `;
-  row.querySelector(".check").onclick = () => { t.done = !t.done; save(); render(); };
+  row.querySelector(".check").onclick = () => {
+    t.done = !t.done;
+    if (t.done) t.doneAt = new Date().toISOString(); else delete t.doneAt;   // feeds the momentum chart
+    save(); render();
+  };
   row.querySelector(".pdot").onclick = () => { t.priority = ((t.priority||3) % 3) + 1; save(); render(); };
   row.querySelector(".x").onclick = () => { p.todos = p.todos.filter(x=>x.id!==t.id); save(); render(); };
   const txt = row.querySelector(".txt");
@@ -2330,8 +2516,35 @@ async function removeLearning(id) {
 
 // ---------- uploads ----------
 const hiddenFile = document.getElementById("hiddenFile");
+let coverTargetId = null;
 function triggerUpload(pid) { uploadTargetId = pid; hiddenFile.value = ""; hiddenFile.click(); }
+// give a project a photo of its own — it becomes the card's cover
+function triggerCover(pid) { coverTargetId = pid; hiddenCover.value = ""; hiddenCover.click(); }
 hiddenFile.onchange = () => { [...hiddenFile.files].forEach(f => uploadFile(uploadTargetId, f)); };
+const hiddenCover = document.getElementById("hiddenCover");
+hiddenCover.onchange = () => {
+  const f = hiddenCover.files[0], pid = coverTargetId;
+  coverTargetId = null;
+  if (f && pid) uploadCover(pid, f);
+};
+
+function clearCover(pid) {
+  const p = state.projects.find(x => x.id === pid);
+  if (!p) return;
+  delete p.cover; save(); render();
+}
+async function uploadCover(pid, file) {
+  const p = state.projects.find(x => x.id === pid);
+  if (!p) return;
+  if (!/^image\//.test(file.type)) { showFlash("Pick an image for the cover"); return; }
+  showFlash("Setting the cover…");
+  try {
+    const name = "cover" + (file.name.match(/\.[a-z0-9]+$/i) || [".jpg"])[0].toLowerCase();
+    await GH.putFile(`files/${pid}/${name}`, await fileToB64(file));
+    p.cover = name;
+    save(); render();
+  } catch (e) { showFlash("Cover upload failed"); }
+}
 
 async function uploadFile(pid, file) {
   const p = state.projects.find(x=>x.id===pid);
@@ -2428,7 +2641,7 @@ document.getElementById("sortSeg").querySelectorAll("button").forEach(b=>{
 function esc(s){ return String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
 
 // deep-linking: /#fuel, /#docs, /#projects
-const VALID_VIEWS = ["overview", "plan", "entre", "journal", "projects", "fuel", "health", "learning", "docs"];
+const VALID_VIEWS = ["overview", "map", "plan", "entre", "journal", "projects", "fuel", "health", "learning", "docs"];
 function applyHash() {
   const v = (location.hash || "").replace("#", "");
   if (VALID_VIEWS.includes(v) && v !== currentView) switchView(v);
@@ -2468,6 +2681,7 @@ function greeting(){
 let mcTimer = null;
 async function renderOverview(){
   document.getElementById("mcGreet").textContent = greeting()+", Aysha";
+  renderHorizon(); renderGlance(); renderMomentum();   // draw instantly, before the network
   let status = null;
   try { status = JSON.parse(b64decodeUtf8(await GH.getB64(STATUS.repo, STATUS.path, STATUS.ref))); }
   catch(e){ status = null; }
@@ -2533,6 +2747,258 @@ async function renderOverview(){
 
   clearTimeout(mcTimer);
   mcTimer = setTimeout(() => { if (currentView === "overview") renderOverview(); }, 60000);
+}
+
+// ============================================================
+//  The visual layer — rings, the horizon, momentum, the map.
+//  All of it is drawn from her real data; nothing is decorative-only.
+// ============================================================
+
+// Milestones come straight off The Plan, so the app and the page never disagree.
+const MILESTONES = [
+  { d: "2026-09-01", k: "Sep 1",    t: "Sakani in · banks asked in writing" },
+  { d: "2026-11-01", k: "Nov 1",    t: "Trip booked · GEA conversation open" },
+  { d: "2026-11-24", k: "24 Nov",   t: "Riyadh — XP, the expo, Soundstorm" },
+  { d: "2027-01-15", k: "Jan 2027", t: "Decide — condo first, or café first" },
+  { d: "2027-07-01", k: "2027",     t: "Buy the condo" },
+  { d: "2028-03-01", k: "2028",     t: "Open the café" },
+];
+function daysUntil(iso){
+  const t = new Date(iso + "T00:00:00");
+  const n = new Date(); n.setHours(0,0,0,0);
+  return Math.round((t - n) / 86400000);
+}
+function awayText(n){
+  if (n === 0) return "today";
+  if (n < 0) return "done";
+  if (n < 31) return "in " + n + " days";
+  const m = Math.round(n / 30.4);
+  return m < 12 ? "in " + m + " month" + (m>1?"s":"") : "in " + (n/365).toFixed(1).replace(/\.0$/,"") + " years";
+}
+
+// Every project gets its own little constellation on its cover — same id, same stars, always.
+function constellation(seed, col){
+  let s = 0; for (const ch of String(seed || "x")) s = (s * 31 + ch.charCodeAt(0)) >>> 0;
+  const rnd = () => ((s = (s * 1664525 + 1013904223) >>> 0) / 4294967296);
+  const pts = Array.from({ length: 7 }, () => ({ x: 5 + rnd() * 90, y: 14 + rnd() * 72 }));
+  const lines = pts.slice(1).map((pt, i) =>
+    `<line x1="${pts[i].x.toFixed(1)}" y1="${pts[i].y.toFixed(1)}" x2="${pt.x.toFixed(1)}" y2="${pt.y.toFixed(1)}" stroke="${col}" stroke-opacity="0.4" stroke-width="0.35"/>`).join("");
+  const dots = pts.map((pt, i) =>
+    `<circle cx="${pt.x.toFixed(1)}" cy="${pt.y.toFixed(1)}" r="${i % 3 === 0 ? 1.4 : 0.8}" fill="#fff" opacity="${i % 2 ? 0.9 : 0.55}"/>`).join("");
+  return `<svg class="constel" viewBox="0 0 100 100" preserveAspectRatio="none">${lines}${dots}</svg>`;
+}
+
+// A small progress ring — done vs total, in the project's own colour.
+function ringSvg(done, total, color, size = 46){
+  const r = (size / 2) - 4, c = 2 * Math.PI * r, pct = total ? done / total : 0;
+  const half = size / 2;
+  return `<svg class="ring" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">
+    <circle class="trk" cx="${half}" cy="${half}" r="${r}" stroke-width="4"/>
+    <circle class="val" cx="${half}" cy="${half}" r="${r}" stroke="${color}" stroke-width="4"
+            stroke-dasharray="${(c*pct).toFixed(1)} ${c.toFixed(1)}" transform="rotate(-90 ${half} ${half})"/>
+    <text x="${half}" y="${half}" text-anchor="middle" dominant-baseline="central">${total ? Math.round(pct*100) + "%" : "—"}</text>
+  </svg>`;
+}
+
+// Jump to a project card from anywhere and make it obvious which one.
+function gotoProject(id){
+  switchView("projects");
+  requestAnimationFrame(() => {
+    const el = document.querySelector(`.card[data-id="${CSS.escape(id)}"]`);
+    if (!el) return;
+    el.scrollIntoView({ behavior: "smooth", block: "center" });
+    el.classList.remove("flash"); void el.offsetWidth; el.classList.add("flash");
+  });
+}
+
+function renderHorizon(){
+  const box = document.getElementById("mcHorizon");
+  if (!box) return;
+  const n = MILESTONES.length;
+  const at = i => 5 + (i / (n - 1)) * 90;                 // % along the line, with margins
+  let nextIdx = MILESTONES.findIndex(m => daysUntil(m.d) >= 0);
+
+  let nowPct;
+  if (nextIdx < 0) nowPct = 100;
+  else if (nextIdx === 0) nowPct = at(0);
+  else {
+    const prev = daysUntil(MILESTONES[nextIdx-1].d), next = daysUntil(MILESTONES[nextIdx].d);
+    const span = Math.max(1, next - prev);
+    nowPct = at(nextIdx-1) + ((-prev) / span) * (at(nextIdx) - at(nextIdx-1));
+  }
+
+  box.innerHTML = `
+    <div class="hz-line">
+      <div class="hz-now" style="left:${nowPct.toFixed(1)}%">You are here</div>
+      ${MILESTONES.map((m, i) => {
+        const away = daysUntil(m.d);
+        const cls = away < 0 ? "past" : (i === nextIdx ? "soon" : "");
+        return `<div class="hz-node ${cls}" style="left:${at(i).toFixed(1)}%">
+          <i></i>
+          <div class="hd">${esc(m.k)}</div>
+          <div class="ht">${esc(m.t)}</div>
+          ${i === nextIdx ? `<div class="hn">${awayText(away)}</div>` : ""}
+        </div>`;
+      }).join("")}
+    </div>
+    <div class="hz-spacer"></div>`;
+}
+
+function renderGlance(){
+  const g = document.getElementById("mcGlance");
+  if (!g) return;
+  if (!state.projects.length) {
+    g.innerHTML = `<div class="mo-empty">No projects yet — add one and it shows up here with its progress ring.</div>`;
+    return;
+  }
+  g.innerHTML = "";
+  sortedProjects().forEach(p => {
+    const todos = p.todos || [];
+    const done = todos.filter(t => t.done).length;
+    const next = todos.find(t => !t.done && (t.priority||3) === 1) || todos.find(t => !t.done);
+    const b = document.createElement("button");
+    b.className = "gl";
+    b.innerHTML = `${ringSvg(done, todos.length, p.color || "#f7b79c", 48)}
+      <div class="glt">
+        <div class="gn">${esc(p.name)}</div>
+        <div class="gs">${todos.length ? `${done}/${todos.length} done · ${todos.length-done} open` : "no tasks yet"}</div>
+        ${next ? `<div class="gnext">Next · ${esc(next.text)}</div>` : `<div class="gnext">All clear ✓</div>`}
+      </div>`;
+    b.onclick = () => gotoProject(p.id);
+    g.appendChild(b);
+  });
+}
+
+function renderMomentum(){
+  const box = document.getElementById("mcMomentum");
+  if (!box) return;
+  const DAYS = 14;
+  const today = new Date(); today.setHours(0,0,0,0);
+  const buckets = [];
+  for (let i = DAYS - 1; i >= 0; i--) { const d = new Date(today); d.setDate(d.getDate() - i); buckets.push({ d, n: 0 }); }
+  state.projects.forEach(p => (p.todos||[]).forEach(t => {
+    if (!t.done || !t.doneAt) return;
+    const k = new Date(t.doneAt); k.setHours(0,0,0,0);
+    const b = buckets.find(x => x.d.getTime() === k.getTime());
+    if (b) b.n++;
+  }));
+  const total = buckets.reduce((s,b) => s + b.n, 0);
+  const max = Math.max(1, ...buckets.map(b => b.n));
+  box.innerHTML = `
+    <div class="mo-top">
+      <span class="mt">${total ? `${total} finished in the last two weeks` : "Nothing ticked off yet this fortnight"}</span>
+      <span class="ms">${total ? "every bar is something you closed" : "tick a task and this starts drawing itself"}</span>
+    </div>
+    <div class="mo-bars">
+      ${buckets.map((b, i) => `<div class="mo-day ${b.n ? "" : "zero"} ${i === DAYS-1 ? "today" : ""}" title="${b.d.toLocaleDateString(undefined,{month:"short",day:"numeric"})} — ${b.n} done">
+        <div class="bar" style="height:${b.n ? Math.max(8, (b.n / max) * 100) : 4}%"></div>
+        <div class="dl">${b.d.toLocaleDateString(undefined,{ weekday: "narrow" })}</div>
+      </div>`).join("")}
+    </div>`;
+}
+
+// ---------- The Map ----------
+// A live mind map: you in the centre, the studio's rooms orbiting close,
+// your projects further out sized by what's still open, next actions as leaves.
+const MAP_PILLARS = [
+  { v: "plan",     n: "The Plan",         g: "✧" },
+  { v: "entre",    n: "Entrepreneurship", g: "◈" },
+  { v: "journal",  n: "Journal",          g: "❧" },
+  { v: "health",   n: "Health",           g: "✚" },
+  { v: "fuel",     n: "Creative Fuel",    g: "✦" },
+];
+function clip(s, n){ s = String(s); return s.length > n ? s.slice(0, n - 1).trim() + "…" : s; }
+// readable text on top of whatever colour a project happens to be
+function onColor(hex){
+  const h = String(hex || "").replace("#", "");
+  if (h.length < 6) return "#0a0e24";
+  const [r, g, b] = [0, 2, 4].map(i => parseInt(h.slice(i, i + 2), 16));
+  return (0.299 * r + 0.587 * g + 0.114 * b) > 150 ? "#0a0e24" : "#ffffff";
+}
+
+function renderMap(){
+  const svg = document.getElementById("mapSvg");
+  if (!svg) return;
+  const W = 1120, H = 660, cx = W/2, cy = H/2;
+  const PRX = 322, PRY = 196;                 // the projects' orbit
+  const LRX = 188, LRY = 108;                 // the rooms' orbit
+  const projects = sortedProjects();
+  const parts = [];
+  const nodes = [];   // {go, x, y}
+
+  // the two orbits, drawn faintly so the map reads as a system
+  parts.push(`<ellipse cx="${cx}" cy="${cy}" rx="${LRX}" ry="${LRY}" fill="none" stroke="rgba(191,169,242,0.13)" stroke-dasharray="2 7"/>`);
+  parts.push(`<ellipse cx="${cx}" cy="${cy}" rx="${PRX}" ry="${PRY}" fill="none" stroke="rgba(255,255,255,0.06)"/>`);
+
+  // --- the rooms of the studio, on a close orbit ---
+  const pn = MAP_PILLARS.length;
+  MAP_PILLARS.forEach((p, i) => {
+    const a = (-Math.PI/2) + (i / pn) * Math.PI * 2 + Math.PI/pn;
+    const x = cx + Math.cos(a) * LRX, y = cy + Math.sin(a) * LRY;
+    parts.push(`<path class="lnk pil" d="M ${cx} ${cy} Q ${(cx+x)/2} ${(cy+y)/2 - 18} ${x} ${y}"/>`);
+    nodes.push({ go: "view:" + p.v, x, y, r: 21, delay: 0.05 * i, html: `
+      <circle class="hit" cx="${x}" cy="${y}" r="34" fill="transparent"/>
+      <circle cx="${x}" cy="${y}" r="21" fill="rgba(191,169,242,0.16)" stroke="rgba(191,169,242,0.55)" stroke-width="1"/>
+      <text x="${x}" y="${y}" text-anchor="middle" dominant-baseline="central" style="font-size:14px;fill:#bfa9f2">${p.g}</text>
+      <text class="sub" x="${x}" y="${y + 36}" text-anchor="middle">${esc(p.n)}</text>` });
+  });
+
+  // --- projects, further out, sized by what's still open ---
+  const N = Math.max(projects.length, 1);
+  projects.forEach((p, i) => {
+    const todos = p.todos || [];
+    const open = todos.filter(t => !t.done).length;
+    const doneN = todos.length - open;
+    const a = (-Math.PI/2) + (i / N) * Math.PI * 2 + (N === 3 ? 0.5 : 0);   // keep 3 nodes off the exact top
+    const x = cx + Math.cos(a) * PRX, y = cy + Math.sin(a) * PRY;
+    const r = 26 + Math.min(20, open * 3);
+    const col = p.color || "#f7b79c";
+    const right = x >= cx;
+    const above = y < cy - 40;   // keep the label away from the inner ring
+
+    parts.push(`<path class="lnk" d="M ${cx} ${cy} Q ${(cx+x)/2 + Math.cos(a)*30} ${(cy+y)/2} ${x} ${y}"/>`);
+
+    // next actions hanging off the project — always laid out toward the nearest edge,
+    // and clamped so a long task never runs out of the frame
+    todos.filter(t => !t.done).slice(0, 2).forEach((t, k) => {
+      const la = (right ? 0 : Math.PI) + (k === 0 ? -0.55 : 0.42);
+      const lx = x + Math.cos(la) * (r + 58), ly = y + Math.sin(la) * (r + 44);
+      // the label never moves into the node — if there isn't room, it shortens
+      const anchor = right ? "start" : "end";
+      const tx = right ? lx + 10 : lx - 10;
+      const room = right ? (W - 14 - tx) : (tx - 14);
+      const label = clip(t.text, Math.max(8, Math.min(26, Math.floor(room / 5.5))));
+      parts.push(`<path class="leaf-lnk" d="M ${x} ${y} L ${lx.toFixed(1)} ${ly.toFixed(1)}"/>`);
+      parts.push(`<circle cx="${lx.toFixed(1)}" cy="${ly.toFixed(1)}" r="3.4" fill="${col}" opacity="0.75"/>`);
+      parts.push(`<text class="leaf" x="${tx.toFixed(1)}" y="${ly.toFixed(1)}" text-anchor="${anchor}" dominant-baseline="central">${esc(label)}</text>`);
+    });
+
+    nodes.push({ go: "proj:" + p.id, x, y, r, delay: 0.28 + 0.07 * i, html: `
+      <title>${esc(p.name)} — ${open} open</title>
+      <circle cx="${x}" cy="${y}" r="${r * 1.5}" fill="${col}" opacity="0.12"/>
+      <circle class="hit" cx="${x}" cy="${y}" r="${r}" fill="${col}" opacity="0.9"/>
+      <text x="${x}" y="${y}" text-anchor="middle" dominant-baseline="central"
+            style="font-family:var(--serif);font-size:${r > 34 ? 19 : 16}px;font-weight:600;fill:${onColor(col)}">${open || "✓"}</text>
+      <text class="nm" x="${x}" y="${above ? y - r - 28 : y + r + 22}" text-anchor="middle">${esc(clip(p.name, 26))}</text>
+      <text class="sub" x="${x}" y="${above ? y - r - 12 : y + r + 39}" text-anchor="middle">${todos.length ? `${doneN}/${todos.length} done` : "no tasks yet"}</text>` });
+  });
+
+  // --- the centre: her mark ---
+  parts.push(`
+    <circle cx="${cx}" cy="${cy}" r="86" fill="rgba(247,183,156,0.07)"/>
+    <circle cx="${cx}" cy="${cy}" r="60" fill="rgba(10,14,36,0.55)" stroke="rgba(247,183,156,0.45)" stroke-width="1.2"/>
+    <image href="icons/alkoun-mark-peach.png" x="${cx-46}" y="${cy-40}" width="92" height="62" opacity="0.95"/>
+    <text class="ctr-s" x="${cx}" y="${cy + 40}" text-anchor="middle">STUDIO</text>`);
+
+  svg.innerHTML = parts.join("") + nodes.map(n =>
+    `<g class="node" data-go="${n.go}" style="animation: viewIn .5s ${n.delay}s both">${n.html}</g>`).join("");
+
+  svg.querySelectorAll(".node").forEach(g => {
+    g.onclick = () => {
+      const [kind, val] = g.dataset.go.split(":");
+      if (kind === "view") switchView(val); else gotoProject(val);
+    };
+  });
 }
 
 // ---------- key gate (unlock with a GitHub token, stored only in this browser) ----------
