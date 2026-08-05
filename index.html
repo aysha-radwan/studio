@@ -925,6 +925,16 @@
   .hl-day.done { background: var(--melon-soft); border-color: rgba(255,84,112,0.5); }
   .hl-bar i { background: linear-gradient(90deg, var(--melon), var(--peach) 60%, var(--violet)); }
 
+  .tr-cov { border: 1px solid rgba(255,255,255,0.13); border-radius: 14px; padding: 15px 17px; margin: 4px 0 14px;
+    background: rgba(255,255,255,0.03); }
+  .tr-cov .cv-h { font-size: 12px; font-weight: 600; color: #fff; margin-bottom: 12px; }
+  .tr-cov .cv-h span { font-weight: 400; color: var(--faint); }
+  .cv-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(196px, 1fr)); gap: 9px 18px; }
+  .cv { display: flex; align-items: baseline; gap: 9px; }
+  .cv .cvd { font-size: 8.5px; letter-spacing: 1.5px; color: var(--rind); flex-shrink: 0; }
+  .cv .cvm { font-size: 12.5px; color: var(--ink-2); font-weight: 600; flex-shrink: 0; }
+  .cv .cvw { font-size: 11px; color: var(--faint); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
   /* ---------- Movement shelf ---------- */
   .mv-grid { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 4px; }
   .mv-chip { display: inline-flex; align-items: center; gap: 9px; border: 1px solid var(--line);
@@ -938,6 +948,52 @@
   .mv-chip .minus { color: var(--faint); font-size: 15px; line-height: 1; padding: 0 2px; }
   .mv-chip .minus:hover { color: var(--melon); }
   .mv-note { font-size: 12.5px; color: var(--faint); margin-top: 10px; line-height: 1.6; }
+
+  /* ============================================================
+     WHITE + WATERMELON — the brand's third and fourth notes.
+     White is used as light: a hairline on every raised surface, a rule under
+     every heading, and the one pure colour in a palette of tinted ones.
+     ============================================================ */
+  .card, .mc-stat, .mc-card, .gl, .hl-block, .hl-card, .cy-block, .mo-box, .hz,
+  .issue, .doc-card, .modal, .map-box, .tr-rule, .hl-plan, .ent-doss, .jr-mode, .jr-grat {
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.08), 0 1px 3px rgba(0,0,0,0.35);
+  }
+  .card:hover, .gl:hover, .mc-card:hover { box-shadow: inset 0 1px 0 rgba(255,255,255,0.16), 0 16px 40px rgba(0,0,0,0.45); }
+  button:hover, .btn:hover { border-color: rgba(255,255,255,0.55); color: #fff; }
+  .nav-item:hover { background: rgba(255,255,255,0.06); color: #fff; }
+
+  /* the brand rule under the mark: watermelon → white → nothing */
+  .side-brand { border-bottom: 1px solid transparent; position: relative; }
+  .side-brand:after { content: ""; position: absolute; left: 11px; right: 11px; bottom: 12px; height: 1px;
+    background: linear-gradient(90deg, var(--melon), rgba(255,255,255,0.55) 42%, transparent); }
+  /* the page title carries the same two notes */
+  header h2 { display: flex; align-items: center; gap: 11px; }
+  header h2:before { content: ""; width: 9px; height: 9px; border-radius: 50%;
+    background: var(--melon); box-shadow: 0 0 0 3px rgba(255,84,112,0.18), 0 0 14px rgba(255,84,112,0.5); }
+  .side-stat .n { color: #fff; }
+  .side-stat:nth-child(1) .n { color: var(--peach); }
+  .mc-sec-head .fx { color: var(--melon); }
+  .mc-sec-head:after { background: linear-gradient(90deg, rgba(255,255,255,0.30), transparent); }
+  .fuel-h .fx, .hl-h:before { color: var(--melon); }
+  .hl-h { display: flex; align-items: center; gap: 12px; }
+  .hl-h:before { content: "●"; font-size: 8px; color: var(--melon); }
+  .section-label, .cy-lbl, .filter-label { color: rgba(255,255,255,0.55); }
+  .mc-stat .n { color: #fff; }
+  .mc-stat:nth-child(1) .n { color: var(--melon); }
+  .mc-stat:nth-child(4) .n { color: var(--peach); }
+  /* white keylines inside the charts */
+  .mo-bars { border-bottom: 1px solid rgba(255,255,255,0.14); padding-bottom: 2px; }
+  .hz-node:not(.soon):not(.past) i { border-color: rgba(255,255,255,0.75); }
+  #mapSvg .lnk { stroke: rgba(255,255,255,0.22); }
+  .cy-e.on { box-shadow: 0 0 0 3px rgba(255,255,255,0.18); }
+  .prio-tag { color: #fff; }
+  .tr-img { margin-top: 14px; border: 1px solid rgba(255,255,255,0.14); border-radius: 13px;
+    padding: 15px 17px; background: rgba(255,255,255,0.035); }
+  .tr-img .rt2 { font-size: 11.5px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+    color: #fff; margin-bottom: 9px; }
+  .tr-img p { font-size: 12.8px; line-height: 1.6; color: var(--muted); margin: 0 0 7px; }
+  .tr-img p:last-child { margin-bottom: 0; }
+  .tr-img p:first-of-type, .tr-img p:nth-of-type(2) { color: var(--ink-2); }
 
   /* ---------- Mobile / phone layout ---------- */
   @media (max-width: 760px) {
@@ -2243,37 +2299,51 @@ const TR_PROGRAM = {
   A: [
     { t: "anchor", n: "Trap-bar deadlift, from blocks", r: "5", why: "High handles, load close to you — the hinge without the floor-height back risk." },
     { t: "anchor", n: "Front-foot-elevated split squat (DBs)", r: "8 / side", why: "Single leg means half the spinal load for the same leg work." },
-    { t: "acc", n: "Leg press — feet high, no lumbar rounding", r: "10–12", why: "Volume for quads and glutes with your back supported." },
+    { t: "acc", n: "Seated hamstring curl", r: "10–12", why: "The trap bar is quad-and-glute heavy — this is the hamstrings' own slot." },
+    { t: "acc", n: "Seated calf raise", r: "12–15", why: "Soleus. Knee bent hits the deep calf the standing version misses." },
     { t: "acc", n: "Pallof press + dead bug (superset)", r: "12 + 8 / side", why: "Core that resists movement instead of crunching it." },
     { t: "fin", n: "Sled push — 6 min, heavy, walk back", r: "6 min", why: "All legs and lungs, zero spinal load. This is the sweaty part." },
   ],
   B: [
     { t: "anchor", n: "Neutral-grip DB bench press", r: "6–8", why: "Neutral grip keeps the left shoulder out of the painful arc." },
-    { t: "anchor", n: "Half-kneeling landmine press", r: "8 / side", why: "Your overhead press. The arc is safe and the core has to work." },
+    { t: "anchor", n: "Half-kneeling landmine press", r: "8 / side", why: "Your overhead press for now. Safe arc, and the core has to work." },
     { t: "acc", n: "Chest-supported DB row", r: "10–12", why: "Pulls always match presses here — that's what keeps the shoulder happy." },
-    { t: "acc", n: "Cable lateral raise (thumb up) + band external rotation", r: "15 + 15", why: "Rotator cuff work, every push day, light. Non-negotiable." },
+    { t: "acc", n: "Cable lateral raise to shoulder height (thumb up) + band external rotation", r: "15 + 15", why: "Stop at 90°: your acromion downslopes, and above shoulder height is where the space narrows." },
+    { t: "acc", n: "Rope triceps pushdown", r: "12–15", why: "Direct triceps — elbows in, no skull-crushers on a cranky shoulder." },
     { t: "fin", n: "Farmer carry ladder — 4 × 40 m, rest 45 s", r: "6 min", why: "Grip, traps, ribs-down bracing. Best low-back insurance there is." },
   ],
   C: [
     { t: "anchor", n: "Neutral-grip lat pulldown (or assisted pull-up)", r: "8–10", why: "Vertical pull without the shoulder-jamming wide bar." },
     { t: "anchor", n: "Barbell hip thrust", r: "8", why: "Heavy glute work with the spine neutral the whole way." },
     { t: "acc", n: "Single-leg RDL from knee-height blocks (light)", r: "10 / side", why: "Hamstring length and balance, nowhere near the floor." },
-    { t: "acc", n: "Seated cable row, wide-neutral + face pull", r: "12 + 15", why: "Upper back — the thing that actually holds a shoulder together." },
-    { t: "fin", n: "KB swing 10 × 10, EMOM (10 min → build to 6 min hard)", r: "6 min", why: "Explosive hinge, braced, no grinding. Finish there." },
+    { t: "acc", n: "Seated cable row, wide-neutral + face pull", r: "12 + 15", why: "Upper back and rear delts — the thing that actually holds a shoulder together." },
+    { t: "acc", n: "Neutral-grip DB curl + standing calf raise", r: "10–12 + 12–15", why: "Direct biceps, hammer grip so the shoulder stays quiet. Calves get the straight-knee version." },
+    { t: "fin", n: "KB swing 10 × 10, EMOM (build to 6 min hard)", r: "6 min", why: "Explosive hinge, braced, no grinding. Finish there." },
+  ],
+};
+// What her imaging actually shows — quoted, so the rules can't drift into folklore.
+const TR_IMAGING = {
+  title: "What your imaging actually says",
+  lines: [
+    "MRI right shoulder, 30 Jul 2025 — no full or partial rotator cuff tear, no cuff atrophy, no labral or bony glenoid lesion, long head of biceps intact and in place, AC joint preserved.",
+    "The one structural note: a type 1 acromion with mild lateral downsloping — slightly less room overhead, on that side.",
+    "X-ray right shoulder, 29 Apr 2025 — no fracture, no significant arthritis, everything else unremarkable.",
+    "So: nothing is torn. This plan is managing a space and a loading habit, not protecting damage. That's why overhead is earned back rather than banned.",
+    "The left has never been imaged — the scans are the right side, which then settled. Worth telling your doctor the same pattern has arrived on the left; an exam beats another scan.",
   ],
 };
 const TR_RULES = [
-  { t: "Left shoulder — never", warn: true, items: [
-    "Barbell overhead press, behind-neck anything, upright rows",
-    "Wide-grip flat bench, dips, straight-bar curls",
+  { t: "Shoulder — still out", warn: true, items: [
+    "Upright rows and behind-the-neck anything — the two that squeeze that space most",
+    "Dips, and wide-grip flat barbell bench",
+    "Lateral raises above shoulder height — stop at 90°, thumb up",
     "Kipping, snatching, anything ballistic overhead",
-    "Pressing through pain to finish a set — stop the set instead",
   ]},
-  { t: "Left shoulder — always", ok: true, items: [
-    "Neutral or thumb-up grips on everything",
-    "Cuff work every push day (band external rotation, 2 × 15)",
-    "Pull volume ≥ push volume, every week",
-    "Warm up the scapula before the first press, not after",
+  { t: "Shoulder — earn it back", ok: true, items: [
+    "Overhead is not banned: landmine → neutral DB press → back to full overhead if it stays quiet",
+    "Pain rule: ≤ 3/10 during, gone by next morning. Lingers past 24 h → drop back one step",
+    "Cuff + serratus every push day (band external rotation, wall slides), 2 × 15",
+    "Pull volume ≥ push volume, every single week",
   ]},
   { t: "Low back — never", warn: true, items: [
     "Deadlifts from floor height — blocks or trap bar only",
@@ -2288,6 +2358,23 @@ const TR_RULES = [
     "Green / amber / red — amber means same session, lighter. Red means walk and go home.",
   ]},
 ];
+// Does the split actually cover everything? Written out so it can be checked, not trusted.
+const TR_COVERAGE = [
+  { m: "Quads", n: 2, w: "split squat · trap bar" },
+  { m: "Hamstrings", n: 2, w: "curl · single-leg RDL" },
+  { m: "Glutes", n: 3, w: "trap bar · hip thrust · swings" },
+  { m: "Calves", n: 2, w: "seated (soleus) · standing" },
+  { m: "Chest", n: 2, w: "DB bench · landmine" },
+  { m: "Back", n: 3, w: "pulldown · 2 rows · face pull" },
+  { m: "Shoulders", n: 2, w: "landmine · capped laterals" },
+  { m: "Rotator cuff", n: 1, w: "band ER, every push day" },
+  { m: "Biceps", n: 1, w: "neutral DB curl" },
+  { m: "Triceps", n: 1, w: "rope pushdown · pressing" },
+  { m: "Core", n: 2, w: "Pallof · dead bug · carries" },
+  { m: "Grip", n: 2, w: "trap bar · farmer carries" },
+  { m: "Conditioning", n: 3, w: "sled · carries · swings" },
+];
+
 // Anything that isn't lifting. Counted, never owed.
 const MV_KINDS = [
   { k: "Yoga", i: "🧘" }, { k: "Surf", i: "🌊" }, { k: "Spin / cycling", i: "🚴" },
@@ -2341,7 +2428,10 @@ function renderHealth() {
         <div class="rt">${esc(r.t)}</div>
         <ul>${r.items.map(i => `<li>${esc(i)}</li>`).join("")}</ul>
       </div>`).join("")}</div>
-    <div class="mv-note">These rules are written from what you've told me — no barbell overhead, nothing from the floor, neutral grips. <b>Send me the shoulder report and I'll tighten them to what the doctor actually found.</b></div>`;
+    <div class="tr-img">
+      <div class="rt2">${esc(TR_IMAGING.title)}</div>
+      ${TR_IMAGING.lines.map(l => `<p>${esc(l)}</p>`).join("")}
+    </div>`;
   document.querySelectorAll("#hlBlock .hl-day").forEach(el => { el.onclick = () => hlToggle(el.dataset.k); });
 
   renderHealthProgram(wk);
@@ -2381,6 +2471,12 @@ function renderHealthProgram(wk) {
   const phase = hlPhase(wk);
   wrap.innerHTML = `
     <div class="hl-prog-note"><b>${esc(phase)} — week ${wk}.</b> ${esc(TR_PHASE_NOTE[phase])}</div>
+    <div class="tr-cov">
+      <div class="cv-h">Everything the three sessions cover — <span>dots are how many times a week it gets worked</span></div>
+      <div class="cv-grid">${TR_COVERAGE.map(c => `
+        <div class="cv"><span class="cvd">${"●".repeat(c.n)}${"○".repeat(3 - c.n)}</span>
+          <span class="cvm">${esc(c.m)}</span><span class="cvw">${esc(c.w)}</span></div>`).join("")}</div>
+    </div>
     <div class="hl-prog">${HL_SESSIONS.map(s => `
       <div class="hl-card">
         <div class="hc-top"><span class="hc-k">${s.k}</span><span class="hc-n">${esc(s.name)}</span></div>
