@@ -26,20 +26,20 @@
     --ink-2: #e7eafc;         /* near-white */
     --muted: #abb2da;         /* very light gray / lavender */
     --faint: #737aa6;         /* dim starlight */
-    --peach: #f7b79c;         /* peach — primary warm accent */
-    --peach-soft: rgba(247,183,156,0.14);
+    --peach: #E26167;         /* peach — primary warm accent */
+    --peach-soft: rgba(226,97,103,0.14);
     --violet: #bfa9f2;        /* light purple — secondary accent */
     --violet-soft: rgba(191,169,242,0.16);
     /* watermelon — the third accent: flesh + rind. Used for anything live,
        physical or happening NOW (health, energy, current markers, primary CTAs). */
-    --melon: #ff5470;
-    --melon-2: #ff8095;       /* lighter flesh, for gradients */
-    --melon-soft: rgba(255,84,112,0.15);
+    --melon: #ff4d7e;
+    --melon-2: #ff7fa4;       /* lighter flesh, for gradients */
+    --melon-soft: rgba(255,77,126,0.15);
     --rind: #46c98b;
     --rind-soft: rgba(70,201,139,0.15);
     /* keep --gold as an alias so every existing rule recolors to peach automatically */
-    --gold: #f7b79c;
-    --gold-soft: rgba(247,183,156,0.13);
+    --gold: #E26167;
+    --gold-soft: rgba(226,97,103,0.13);
     --danger: #f0897a;
     --radius: 14px;
     --font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif;
@@ -68,7 +68,7 @@
   .side-brand h1 { font-family: var(--serif); font-weight: 600; font-size: 23px; letter-spacing: -0.4px; color: var(--ink); }
   /* the alkoun mark — أنا الكون, "I am the universe" */
   .side-brand .mark { display: block; width: 158px; max-width: 100%; height: auto; margin-bottom: 9px;
-    filter: drop-shadow(0 0 14px rgba(247,183,156,0.28)); }
+    filter: drop-shadow(0 0 14px rgba(226,97,103,0.28)); }
   .side-brand .sub { display: block; color: var(--gold); font-size: 10px; letter-spacing: 3.5px; text-transform: uppercase; font-weight: 600; margin-top: 4px; }
   .side-nav { display: flex; flex-direction: column; gap: 3px; }
   .nav-item {
@@ -233,7 +233,7 @@
     border-radius: 12px; padding: 13px 14px; cursor: pointer; font: inherit; color: var(--ink-2);
     transition: border-color .15s, background .15s;
   }
-  .jr-mode:hover { border-color: rgba(247,183,156,0.45); }
+  .jr-mode:hover { border-color: rgba(226,97,103,0.45); }
   .jr-mode.sel { border-color: var(--peach); background: var(--gold-soft); }
   .jr-mode .m-n { display: flex; align-items: baseline; gap: 7px; margin-bottom: 5px; }
   .jr-mode .m-name { font-family: var(--serif); font-size: 14.5px; font-weight: 600; color: var(--ink); }
@@ -246,7 +246,7 @@
     padding: 20px 21px; font: inherit; font-size: 15.5px; line-height: 1.72;
     resize: vertical; outline: none;
   }
-  .jr-text:focus { border-color: rgba(247,183,156,0.5); }
+  .jr-text:focus { border-color: rgba(226,97,103,0.5); }
   .jr-text::placeholder { color: var(--faint); }
 
   /* split page — two columns */
@@ -264,7 +264,7 @@
     padding: 17px 18px; font: inherit; font-size: 15px; line-height: 1.7;
     resize: vertical; outline: none;
   }
-  .jr-col-fear + textarea:focus { border-color: rgba(247,183,156,0.5); }
+  .jr-col-fear + textarea:focus { border-color: rgba(226,97,103,0.5); }
   .jr-col-mine + textarea { border-color: rgba(191,169,242,0.28); }
   .jr-col-mine + textarea:focus { border-color: var(--violet); }
   .jr-split textarea::placeholder { color: var(--faint); }
@@ -366,8 +366,8 @@
     border: 1px solid var(--line); background: var(--panel); border-radius: 12px;
     font: inherit; cursor: pointer; transition: border-color .15s, background .15s;
   }
-  .ent-doss:hover { border-color: rgba(247,183,156,0.45); }
-  .ent-doss.on { border-color: rgba(247,183,156,0.75); background: rgba(247,183,156,0.09); }
+  .ent-doss:hover { border-color: rgba(226,97,103,0.45); }
+  .ent-doss.on { border-color: rgba(226,97,103,0.75); background: rgba(226,97,103,0.09); }
   .ent-doss .di {
     flex: 0 0 auto; width: 24px; height: 24px; border-radius: 7px; margin-top: 1px;
     background: rgba(255,255,255,0.06); color: var(--muted);
@@ -483,8 +483,8 @@
     content: ""; position: fixed; inset: 0; z-index: -2; pointer-events: none;
     background:
       radial-gradient(1200px 760px at 82% -12%, rgba(191,169,242,0.16), transparent 62%),
-      radial-gradient(1000px 680px at 6% 112%, rgba(247,183,156,0.12), transparent 60%),
-      radial-gradient(820px 560px at 96% 78%, rgba(255,84,112,0.10), transparent 62%),
+      radial-gradient(1000px 680px at 6% 112%, rgba(226,97,103,0.12), transparent 60%),
+      radial-gradient(820px 560px at 96% 78%, rgba(255,77,126,0.10), transparent 62%),
       linear-gradient(180deg, #0b1030, #090c20 60%, #0a0e26);
   }
   /* a quiet starfield */
@@ -506,13 +506,13 @@
   .main { background: transparent; }
   header { background: linear-gradient(180deg, rgba(12,17,44,0.92), rgba(10,14,36,0.55)); border-bottom-color: var(--line); }
   .card { box-shadow: 0 1px 3px rgba(0,0,0,0.35); }
-  .card:hover { box-shadow: 0 16px 40px rgba(0,0,0,0.45); border-color: rgba(247,183,156,0.35); }
-  button.primary { color: #0a0e24; box-shadow: 0 2px 16px rgba(247,183,156,0.28); }
+  .card:hover { box-shadow: 0 16px 40px rgba(0,0,0,0.45); border-color: rgba(226,97,103,0.35); }
+  button.primary { color: #0a0e24; box-shadow: 0 2px 16px rgba(226,97,103,0.28); }
   button.primary:hover { color: #0a0e24; }
   .check.done::after { color: #0a0e24; }
   .add-row input:focus, .field input:focus, .field textarea:focus, .field select:focus { background: var(--panel); }
   .doc:hover { background: #232c5c; }
-  .prio-1 { color: #ffc9a3; border-color: rgba(247,183,156,.45); background: var(--peach-soft); }
+  .prio-1 { color: #ffc9a3; border-color: rgba(226,97,103,.45); background: var(--peach-soft); }
   .prio-2 { color: #b7c0ee; border-color: rgba(191,169,242,.40); background: var(--violet-soft); }
   /* Creative Fuel covers → nebula gradients (peach) */
   .issue { box-shadow: 0 1px 3px rgba(0,0,0,0.35); }
@@ -526,7 +526,7 @@
   .issue.magnific.latest .cover { background: linear-gradient(150deg, #362449, #1a1636); }
   .issue.magnific .cover .big { color: #f3ecff; }
   .issue.magnific .cover .eyebrow { color: var(--violet); }
-  .doc-card:hover { border-color: rgba(247,183,156,0.4); }
+  .doc-card:hover { border-color: rgba(226,97,103,0.4); }
   .overlay { background: rgba(5,8,22,0.6); }
   .modal { box-shadow: 0 24px 70px rgba(0,0,0,0.6); }
   .swatches .sw.sel { border-color: #fff; }
@@ -546,7 +546,7 @@
   .hl-h { font-family: var(--serif); font-size: 16px; font-weight: 600; color: var(--ink); margin: 26px 0 12px; display: flex; align-items: baseline; gap: 10px; }
   .hl-sub { font-size: 12.5px; font-weight: 400; color: var(--muted); }
   .hl-block { border: 1px solid var(--line); border-radius: 16px; padding: 20px 22px;
-    background: linear-gradient(150deg, rgba(247,183,156,0.10), rgba(191,169,242,0.07) 55%, rgba(255,255,255,0.02)); }
+    background: linear-gradient(150deg, rgba(226,97,103,0.10), rgba(191,169,242,0.07) 55%, rgba(255,255,255,0.02)); }
   .hl-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
   .hl-title { font-family: var(--serif); font-size: 22px; font-weight: 600; color: #fff; letter-spacing: -0.3px; }
   .hl-note { color: var(--muted); font-size: 13px; margin-top: 4px; max-width: 460px; line-height: 1.5; }
@@ -561,20 +561,20 @@
   .hl-sess { display: grid; grid-template-columns: repeat(4, 1fr); gap: 11px; margin-top: 18px; }
   .hl-day { border: 1px solid var(--line); border-radius: 13px; padding: 13px 14px; background: rgba(255,255,255,0.03);
     cursor: pointer; transition: border-color .12s, background .12s, transform .12s; user-select: none; }
-  .hl-day:hover { border-color: rgba(247,183,156,0.45); transform: translateY(-1px); }
+  .hl-day:hover { border-color: rgba(226,97,103,0.45); transform: translateY(-1px); }
   .hl-day .dk { display: flex; align-items: center; justify-content: space-between; }
   .hl-day .dl { font-family: var(--serif); font-size: 20px; color: #fff; }
   .hl-day .dn2 { font-size: 12.5px; color: var(--ink-2); margin-top: 3px; }
   .hl-day .tick { width: 20px; height: 20px; border-radius: 50%; border: 1px solid var(--line); flex-shrink: 0;
     display: flex; align-items: center; justify-content: center; font-size: 12px; color: transparent; }
-  .hl-day.done { background: rgba(247,183,156,0.13); border-color: rgba(247,183,156,0.5); }
+  .hl-day.done { background: rgba(226,97,103,0.13); border-color: rgba(226,97,103,0.5); }
   .hl-day.done .tick { background: var(--peach); border-color: var(--peach); color: #0a0e24; font-weight: 700; }
   .hl-day.opt .dl { color: var(--violet); }
   .hl-cheer { pointer-events: none; opacity: 0; transform: translateY(6px) scale(0.94);
-    max-height: 0; margin-top: 0; padding: 0 12px; overflow: hidden; border: 0 solid rgba(247,183,156,0.35);
+    max-height: 0; margin-top: 0; padding: 0 12px; overflow: hidden; border: 0 solid rgba(226,97,103,0.35);
     transition: opacity .18s ease, transform .18s cubic-bezier(.2,1.5,.4,1), max-height .2s ease, margin-top .2s ease, padding .2s ease;
     text-align: center; font-family: var(--serif); font-size: 15px; color: var(--peach);
-    background: rgba(247,183,156,0.1); border-radius: 12px; }
+    background: rgba(226,97,103,0.1); border-radius: 12px; }
   .hl-cheer.show { opacity: 1; transform: translateY(0) scale(1); max-height: 70px; margin-top: 14px; padding: 10px 12px; border-width: 1px; }
   .hl-prog-note { color: var(--muted); font-size: 13px; line-height: 1.6; max-width: 720px; margin-bottom: 14px; }
   .hl-prog { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 12px; }
@@ -586,11 +586,11 @@
   .hl-card ul { list-style: none; margin: 0; padding: 0; }
   .hl-card li { font-size: 12.5px; color: var(--ink-2); line-height: 1.5; padding: 5px 0 5px 14px; position: relative; border-top: 1px solid rgba(255,255,255,0.05); }
   .hl-card li:first-child { border-top: 0; }
-  .hl-card li:before { content: ""; position: absolute; left: 2px; top: 12px; width: 4px; height: 4px; border-radius: 50%; background: rgba(247,183,156,0.55); }
+  .hl-card li:before { content: ""; position: absolute; left: 2px; top: 12px; width: 4px; height: 4px; border-radius: 50%; background: rgba(226,97,103,0.55); }
   .hl-plans { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; }
   .hl-plan { display: flex; align-items: center; gap: 13px; padding: 15px 16px; border: 1px solid var(--line);
     border-radius: 13px; background: var(--panel); cursor: pointer; transition: border-color .12s, background .12s; }
-  .hl-plan:hover { border-color: rgba(247,183,156,0.45); background: var(--panel-2); }
+  .hl-plan:hover { border-color: rgba(226,97,103,0.45); background: var(--panel-2); }
   .hl-plan .pic { font-size: 20px; }
   .hl-plan .pt { font-weight: 600; color: var(--ink); font-size: 14px; }
   .hl-plan .ps { color: var(--muted); font-size: 12px; margin-top: 2px; }
@@ -615,7 +615,7 @@
   .cy-mo { border: 1px solid var(--line); border-radius: 12px; padding: 11px 12px; background: rgba(255,255,255,0.03); }
   .cy-mo .mm { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--faint); }
   .cy-mo .ml { font-size: 12.5px; color: var(--ink-2); margin-top: 5px; line-height: 1.4; }
-  .cy-mo.now { background: var(--peach-soft); border-color: rgba(247,183,156,0.5); }
+  .cy-mo.now { background: var(--peach-soft); border-color: rgba(226,97,103,0.5); }
   .cy-mo.now .mm { color: var(--peach); }
 
   /* daily check-in */
@@ -629,8 +629,8 @@
   .cy-chip { border: 1px solid var(--line); border-radius: 20px; padding: 6px 13px; font-size: 12.5px;
     color: var(--ink-2); background: rgba(255,255,255,0.03); cursor: pointer; user-select: none;
     transition: border-color .12s, background .12s, color .12s; font-family: inherit; }
-  .cy-chip:hover { border-color: rgba(247,183,156,0.4); }
-  .cy-chip.on { background: var(--peach-soft); border-color: rgba(247,183,156,0.6); color: #fff; }
+  .cy-chip:hover { border-color: rgba(226,97,103,0.4); }
+  .cy-chip.on { background: var(--peach-soft); border-color: rgba(226,97,103,0.6); color: #fff; }
   .cy-chip.on.v { background: var(--violet-soft); border-color: rgba(191,169,242,0.6); }
   .cy-energy { display: flex; gap: 8px; align-items: center; }
   .cy-e { width: 34px; height: 34px; border-radius: 50%; border: 1px solid var(--line); background: rgba(255,255,255,0.03);
@@ -640,14 +640,14 @@
   .cy-note-in { width: 100%; max-width: 640px; background: rgba(255,255,255,0.04); border: 1px solid var(--line);
     border-radius: 11px; padding: 10px 13px; color: var(--ink); font-family: inherit; font-size: 13.5px; resize: vertical; }
   .cy-note-in::placeholder { color: var(--faint); }
-  .cy-note-in:focus { outline: none; border-color: rgba(247,183,156,0.5); }
+  .cy-note-in:focus { outline: none; border-color: rgba(226,97,103,0.5); }
 
   /* the quiet strip — last 5 weeks, no counts, no streaks */
   .cy-strip { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 10px; }
   .cy-dot { width: 13px; height: 13px; border-radius: 50%; border: 1px solid var(--line-soft); background: transparent; }
   .cy-dot.logged { border-color: rgba(191,169,242,0.55); background: rgba(191,169,242,0.18); }
-  .cy-dot.b1 { background: rgba(247,183,156,0.28); border-color: rgba(247,183,156,0.5); }
-  .cy-dot.b2 { background: rgba(247,183,156,0.55); border-color: rgba(247,183,156,0.7); }
+  .cy-dot.b1 { background: rgba(226,97,103,0.28); border-color: rgba(226,97,103,0.5); }
+  .cy-dot.b2 { background: rgba(226,97,103,0.55); border-color: rgba(226,97,103,0.7); }
   .cy-dot.b3 { background: var(--peach); border-color: var(--peach); }
   .cy-dot.today { box-shadow: 0 0 0 2px rgba(255,255,255,0.28); }
   .cy-legend { font-size: 11.5px; color: var(--faint); margin-top: 9px; }
@@ -703,15 +703,15 @@
   .pill.standby { color: var(--violet); background: var(--violet-soft); border: 1px solid rgba(191,169,242,0.3); }
 
   /* terminal (workstation) cards — peach, live */
-  .mc-card.term { border-color: rgba(247,183,156,0.28); }
-  .mc-card.term::before { content:""; position:absolute; inset:0; z-index:-1; background: radial-gradient(420px 150px at 100% 0, rgba(247,183,156,0.10), transparent 70%); }
+  .mc-card.term { border-color: rgba(226,97,103,0.28); }
+  .mc-card.term::before { content:""; position:absolute; inset:0; z-index:-1; background: radial-gradient(420px 150px at 100% 0, rgba(226,97,103,0.10), transparent 70%); }
   .mc-card.term .glyph { background: var(--peach-soft); color: var(--peach); }
   .mc-card.term .livedot { width:7px; height:7px; border-radius:50%; background:#57d6a6; box-shadow:0 0 0 0 rgba(87,214,166,.6); animation: pulse 2s infinite; flex-shrink:0; }
 
   /* team (agent) cards — violet */
   .mc-card.agent .glyph { background: var(--violet-soft); color: var(--violet); }
-  .mc-card.agent.on { border-color: rgba(247,183,156,0.5); }
-  .mc-card.agent.on::before { content:""; position:absolute; inset:0; z-index:-1; background: radial-gradient(420px 160px at 100% 0, rgba(247,183,156,0.12), transparent 70%); }
+  .mc-card.agent.on { border-color: rgba(226,97,103,0.5); }
+  .mc-card.agent.on::before { content:""; position:absolute; inset:0; z-index:-1; background: radial-gradient(420px 160px at 100% 0, rgba(226,97,103,0.12), transparent 70%); }
 
   @media (max-width: 720px) {
     .mc-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -748,9 +748,9 @@
   /* arriving at a card from the map / Mission Control */
   .card.flash { animation: cardFlash 1.5s ease; }
   @keyframes cardFlash {
-    0%   { box-shadow: 0 0 0 0 rgba(247,183,156,0.0); border-color: var(--line); }
-    18%  { box-shadow: 0 0 0 4px rgba(247,183,156,0.35); border-color: var(--peach); }
-    100% { box-shadow: 0 0 0 0 rgba(247,183,156,0); border-color: var(--line); }
+    0%   { box-shadow: 0 0 0 0 rgba(226,97,103,0.0); border-color: var(--line); }
+    18%  { box-shadow: 0 0 0 4px rgba(226,97,103,0.35); border-color: var(--peach); }
+    100% { box-shadow: 0 0 0 0 rgba(226,97,103,0); border-color: var(--line); }
   }
 
   .done-toggle {
@@ -763,14 +763,14 @@
   .mc-horizon { padding: 8px 34px 4px; }
   .hz {
     position: relative; border: 1px solid var(--line); border-radius: 16px; padding: 26px 22px 18px;
-    background: linear-gradient(150deg, rgba(191,169,242,0.10), rgba(247,183,156,0.06) 60%, rgba(255,255,255,0.02));
+    background: linear-gradient(150deg, rgba(191,169,242,0.10), rgba(226,97,103,0.06) 60%, rgba(255,255,255,0.02));
     overflow-x: auto;
   }
   .hz-line { position: relative; min-width: 620px; height: 2px; background: linear-gradient(90deg, var(--peach), var(--violet)); border-radius: 2px; margin: 30px 10px 0; }
   .hz-node { position: absolute; top: -7px; transform: translateX(-50%); text-align: center; width: 128px; }
   .hz-node i { display: block; width: 11px; height: 11px; border-radius: 50%; margin: 0 auto;
     background: var(--bg-2); border: 2px solid var(--violet); }
-  .hz-node.soon i { border-color: var(--peach); background: var(--peach); box-shadow: 0 0 0 5px rgba(247,183,156,0.16); }
+  .hz-node.soon i { border-color: var(--peach); background: var(--peach); box-shadow: 0 0 0 5px rgba(226,97,103,0.16); }
   .hz-node.past i { border-color: var(--faint); background: var(--faint); opacity: .7; }
   .hz-node .hd { font-size: 10.5px; letter-spacing: 1.2px; text-transform: uppercase; color: var(--faint); margin-top: 11px; }
   .hz-node .ht { font-size: 12.5px; color: var(--ink-2); line-height: 1.35; margin-top: 4px; }
@@ -790,7 +790,7 @@
     background: linear-gradient(160deg, rgba(255,255,255,0.05), rgba(255,255,255,0.015));
     transition: transform .15s, border-color .15s;
   }
-  .gl:hover { transform: translateY(-2px); border-color: rgba(247,183,156,0.4); }
+  .gl:hover { transform: translateY(-2px); border-color: rgba(226,97,103,0.4); }
   .gl .glt { min-width: 0; }
   .gl .gn { font-size: 14px; font-weight: 600; color: #fff; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .gl .gs { font-size: 11.5px; color: var(--muted); margin-top: 3px; }
@@ -807,7 +807,7 @@
   .mo-bars { display: flex; align-items: flex-end; gap: 6px; height: 84px; }
   .mo-day { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; gap: 6px; height: 100%; }
   .mo-day .bar { width: 100%; max-width: 26px; border-radius: 6px 6px 3px 3px; min-height: 3px;
-    background: linear-gradient(180deg, var(--peach), rgba(247,183,156,0.32)); transition: height .5s cubic-bezier(.2,.8,.3,1); }
+    background: linear-gradient(180deg, var(--peach), rgba(226,97,103,0.32)); transition: height .5s cubic-bezier(.2,.8,.3,1); }
   .mo-day.zero .bar { background: rgba(255,255,255,0.07); }
   .mo-day.today .bar { background: linear-gradient(180deg, var(--violet), rgba(191,169,242,0.35)); }
   .mo-day .dl { font-size: 9.5px; color: var(--faint); letter-spacing: .4px; }
@@ -842,17 +842,17 @@
      WATERMELON — the third accent, plus a little more life everywhere
      ============================================================ */
   button.primary { background: linear-gradient(120deg, var(--peach), var(--melon)); border-color: transparent;
-    color: #2a0713; box-shadow: 0 4px 20px rgba(255,84,112,0.28); }
+    color: #2a0713; box-shadow: 0 4px 20px rgba(255,77,126,0.28); }
   button.primary:hover { filter: brightness(1.07); color: #2a0713; }
-  .nav-item.active { background: linear-gradient(90deg, var(--melon-soft), rgba(255,84,112,0.02));
+  .nav-item.active { background: linear-gradient(90deg, var(--melon-soft), rgba(255,77,126,0.02));
     color: var(--melon); box-shadow: inset 2px 0 0 var(--melon); }
   .seg button.active { background: var(--melon-soft); color: var(--melon); }
   .check.done { background: var(--melon); border-color: var(--melon); }
   .check.done::after { color: #2a0713; }
-  .prio-1 { color: #ffb3c0; border-color: rgba(255,84,112,.5); background: var(--melon-soft); }
-  .mo-day .bar { background: linear-gradient(180deg, var(--melon), rgba(255,84,112,0.28)); }
-  .mo-day.today .bar { background: linear-gradient(180deg, var(--peach), rgba(247,183,156,0.3)); }
-  .hz-node.soon i { border-color: var(--melon); background: var(--melon); box-shadow: 0 0 0 5px rgba(255,84,112,0.18); }
+  .prio-1 { color: #ffb3c0; border-color: rgba(255,77,126,.5); background: var(--melon-soft); }
+  .mo-day .bar { background: linear-gradient(180deg, var(--melon), rgba(255,77,126,0.28)); }
+  .mo-day.today .bar { background: linear-gradient(180deg, var(--peach), rgba(226,97,103,0.3)); }
+  .hz-node.soon i { border-color: var(--melon); background: var(--melon); box-shadow: 0 0 0 5px rgba(255,77,126,0.18); }
   .hz-node.soon .hd { color: var(--melon); }
   .hz-now { color: var(--melon); }
   .hz-now:after { background: linear-gradient(180deg, var(--melon), transparent); }
@@ -870,7 +870,7 @@
   .fuel-h { display: flex; align-items: center; gap: 12px; }
   .view-intro { border-left: 2px solid var(--melon-soft); padding-left: 16px; margin-left: 34px; }
   @media (max-width: 760px) { .view-intro { margin-left: 20px; padding-left: 12px; } }
-  .card:hover { border-color: rgba(255,84,112,0.34); }
+  .card:hover { border-color: rgba(255,77,126,0.34); }
 
   /* ---------- Rhythm: day navigation + notes + context ---------- */
   .cy-nav { display: flex; align-items: center; gap: 8px; margin: 2px 0 4px; flex-wrap: wrap; }
@@ -886,14 +886,14 @@
     border: 1px solid var(--line); border-radius: 10px; padding: 8px 12px; color: var(--ink);
     font: inherit; font-size: 13.5px; }
   .cy-sub::placeholder { color: var(--faint); }
-  .cy-sub:focus { outline: none; border-color: rgba(255,84,112,0.5); }
-  .cy-chip.on { background: var(--melon-soft); border-color: rgba(255,84,112,0.6); color: #fff; }
+  .cy-sub:focus { outline: none; border-color: rgba(255,77,126,0.5); }
+  .cy-chip.on { background: var(--melon-soft); border-color: rgba(255,77,126,0.6); color: #fff; }
   .cy-chip.on.v { background: var(--violet-soft); border-color: rgba(191,169,242,0.6); }
   .cy-chip.on.g { background: var(--rind-soft); border-color: rgba(70,201,139,0.6); }
   .cy-dot { cursor: pointer; }
-  .cy-dot:hover { box-shadow: 0 0 0 2px rgba(255,84,112,0.5); }
-  .cy-dot.b1 { background: rgba(255,84,112,0.28); border-color: rgba(255,84,112,0.5); }
-  .cy-dot.b2 { background: rgba(255,84,112,0.55); border-color: rgba(255,84,112,0.7); }
+  .cy-dot:hover { box-shadow: 0 0 0 2px rgba(255,77,126,0.5); }
+  .cy-dot.b1 { background: rgba(255,77,126,0.28); border-color: rgba(255,77,126,0.5); }
+  .cy-dot.b2 { background: rgba(255,77,126,0.55); border-color: rgba(255,77,126,0.7); }
   .cy-dot.b3 { background: var(--melon); border-color: var(--melon); }
   .cy-dot.viewing { box-shadow: 0 0 0 2px #fff; }
   .cy-why { margin-top: 12px; border-left: 2px solid var(--rind); padding: 4px 0 4px 14px;
@@ -903,7 +903,7 @@
   /* ---------- Training: the anchor block ---------- */
   .tr-rules { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 14px; }
   .tr-rule { border: 1px solid var(--line); border-radius: 13px; padding: 13px 15px; background: rgba(255,255,255,0.03); }
-  .tr-rule.warn { border-color: rgba(255,84,112,0.35); background: var(--melon-soft); }
+  .tr-rule.warn { border-color: rgba(255,77,126,0.35); background: var(--melon-soft); }
   .tr-rule .rt { font-size: 12px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
     color: var(--melon); margin-bottom: 7px; }
   .tr-rule.ok .rt { color: var(--rind); }
@@ -922,7 +922,7 @@
   .tr-ex .set { flex-shrink: 0; font-size: 12.5px; color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
   .tr-ex .why { display: block; font-size: 11.5px; color: var(--faint); margin-top: 2px; }
   .hl-day.done .tick { background: var(--melon); border-color: var(--melon); color: #2a0713; }
-  .hl-day.done { background: var(--melon-soft); border-color: rgba(255,84,112,0.5); }
+  .hl-day.done { background: var(--melon-soft); border-color: rgba(255,77,126,0.5); }
   .hl-bar i { background: linear-gradient(90deg, var(--melon), var(--peach) 60%, var(--violet)); }
 
   .tr-cov { border: 1px solid rgba(255,255,255,0.13); border-radius: 14px; padding: 15px 17px; margin: 4px 0 14px;
@@ -930,10 +930,13 @@
   .tr-cov .cv-h { font-size: 12px; font-weight: 600; color: #fff; margin-bottom: 12px; }
   .tr-cov .cv-h span { font-weight: 400; color: var(--faint); }
   .cv-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(196px, 1fr)); gap: 9px 18px; }
-  .cv { display: flex; align-items: baseline; gap: 9px; }
-  .cv .cvd { font-size: 8.5px; letter-spacing: 1.5px; color: var(--rind); flex-shrink: 0; }
-  .cv .cvm { font-size: 12.5px; color: var(--ink-2); font-weight: 600; flex-shrink: 0; }
-  .cv .cvw { font-size: 11px; color: var(--faint); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .cv { display: flex; align-items: center; gap: 10px; }
+  .cv .cvm { font-size: 12.5px; color: var(--ink-2); font-weight: 600; width: 92px; flex-shrink: 0; }
+  .cv .cvbar { flex: 1; height: 6px; border-radius: 20px; background: rgba(255,255,255,0.08); overflow: hidden; position: relative; }
+  .cv .cvbar:after { content: ""; position: absolute; left: 62.5%; top: -2px; bottom: -2px; width: 1px; background: rgba(255,255,255,0.45); }
+  .cv .cvbar i { display: block; height: 100%; border-radius: 20px; }
+  .cv .cvn { font-size: 12px; color: #fff; width: 18px; text-align: right; font-variant-numeric: tabular-nums; }
+  .cv-foot { font-size: 11.5px; color: var(--faint); line-height: 1.6; margin-top: 12px; }
 
   /* ---------- Movement shelf ---------- */
   .mv-grid { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 4px; }
@@ -969,7 +972,7 @@
   /* the page title carries the same two notes */
   header h2 { display: flex; align-items: center; gap: 11px; }
   header h2:before { content: ""; width: 9px; height: 9px; border-radius: 50%;
-    background: var(--melon); box-shadow: 0 0 0 3px rgba(255,84,112,0.18), 0 0 14px rgba(255,84,112,0.5); }
+    background: var(--melon); box-shadow: 0 0 0 3px rgba(255,77,126,0.18), 0 0 14px rgba(255,77,126,0.5); }
   .side-stat .n { color: #fff; }
   .side-stat:nth-child(1) .n { color: var(--peach); }
   .mc-sec-head .fx { color: var(--melon); }
@@ -1021,7 +1024,7 @@
     .nav-item { width: auto; flex: 0 0 auto; white-space: nowrap; padding: 7px 11px; font-size: 13.5px;
       gap: 7px; border: 1px solid var(--line); }
     .nav-item .nic { font-size: 13px; width: 14px; }
-    .nav-item.active { border-color: rgba(247,183,156,0.4); }
+    .nav-item.active { border-color: rgba(226,97,103,0.4); }
     .side-note, .side-foot, .link-phone { display: none; }
     .main { min-height: auto; }
     header { padding: 16px 20px 12px; }
@@ -1934,7 +1937,7 @@ function renderCard(p) {
   const todos = all.filter(t => !t.done);
   const doneTodos = all.filter(t => t.done);
   const docs = p.docs||[];
-  const col = p.color || "#f7b79c";
+  const col = p.color || "#E26167";
   // cover: her own image if she's added one, otherwise a nebula built from the project colour
   const cover = p.cover
     ? `<div class="cover" data-cover="${esc(p.cover)}"><div class="veil"></div></div>`
@@ -2278,9 +2281,9 @@ const HL_PLANS = [
 // and left shoulder: nothing overhead with a barbell, nothing from the floor,
 // no loaded spinal flexion, neutral grips throughout.
 const HL_SESSIONS = [
-  { k: "A", name: "Lower + core" },
-  { k: "B", name: "Push + carry" },
-  { k: "C", name: "Pull + hinge" },
+  { k: "A", name: "Squat + press" },
+  { k: "B", name: "Hinge + pull" },
+  { k: "C", name: "Glutes + upper" },
 ];
 const TR_BLOCK = { id: "anchor-1", name: "The Anchor Block", weeks: 8 };
 const TR_PHASES = { 1: "Groove", 2: "Groove", 3: "Build", 4: "Build", 5: "Build", 6: "Build", 7: "Peak", 8: "Deload" };
@@ -2297,30 +2300,67 @@ const TR_SETS = {
 };
 const TR_PROGRAM = {
   A: [
-    { t: "anchor", n: "Trap-bar deadlift, from blocks", r: "5", why: "High handles, load close to you — the hinge without the floor-height back risk." },
-    { t: "anchor", n: "Front-foot-elevated split squat (DBs)", r: "8 / side", why: "Single leg means half the spinal load for the same leg work." },
-    { t: "acc", n: "Seated hamstring curl", r: "10–12", why: "The trap bar is quad-and-glute heavy — this is the hamstrings' own slot." },
-    { t: "acc", n: "Seated calf raise", r: "12–15", why: "Soleus. Knee bent hits the deep calf the standing version misses." },
-    { t: "acc", n: "Pallof press + dead bug (superset)", r: "12 + 8 / side", why: "Core that resists movement instead of crunching it." },
-    { t: "fin", n: "Sled push — 6 min, heavy, walk back", r: "6 min", why: "All legs and lungs, zero spinal load. This is the sweaty part." },
+    { t: "anchor", n: "Front-foot-elevated split squat (DBs)", r: "8 / side", mus: ["Quads", "Glutes"],
+      why: "Single leg means half the spinal load for the same leg work." },
+    { t: "anchor", n: "Neutral-grip DB bench press", r: "6–8", mus: ["Chest", "Triceps"],
+      why: "Neutral grip keeps the shoulder out of the painful arc." },
+    { t: "acc", n: "Chest-supported DB row", r: "10–12", mus: ["Back"],
+      why: "Pulls match presses in the same session — that's what keeps a shoulder happy." },
+    { t: "acc", n: "Seated hamstring curl", r: "10–12", mus: ["Hamstrings"],
+      why: "The hinge work is glute-heavy; this is the hamstrings' own slot." },
+    { t: "acc", n: "Cable lateral raise, stop at shoulder height", r: "15", mus: ["Side delts"],
+      why: "90° cap: your acromion downslopes, and above that is where the space narrows." },
+    { t: "acc", n: "Rope pushdown + DB hammer curl (superset)", r: "12 + 12", mus: ["Triceps", "Biceps"],
+      why: "Direct arms, elbows in, nothing that loads an overhead position." },
+    { t: "acc", n: "Pallof press", r: "12 / side", mus: ["Core"],
+      why: "Core that resists rotation instead of crunching the spine." },
+    { t: "fin", n: "Sled push — 6 min, heavy, walk back", r: "6 min", mus: ["Quads", "Conditioning"],
+      why: "All legs and lungs, zero spinal load. The sweaty part." },
   ],
   B: [
-    { t: "anchor", n: "Neutral-grip DB bench press", r: "6–8", why: "Neutral grip keeps the left shoulder out of the painful arc." },
-    { t: "anchor", n: "Half-kneeling landmine press", r: "8 / side", why: "Your overhead press for now. Safe arc, and the core has to work." },
-    { t: "acc", n: "Chest-supported DB row", r: "10–12", why: "Pulls always match presses here — that's what keeps the shoulder happy." },
-    { t: "acc", n: "Cable lateral raise to shoulder height (thumb up) + band external rotation", r: "15 + 15", why: "Stop at 90°: your acromion downslopes, and above shoulder height is where the space narrows." },
-    { t: "acc", n: "Rope triceps pushdown", r: "12–15", why: "Direct triceps — elbows in, no skull-crushers on a cranky shoulder." },
-    { t: "fin", n: "Farmer carry ladder — 4 × 40 m, rest 45 s", r: "6 min", why: "Grip, traps, ribs-down bracing. Best low-back insurance there is." },
+    { t: "anchor", n: "Trap-bar deadlift, from blocks", r: "5", mus: ["Glutes", "Hamstrings", "Back"],
+      why: "High handles, load close to you — the hinge without the floor-height back risk." },
+    { t: "anchor", n: "Neutral-grip lat pulldown (or assisted pull-up)", r: "8–10", mus: ["Back"],
+      why: "Vertical pull without the shoulder-jamming wide bar." },
+    { t: "acc", n: "Half-kneeling landmine press", r: "8 / side", mus: ["Front delts", "Core"],
+      why: "Your overhead press for now — safe arc, and the core has to work." },
+    { t: "acc", n: "Leg press — feet high, no lumbar rounding", r: "10–12", mus: ["Quads", "Glutes"],
+      why: "Quad volume with your back fully supported." },
+    { t: "acc", n: "Face pull + band external rotation (superset)", r: "15 + 15", mus: ["Rear delts", "Rotator cuff"],
+      why: "Cuff and scapular work — the evidence's actual first-line for this kind of shoulder pain." },
+    { t: "acc", n: "Seated calf raise", r: "12–15", mus: ["Calves"],
+      why: "Knee bent — the soleus, which the standing version misses." },
+    { t: "acc", n: "Dead bug", r: "8 / side", mus: ["Core"],
+      why: "Anti-extension. Ribs down, back flat, slow." },
+    { t: "fin", n: "Farmer carry ladder — 4 × 40 m, rest 45 s", r: "6 min", mus: ["Grip", "Core", "Conditioning"],
+      why: "Grip, traps, ribs-down bracing. Best low-back insurance there is." },
   ],
   C: [
-    { t: "anchor", n: "Neutral-grip lat pulldown (or assisted pull-up)", r: "8–10", why: "Vertical pull without the shoulder-jamming wide bar." },
-    { t: "anchor", n: "Barbell hip thrust", r: "8", why: "Heavy glute work with the spine neutral the whole way." },
-    { t: "acc", n: "Single-leg RDL from knee-height blocks (light)", r: "10 / side", why: "Hamstring length and balance, nowhere near the floor." },
-    { t: "acc", n: "Seated cable row, wide-neutral + face pull", r: "12 + 15", why: "Upper back and rear delts — the thing that actually holds a shoulder together." },
-    { t: "acc", n: "Neutral-grip DB curl + standing calf raise", r: "10–12 + 12–15", why: "Direct biceps, hammer grip so the shoulder stays quiet. Calves get the straight-knee version." },
-    { t: "fin", n: "KB swing 10 × 10, EMOM (build to 6 min hard)", r: "6 min", why: "Explosive hinge, braced, no grinding. Finish there." },
+    { t: "anchor", n: "Barbell hip thrust", r: "8", mus: ["Glutes"],
+      why: "Heavy glute work with the spine neutral the whole way." },
+    { t: "anchor", n: "Incline neutral-grip DB press", r: "8–10", mus: ["Chest", "Front delts"],
+      why: "The second chest session of the week — frequency is what grows it." },
+    { t: "acc", n: "Seated cable row, wide-neutral", r: "12", mus: ["Back"],
+      why: "Third pull of the week. Back volume is deliberately the highest here." },
+    { t: "acc", n: "Single-leg RDL from knee-height blocks", r: "10 / side", mus: ["Hamstrings", "Glutes"],
+      why: "Hamstring length and balance, nowhere near the floor." },
+    { t: "acc", n: "Rear-delt fly + cable lateral raise (superset)", r: "15 + 15", mus: ["Rear delts", "Side delts"],
+      why: "Shoulders get their second dose; laterals still stop at 90°." },
+    { t: "acc", n: "Standing calf raise", r: "12–15", mus: ["Calves"],
+      why: "Knee straight — the gastroc half of the pair." },
+    { t: "acc", n: "Neutral-grip DB curl", r: "10–12", mus: ["Biceps"],
+      why: "Hammer grip so the shoulder stays quiet while the arm works." },
+    { t: "fin", n: "KB swing 10 × 10, EMOM (build to 6 min hard)", r: "6 min", mus: ["Glutes", "Hamstrings", "Conditioning"],
+      why: "Explosive hinge, braced, no grinding. Finish there." },
   ],
 };
+// The evidence the programme is built on, named so it can be argued with.
+const TR_EVIDENCE = [
+  "Volume: hypertrophy improves reliably past ~10 hard sets per muscle per week, with 12–20 the usual band for a trained lifter and clear diminishing returns above that (2022 systematic review; 2025 dose–response meta-regression).",
+  "Frequency: those sets work better spread over 2–3 sessions per muscle than dumped into one — which is why these three days are full-body rather than a lower/push/pull split.",
+  "Shoulder: for subacromial-type pain with clean imaging, scapular stabilisation plus cuff strengthening is the first-line intervention, and loading progresses by symptoms rather than avoiding the position forever (2024–2025 RCTs and meta-analysis).",
+  "Low back: progressive loading — including trap-bar and block pulls — builds spinal capacity better than isolation core work; the risk is loading too fast, not the lift itself (2020–2026 reviews).",
+];
 // What her imaging actually shows — quoted, so the rules can't drift into folklore.
 const TR_IMAGING = {
   title: "What your imaging actually says",
@@ -2358,23 +2398,6 @@ const TR_RULES = [
     "Green / amber / red — amber means same session, lighter. Red means walk and go home.",
   ]},
 ];
-// Does the split actually cover everything? Written out so it can be checked, not trusted.
-const TR_COVERAGE = [
-  { m: "Quads", n: 2, w: "split squat · trap bar" },
-  { m: "Hamstrings", n: 2, w: "curl · single-leg RDL" },
-  { m: "Glutes", n: 3, w: "trap bar · hip thrust · swings" },
-  { m: "Calves", n: 2, w: "seated (soleus) · standing" },
-  { m: "Chest", n: 2, w: "DB bench · landmine" },
-  { m: "Back", n: 3, w: "pulldown · 2 rows · face pull" },
-  { m: "Shoulders", n: 2, w: "landmine · capped laterals" },
-  { m: "Rotator cuff", n: 1, w: "band ER, every push day" },
-  { m: "Biceps", n: 1, w: "neutral DB curl" },
-  { m: "Triceps", n: 1, w: "rope pushdown · pressing" },
-  { m: "Core", n: 2, w: "Pallof · dead bug · carries" },
-  { m: "Grip", n: 2, w: "trap bar · farmer carries" },
-  { m: "Conditioning", n: 3, w: "sled · carries · swings" },
-];
-
 // Anything that isn't lifting. Counted, never owed.
 const MV_KINDS = [
   { k: "Yoga", i: "🧘" }, { k: "Surf", i: "🌊" }, { k: "Spin / cycling", i: "🚴" },
@@ -2402,6 +2425,17 @@ function hlWeekNo() {
   return Math.min(TR_BLOCK.weeks, Math.max(1, diff + 1));
 }
 const hlPhase = (wk) => TR_PHASES[wk] || "Build";
+// Weekly hard sets per muscle, counted straight off the programme for the phase
+// she's actually in — so the claim "it covers everything" is checkable, not trusted.
+function trCoverage(phase) {
+  const tally = {};
+  Object.values(TR_PROGRAM).forEach(list => list.forEach(x => {
+    if (!x.mus) return;
+    const sets = x.t === "fin" ? 2 : TR_SETS[x.t][phase];
+    x.mus.forEach(m => { tally[m] = (tally[m] || 0) + sets; });
+  }));
+  return Object.entries(tally).sort((a, b) => b[1] - a[1]);
+}
 function renderHealth() {
   renderCycle();
   const wk = hlWeekNo(), key = hlKey(), done = state.health.log[key] || [], phase = hlPhase(wk);
@@ -2409,7 +2443,7 @@ function renderHealth() {
     <div class="hl-top">
       <div>
         <div class="hl-title">${esc(TR_BLOCK.name)}</div>
-        <div class="hl-note">Three sessions, each built on two anchor lifts you chase for the whole block, two accessories, and a six-minute finisher. Same three every week — that's the point. The weights move, you don't have to re-learn the session.</div>
+        <div class="hl-note">Three full-body sessions, each built on two anchor lifts you chase for the whole block, five working sets around them and a six-minute finisher. Full-body on purpose: three days spread over every muscle twice beats a split that hits each once.</div>
         <span class="hl-phase">${esc(phase)} · week ${wk}</span>
       </div>
       <div class="hl-week"><div class="wn">${wk}</div><div class="wl">of ${TR_BLOCK.weeks} weeks</div></div>
@@ -2472,10 +2506,18 @@ function renderHealthProgram(wk) {
   wrap.innerHTML = `
     <div class="hl-prog-note"><b>${esc(phase)} — week ${wk}.</b> ${esc(TR_PHASE_NOTE[phase])}</div>
     <div class="tr-cov">
-      <div class="cv-h">Everything the three sessions cover — <span>dots are how many times a week it gets worked</span></div>
-      <div class="cv-grid">${TR_COVERAGE.map(c => `
-        <div class="cv"><span class="cvd">${"●".repeat(c.n)}${"○".repeat(3 - c.n)}</span>
-          <span class="cvm">${esc(c.m)}</span><span class="cvw">${esc(c.w)}</span></div>`).join("")}</div>
+      <div class="cv-h">Hard sets per muscle, this week — <span>the line is 10, where the research says hypertrophy reliably improves</span></div>
+      <div class="cv-grid">${trCoverage(phase).map(([m, n]) => `
+        <div class="cv">
+          <span class="cvm">${esc(m)}</span>
+          <span class="cvbar"><i style="width:${Math.min(100, n / 16 * 100)}%;background:${n >= 10 ? "var(--rind)" : n >= 6 ? "var(--peach)" : "var(--muted)"}"></i></span>
+          <span class="cvn">${n}</span>
+        </div>`).join("")}</div>
+      <div class="cv-foot">Green = at or past 10 · peach = 6–9, enough to hold and build slowly · grey = a top-up. Calves, arms and cuff sit lower on purpose: three days is three days, and the big patterns get the room.</div>
+    </div>
+    <div class="tr-img" style="margin-top:12px">
+      <div class="rt2">What this is built on</div>
+      ${TR_EVIDENCE.map(l => `<p>${esc(l)}</p>`).join("")}
     </div>
     <div class="hl-prog">${HL_SESSIONS.map(s => `
       <div class="hl-card">
@@ -3296,7 +3338,7 @@ function renderGlance(){
     const next = todos.find(t => !t.done && (t.priority||3) === 1) || todos.find(t => !t.done);
     const b = document.createElement("button");
     b.className = "gl";
-    b.innerHTML = `${ringSvg(done, todos.length, p.color || "#f7b79c", 48)}
+    b.innerHTML = `${ringSvg(done, todos.length, p.color || "#E26167", 48)}
       <div class="glt">
         <div class="gn">${esc(p.name)}</div>
         <div class="gs">${todos.length ? `${done}/${todos.length} done · ${todos.length-done} open` : "no tasks yet"}</div>
@@ -3401,7 +3443,7 @@ function renderMap(){
     const a = (-Math.PI/2) + (i / N) * Math.PI * 2 + (N === 3 ? 0.5 : 0);   // keep 3 nodes off the exact top
     const x = cx + Math.cos(a) * PRX, y = cy + Math.sin(a) * PRY;
     const r = 26 + Math.min(20, open * 3);
-    const col = p.color || "#f7b79c";
+    const col = p.color || "#E26167";
     const right = x >= cx;
     const above = y < cy - 40;   // keep the label away from the inner ring
 
@@ -3447,7 +3489,7 @@ function renderMap(){
     const fill = state === "now" ? "var(--peach)" : state === "past" ? "rgba(255,255,255,0.22)" : "rgba(10,14,36,0.9)";
     nodes.push({ go: "view:plan", x, y: SPINE_Y, r: 12, delay: 0.5 + 0.06 * i, html: `
       <title>${esc(ph.k)} — ${esc(ph.t)}</title>
-      ${state === "now" ? `<circle cx="${x}" cy="${SPINE_Y}" r="21" fill="rgba(247,183,156,0.16)"/>` : ""}
+      ${state === "now" ? `<circle cx="${x}" cy="${SPINE_Y}" r="21" fill="rgba(226,97,103,0.16)"/>` : ""}
       <circle class="hit" cx="${x}" cy="${SPINE_Y}" r="${state === "now" ? 11 : 8}" fill="${fill}"
               stroke="${state === "next" ? "rgba(191,169,242,0.7)" : "none"}" stroke-width="1.5"/>
       <text class="ph-k" x="${x}" y="${SPINE_Y - 30}" text-anchor="middle"
@@ -3458,8 +3500,8 @@ function renderMap(){
 
   // --- the centre: her mark ---
   parts.push(`
-    <circle cx="${cx}" cy="${cy}" r="86" fill="rgba(247,183,156,0.07)"/>
-    <circle cx="${cx}" cy="${cy}" r="60" fill="rgba(10,14,36,0.55)" stroke="rgba(247,183,156,0.45)" stroke-width="1.2"/>
+    <circle cx="${cx}" cy="${cy}" r="86" fill="rgba(226,97,103,0.07)"/>
+    <circle cx="${cx}" cy="${cy}" r="60" fill="rgba(10,14,36,0.55)" stroke="rgba(226,97,103,0.45)" stroke-width="1.2"/>
     <image href="icons/alkoun-mark-peach.png" x="${cx-46}" y="${cy-40}" width="92" height="62" opacity="0.95"/>
     <text class="ctr-s" x="${cx}" y="${cy + 40}" text-anchor="middle">STUDIO</text>`);
 
@@ -3503,17 +3545,17 @@ function showKeyGate(msg = "") {
       #keyGate{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;font-family:var(--font);
         background:
           radial-gradient(1000px 640px at 78% -10%, rgba(191,169,242,0.20), transparent 60%),
-          radial-gradient(820px 560px at 10% 112%, rgba(247,183,156,0.16), transparent 60%),
+          radial-gradient(820px 560px at 10% 112%, rgba(226,97,103,0.16), transparent 60%),
           linear-gradient(180deg, #0b1030, #090c20 60%, #0a0e26)}
       #keyGate .kg-card{width:340px;text-align:center;padding:8px;position:relative}
-      #keyGate .kg-mark{display:block;width:236px;max-width:82%;height:auto;margin:0 auto;filter:drop-shadow(0 0 22px rgba(247,183,156,0.35))}
+      #keyGate .kg-mark{display:block;width:236px;max-width:82%;height:auto;margin:0 auto;filter:drop-shadow(0 0 22px rgba(226,97,103,0.35))}
       #keyGate h1{font-family:var(--serif);font-weight:500;font-size:24px;margin:20px 0 20px;color:#fff}
       #keyGate .kg-sub{color:#bfa9f2;font-size:12px;letter-spacing:3px;text-transform:uppercase;margin-bottom:20px}
       #keyGate .kg-note{color:#abb2da;font-size:13px;line-height:1.55;margin:0 0 18px}
       #keyGate input{width:100%;padding:13px 15px;border:1px solid rgba(255,255,255,0.16);border-radius:11px;font-size:15px;background:rgba(255,255,255,0.04);color:#fff;outline:none}
       #keyGate input::placeholder{color:#737aa6}
-      #keyGate input:focus{border-color:#f7b79c}
-      #keyGate button{width:100%;margin-top:12px;padding:13px;border:0;border-radius:11px;background:#f7b79c;color:#0a0e24;font-size:15px;font-weight:700;cursor:pointer}
+      #keyGate input:focus{border-color:#E26167}
+      #keyGate button{width:100%;margin-top:12px;padding:13px;border:0;border-radius:11px;background:#E26167;color:#0a0e24;font-size:15px;font-weight:700;cursor:pointer}
       #keyGate button:hover{filter:brightness(1.05)}
       #keyGate .kg-err{color:#f0897a;font-size:13px;min-height:18px;margin-top:12px}
       #keyGate .kg-help{display:inline-block;margin-top:6px;color:#bfa9f2;font-size:12.5px;text-decoration:none}
