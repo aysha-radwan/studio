@@ -30,6 +30,13 @@
     --peach-soft: rgba(247,183,156,0.14);
     --violet: #bfa9f2;        /* light purple — secondary accent */
     --violet-soft: rgba(191,169,242,0.16);
+    /* watermelon — the third accent: flesh + rind. Used for anything live,
+       physical or happening NOW (health, energy, current markers, primary CTAs). */
+    --melon: #ff5470;
+    --melon-2: #ff8095;       /* lighter flesh, for gradients */
+    --melon-soft: rgba(255,84,112,0.15);
+    --rind: #46c98b;
+    --rind-soft: rgba(70,201,139,0.15);
     /* keep --gold as an alias so every existing rule recolors to peach automatically */
     --gold: #f7b79c;
     --gold-soft: rgba(247,183,156,0.13);
@@ -477,6 +484,7 @@
     background:
       radial-gradient(1200px 760px at 82% -12%, rgba(191,169,242,0.16), transparent 62%),
       radial-gradient(1000px 680px at 6% 112%, rgba(247,183,156,0.12), transparent 60%),
+      radial-gradient(820px 560px at 96% 78%, rgba(255,84,112,0.10), transparent 62%),
       linear-gradient(180deg, #0b1030, #090c20 60%, #0a0e26);
   }
   /* a quiet starfield */
@@ -569,7 +577,7 @@
     background: rgba(247,183,156,0.1); border-radius: 12px; }
   .hl-cheer.show { opacity: 1; transform: translateY(0) scale(1); max-height: 70px; margin-top: 14px; padding: 10px 12px; border-width: 1px; }
   .hl-prog-note { color: var(--muted); font-size: 13px; line-height: 1.6; max-width: 720px; margin-bottom: 14px; }
-  .hl-prog { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 12px; }
+  .hl-prog { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 12px; }
   .hl-card { border: 1px solid var(--line); border-radius: 14px; padding: 15px 17px; background: rgba(255,255,255,0.03); }
   .hl-card .hc-top { display: flex; align-items: baseline; gap: 9px; margin-bottom: 10px; }
   .hl-card .hc-k { font-family: var(--serif); font-size: 19px; color: var(--peach); }
@@ -830,8 +838,111 @@
   .map-legend { display: flex; flex-wrap: wrap; gap: 16px; padding: 14px 4px 0; font-size: 12px; color: var(--faint); }
   .map-legend b { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 7px; vertical-align: 1px; }
 
+  /* ============================================================
+     WATERMELON — the third accent, plus a little more life everywhere
+     ============================================================ */
+  button.primary { background: linear-gradient(120deg, var(--peach), var(--melon)); border-color: transparent;
+    color: #2a0713; box-shadow: 0 4px 20px rgba(255,84,112,0.28); }
+  button.primary:hover { filter: brightness(1.07); color: #2a0713; }
+  .nav-item.active { background: linear-gradient(90deg, var(--melon-soft), rgba(255,84,112,0.02));
+    color: var(--melon); box-shadow: inset 2px 0 0 var(--melon); }
+  .seg button.active { background: var(--melon-soft); color: var(--melon); }
+  .check.done { background: var(--melon); border-color: var(--melon); }
+  .check.done::after { color: #2a0713; }
+  .prio-1 { color: #ffb3c0; border-color: rgba(255,84,112,.5); background: var(--melon-soft); }
+  .mo-day .bar { background: linear-gradient(180deg, var(--melon), rgba(255,84,112,0.28)); }
+  .mo-day.today .bar { background: linear-gradient(180deg, var(--peach), rgba(247,183,156,0.3)); }
+  .hz-node.soon i { border-color: var(--melon); background: var(--melon); box-shadow: 0 0 0 5px rgba(255,84,112,0.18); }
+  .hz-node.soon .hd { color: var(--melon); }
+  .hz-now { color: var(--melon); }
+  .hz-now:after { background: linear-gradient(180deg, var(--melon), transparent); }
+  .hz-line { background: linear-gradient(90deg, var(--melon), var(--peach) 40%, var(--violet)); }
+  .side-stat:nth-child(2) .n { color: var(--melon); }
+  .side-stat:nth-child(3) .n { color: var(--violet); }
+  .saved-flash { background: linear-gradient(120deg, var(--peach), var(--melon)); border-color: transparent; color: #2a0713; }
+
+  /* section headers get a hairline that fades out — cheap, but the page reads as designed */
+  .mc-sec-head { display: flex; align-items: center; gap: 12px; }
+  .mc-sec-head:after { content: ""; flex: 1; height: 1px;
+    background: linear-gradient(90deg, rgba(255,255,255,0.16), transparent); }
+  .fuel-h:after, .hl-h:after { content: ""; flex: 1; height: 1px; margin-left: 4px;
+    background: linear-gradient(90deg, rgba(255,255,255,0.14), transparent); }
+  .fuel-h { display: flex; align-items: center; gap: 12px; }
+  .view-intro { border-left: 2px solid var(--melon-soft); padding-left: 16px; margin-left: 34px; }
+  @media (max-width: 760px) { .view-intro { margin-left: 20px; padding-left: 12px; } }
+  .card:hover { border-color: rgba(255,84,112,0.34); }
+
+  /* ---------- Rhythm: day navigation + notes + context ---------- */
+  .cy-nav { display: flex; align-items: center; gap: 8px; margin: 2px 0 4px; flex-wrap: wrap; }
+  .cy-nav button { background: rgba(255,255,255,0.04); border: 1px solid var(--line); color: var(--ink-2);
+    border-radius: 9px; padding: 6px 11px; font: inherit; font-size: 13px; cursor: pointer; }
+  .cy-nav button:hover:not(:disabled) { border-color: var(--melon); color: var(--melon); }
+  .cy-nav button:disabled { opacity: .35; cursor: default; }
+  .cy-nav .cy-when { font-weight: 600; color: #fff; font-size: 14px; min-width: 132px; text-align: center; }
+  .cy-nav .cy-back { margin-left: auto; }
+  .cy-past { margin-top: 10px; padding: 9px 13px; border-radius: 11px; font-size: 12.5px; line-height: 1.5;
+    background: var(--violet-soft); border: 1px solid rgba(191,169,242,0.35); color: var(--ink-2); }
+  .cy-sub { width: 100%; max-width: 640px; margin-top: 8px; background: rgba(255,255,255,0.035);
+    border: 1px solid var(--line); border-radius: 10px; padding: 8px 12px; color: var(--ink);
+    font: inherit; font-size: 13.5px; }
+  .cy-sub::placeholder { color: var(--faint); }
+  .cy-sub:focus { outline: none; border-color: rgba(255,84,112,0.5); }
+  .cy-chip.on { background: var(--melon-soft); border-color: rgba(255,84,112,0.6); color: #fff; }
+  .cy-chip.on.v { background: var(--violet-soft); border-color: rgba(191,169,242,0.6); }
+  .cy-chip.on.g { background: var(--rind-soft); border-color: rgba(70,201,139,0.6); }
+  .cy-dot { cursor: pointer; }
+  .cy-dot:hover { box-shadow: 0 0 0 2px rgba(255,84,112,0.5); }
+  .cy-dot.b1 { background: rgba(255,84,112,0.28); border-color: rgba(255,84,112,0.5); }
+  .cy-dot.b2 { background: rgba(255,84,112,0.55); border-color: rgba(255,84,112,0.7); }
+  .cy-dot.b3 { background: var(--melon); border-color: var(--melon); }
+  .cy-dot.viewing { box-shadow: 0 0 0 2px #fff; }
+  .cy-why { margin-top: 12px; border-left: 2px solid var(--rind); padding: 4px 0 4px 14px;
+    font-size: 13px; line-height: 1.6; color: var(--muted); max-width: 660px; }
+  .cy-why b { color: var(--ink-2); font-weight: 600; }
+
+  /* ---------- Training: the anchor block ---------- */
+  .tr-rules { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 14px; }
+  .tr-rule { border: 1px solid var(--line); border-radius: 13px; padding: 13px 15px; background: rgba(255,255,255,0.03); }
+  .tr-rule.warn { border-color: rgba(255,84,112,0.35); background: var(--melon-soft); }
+  .tr-rule .rt { font-size: 12px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+    color: var(--melon); margin-bottom: 7px; }
+  .tr-rule.ok .rt { color: var(--rind); }
+  .tr-rule ul { list-style: none; margin: 0; padding: 0; }
+  .tr-rule li { font-size: 12.5px; line-height: 1.55; color: var(--ink-2); padding: 3px 0 3px 13px; position: relative; }
+  .tr-rule li:before { content: ""; position: absolute; left: 1px; top: 10px; width: 4px; height: 4px;
+    border-radius: 50%; background: currentColor; opacity: .5; }
+  .tr-ex { display: flex; align-items: baseline; gap: 10px; padding: 8px 0; border-top: 1px solid rgba(255,255,255,0.05); }
+  .tr-ex:first-child { border-top: 0; }
+  .tr-ex .tag { flex-shrink: 0; font-size: 9.5px; letter-spacing: .09em; text-transform: uppercase; font-weight: 700;
+    border-radius: 20px; padding: 3px 8px; }
+  .tr-ex .tag.anchor { color: #2a0713; background: var(--melon); }
+  .tr-ex .tag.acc { color: var(--violet); border: 1px solid rgba(191,169,242,0.4); }
+  .tr-ex .tag.fin { color: #04241a; background: var(--rind); }
+  .tr-ex .nm2 { flex: 1; font-size: 13.5px; color: var(--ink); line-height: 1.45; }
+  .tr-ex .set { flex-shrink: 0; font-size: 12.5px; color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .tr-ex .why { display: block; font-size: 11.5px; color: var(--faint); margin-top: 2px; }
+  .hl-day.done .tick { background: var(--melon); border-color: var(--melon); color: #2a0713; }
+  .hl-day.done { background: var(--melon-soft); border-color: rgba(255,84,112,0.5); }
+  .hl-bar i { background: linear-gradient(90deg, var(--melon), var(--peach) 60%, var(--violet)); }
+
+  /* ---------- Movement shelf ---------- */
+  .mv-grid { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 4px; }
+  .mv-chip { display: inline-flex; align-items: center; gap: 9px; border: 1px solid var(--line);
+    background: rgba(255,255,255,0.03); border-radius: 22px; padding: 9px 15px; color: var(--ink-2);
+    font: inherit; font-size: 13.5px; cursor: pointer; user-select: none; transition: all .13s; }
+  .mv-chip:hover { border-color: rgba(70,201,139,0.5); transform: translateY(-1px); }
+  .mv-chip .ic2 { font-size: 15px; }
+  .mv-chip.on { background: var(--rind-soft); border-color: rgba(70,201,139,0.6); color: #fff; }
+  .mv-chip .n2 { font-weight: 700; font-size: 12px; color: #04241a; background: var(--rind);
+    border-radius: 20px; min-width: 20px; text-align: center; padding: 1px 6px; }
+  .mv-chip .minus { color: var(--faint); font-size: 15px; line-height: 1; padding: 0 2px; }
+  .mv-chip .minus:hover { color: var(--melon); }
+  .mv-note { font-size: 12.5px; color: var(--faint); margin-top: 10px; line-height: 1.6; }
+
   /* ---------- Mobile / phone layout ---------- */
   @media (max-width: 760px) {
+    .tr-rules { grid-template-columns: 1fr; }
+    .cy-nav .cy-when { min-width: 0; flex: 1; }
     .mc-horizon, .mc-glance, .mc-mo, .map-wrap { padding-left: 20px; padding-right: 20px; }
     .hz { padding: 22px 14px 16px; }
     .map-box { border-radius: 14px; }
@@ -970,14 +1081,16 @@
 
       <!-- ---- HEALTH VIEW ---- -->
       <section id="view-health" class="view" hidden>
-        <div class="view-intro">Training, movement and recovery &mdash; your cycle, the current block, this week&rsquo;s sessions, and everything you&rsquo;re following.</div>
+        <div class="view-intro">Training, movement and recovery &mdash; your rhythm, the current block, this week&rsquo;s three sessions, everything else you moved, and the files you&rsquo;re following.</div>
         <div class="hl-wrap">
-          <h3 class="hl-h">Your cycle <span class="hl-sub">coming off Mirena &middot; log the weather, not a verdict</span></h3>
+          <h3 class="hl-h">Your rhythm <span class="hl-sub">coming off Mirena &middot; log the weather, not a verdict &middot; any day, any time</span></h3>
           <div class="cy-block" id="cyBlock"></div>
           <h3 class="hl-h">Training block</h3>
           <div class="hl-block" id="hlBlock"></div>
-          <h3 class="hl-h">This week <span class="hl-sub">what each session actually is</span></h3>
+          <h3 class="hl-h">This week <span class="hl-sub">the same three sessions &mdash; only the numbers move</span></h3>
           <div id="hlProgram"></div>
+          <h3 class="hl-h">Movement <span class="hl-sub">everything that isn&rsquo;t lifting &mdash; counted, never owed</span></h3>
+          <div id="hlMove"></div>
           <h3 class="hl-h">The plan</h3>
           <div class="hl-plans" id="hlPlans"></div>
           <h3 class="hl-h">Saved <span class="hl-sub">links, PDFs, anything you&rsquo;re following</span></h3>
@@ -2101,28 +2214,88 @@ function renderDocs() {
 
 // ---------- Health view (training block, week log, plans & shelf) ----------
 const HL_PLANS = [
-  { file: "Aysha-Training-Plan-Back-to-Strong.pdf", title: "Back to Strong — My Plan", sub: "Los Angeles · weights in lb" },
+  { file: "Aysha-Training-Plan-Back-to-Strong.pdf", title: "Back to Strong — the previous block", sub: "Archive · superseded by The Anchor Block above" },
 ];
+// ---- The Anchor Block ----------------------------------------------------
+// Three sessions, each built on two anchor lifts she chases for the whole block,
+// two accessories, and a six-minute finisher. Written around a vulnerable low back
+// and left shoulder: nothing overhead with a barbell, nothing from the floor,
+// no loaded spinal flexion, neutral grips throughout.
 const HL_SESSIONS = [
-  { k: "A", name: "Squat + Press" },
-  { k: "B", name: "Hinge + Pull" },
-  { k: "C", name: "Full-body volume" },
-  { k: "D", name: "Optional", opt: true },
+  { k: "A", name: "Lower + core" },
+  { k: "B", name: "Push + carry" },
+  { k: "C", name: "Pull + hinge" },
 ];
-// This week's actual program — rewritten each week. `week` must match the block week
-// number for it to show; otherwise the shelf asks for a fresh one.
-const HL_PROGRAM = {
-  week: 2,
-  note: "Week 1 you hit all four — so week 2 keeps the same movements and adds a little: one more set on the primaries, ~5 lb lower body / ~2.5 lb upper only where the last set of week 1 still had 3+ reps in the tank. Still re-entry: stop 3 reps short, every set. Shoulder & low-back rules unchanged — landmine and neutral grip only, nothing from the floor.",
-  sessions: {
-    A: ["Goblet squat — 3 × 8 @ 3 RIR", "Landmine press — 3 × 8 each side", "Leg press — 2 × 12", "Chest-supported row — 3 × 10", "Neutral-grip DB incline press — 2 × 10", "Pallof press — 2 × 12 each side", "Dead bug — 2 × 8 each side"],
-    B: ["RDL from blocks (knee height, never the floor) — 3 × 8", "Neutral-grip lat pulldown — 3 × 10", "Hip thrust — 3 × 10", "Seated cable row — 3 × 12", "Hamstring curl — 2 × 12", "Face pull / rear delt — 2 × 15", "Suitcase carry — 3 × 30 s each side"],
-    C: ["Leg press — 3 × 12", "Chest press machine — 3 × 12", "Assisted pull-up or pulldown — 3 × 10", "DB walking lunge — 2 × 10 each side", "Cable lateral raise — 3 × 15", "Rope triceps + cable curl superset — 2 × 12 each", "Incline walk — 12 min easy"],
-    D: ["Only if you want it — never a debt", "20–30 min zone-2 walk or bike", "Hips + T-spine mobility — 10 min", "Band pull-apart & external rotation — 2 × 15"],
-  },
+const TR_BLOCK = { id: "anchor-1", name: "The Anchor Block", weeks: 8 };
+const TR_PHASES = { 1: "Groove", 2: "Groove", 3: "Build", 4: "Build", 5: "Build", 6: "Build", 7: "Peak", 8: "Deload" };
+const TR_PHASE_NOTE = {
+  Groove: "Two weeks to find the groove. Three sets on the anchors, stop three reps short of failure every set — you're learning the movements again, not testing them.",
+  Build: "The working stretch. Four sets on the anchors, two reps left in the tank. When you hit the top of the rep range on every set, add 10 lb lower / 5 lb upper next time. That's the whole progression rule.",
+  Peak: "One heavier week. Anchor one goes to one rep in reserve — the top set should feel genuinely hard. Everything else stays where it was.",
+  Deload: "Half the sets, same weights, four in the tank. This is part of the plan, not a week off from it.",
 };
+// sets by item type and phase
+const TR_SETS = {
+  anchor: { Groove: 3, Build: 4, Peak: 4, Deload: 2 },
+  acc:    { Groove: 2, Build: 3, Peak: 3, Deload: 1 },
+};
+const TR_PROGRAM = {
+  A: [
+    { t: "anchor", n: "Trap-bar deadlift, from blocks", r: "5", why: "High handles, load close to you — the hinge without the floor-height back risk." },
+    { t: "anchor", n: "Front-foot-elevated split squat (DBs)", r: "8 / side", why: "Single leg means half the spinal load for the same leg work." },
+    { t: "acc", n: "Leg press — feet high, no lumbar rounding", r: "10–12", why: "Volume for quads and glutes with your back supported." },
+    { t: "acc", n: "Pallof press + dead bug (superset)", r: "12 + 8 / side", why: "Core that resists movement instead of crunching it." },
+    { t: "fin", n: "Sled push — 6 min, heavy, walk back", r: "6 min", why: "All legs and lungs, zero spinal load. This is the sweaty part." },
+  ],
+  B: [
+    { t: "anchor", n: "Neutral-grip DB bench press", r: "6–8", why: "Neutral grip keeps the left shoulder out of the painful arc." },
+    { t: "anchor", n: "Half-kneeling landmine press", r: "8 / side", why: "Your overhead press. The arc is safe and the core has to work." },
+    { t: "acc", n: "Chest-supported DB row", r: "10–12", why: "Pulls always match presses here — that's what keeps the shoulder happy." },
+    { t: "acc", n: "Cable lateral raise (thumb up) + band external rotation", r: "15 + 15", why: "Rotator cuff work, every push day, light. Non-negotiable." },
+    { t: "fin", n: "Farmer carry ladder — 4 × 40 m, rest 45 s", r: "6 min", why: "Grip, traps, ribs-down bracing. Best low-back insurance there is." },
+  ],
+  C: [
+    { t: "anchor", n: "Neutral-grip lat pulldown (or assisted pull-up)", r: "8–10", why: "Vertical pull without the shoulder-jamming wide bar." },
+    { t: "anchor", n: "Barbell hip thrust", r: "8", why: "Heavy glute work with the spine neutral the whole way." },
+    { t: "acc", n: "Single-leg RDL from knee-height blocks (light)", r: "10 / side", why: "Hamstring length and balance, nowhere near the floor." },
+    { t: "acc", n: "Seated cable row, wide-neutral + face pull", r: "12 + 15", why: "Upper back — the thing that actually holds a shoulder together." },
+    { t: "fin", n: "KB swing 10 × 10, EMOM (10 min → build to 6 min hard)", r: "6 min", why: "Explosive hinge, braced, no grinding. Finish there." },
+  ],
+};
+const TR_RULES = [
+  { t: "Left shoulder — never", warn: true, items: [
+    "Barbell overhead press, behind-neck anything, upright rows",
+    "Wide-grip flat bench, dips, straight-bar curls",
+    "Kipping, snatching, anything ballistic overhead",
+    "Pressing through pain to finish a set — stop the set instead",
+  ]},
+  { t: "Left shoulder — always", ok: true, items: [
+    "Neutral or thumb-up grips on everything",
+    "Cuff work every push day (band external rotation, 2 × 15)",
+    "Pull volume ≥ push volume, every week",
+    "Warm up the scapula before the first press, not after",
+  ]},
+  { t: "Low back — never", warn: true, items: [
+    "Deadlifts from floor height — blocks or trap bar only",
+    "Loaded spinal flexion: sit-ups, Russian twists, weighted crunches",
+    "Good mornings, heavy bent-over barbell rows",
+    "Training a red-light day heavy because it's on the schedule",
+  ]},
+  { t: "Low back — always", ok: true, items: [
+    "Brace before the weight moves: ribs down, breath in, then lift",
+    "Carries and anti-rotation over crunches, every time",
+    "Hips and T-spine opened before session A",
+    "Green / amber / red — amber means same session, lighter. Red means walk and go home.",
+  ]},
+];
+// Anything that isn't lifting. Counted, never owed.
+const MV_KINDS = [
+  { k: "Yoga", i: "🧘" }, { k: "Surf", i: "🌊" }, { k: "Spin / cycling", i: "🚴" },
+  { k: "Run", i: "🏃" }, { k: "Walk", i: "🚶" }, { k: "Pilates", i: "🤸" },
+  { k: "Swim", i: "🏊" }, { k: "Climb", i: "🧗" }, { k: "Dance", i: "💃" },
+  { k: "Mobility / stretch", i: "🪢" },
+];
 const HL_CHEERS = ["Good job 💪", "That's one 👏", "Nice — logged ✨", "Yes. Showed up 🙌", "Strong 🔥", "Proud of you 💫"];
-const HL_PHASES = { 1: "Re-entry", 2: "Re-entry", 3: "Build", 4: "Build", 5: "Build", 6: "Build", 7: "Deload" };
 function hlMonday(d = new Date()) {
   const x = new Date(d.getFullYear(), d.getMonth(), d.getDate());
   x.setDate(x.getDate() - ((x.getDay() + 6) % 7));
@@ -2130,35 +2303,49 @@ function hlMonday(d = new Date()) {
 }
 const hlKey = (d) => { const m = hlMonday(d); return m.getFullYear() + "-" + String(m.getMonth() + 1).padStart(2, "0") + "-" + String(m.getDate()).padStart(2, "0"); };
 function hlWeekNo() {
+  // a new block restarts the clock, without touching what she's already logged
+  if (state.health.block !== TR_BLOCK.id) {
+    state.health.block = TR_BLOCK.id;
+    state.health.start = hlKey();
+    save(false);
+  }
   if (!state.health.start) { state.health.start = hlKey(); save(false); }
   const [y, m, d] = state.health.start.split("-").map(Number);
   const diff = Math.round((hlMonday() - new Date(y, m - 1, d)) / 604800000);
-  return Math.min(7, Math.max(1, diff + 1));
+  return Math.min(TR_BLOCK.weeks, Math.max(1, diff + 1));
 }
+const hlPhase = (wk) => TR_PHASES[wk] || "Build";
 function renderHealth() {
   renderCycle();
-  const wk = hlWeekNo(), key = hlKey(), done = state.health.log[key] || [];
+  const wk = hlWeekNo(), key = hlKey(), done = state.health.log[key] || [], phase = hlPhase(wk);
   document.getElementById("hlBlock").innerHTML = `
     <div class="hl-top">
       <div>
-        <div class="hl-title">Back to Strong</div>
-        <div class="hl-note">Full body, 3 sessions + 1 optional — any days that fit your week. Free weights for the skill, machines for the volume. Three is the win; the fourth is a bonus, never a debt.</div>
-        <span class="hl-phase">${HL_PHASES[wk]} phase</span>
+        <div class="hl-title">${esc(TR_BLOCK.name)}</div>
+        <div class="hl-note">Three sessions, each built on two anchor lifts you chase for the whole block, two accessories, and a six-minute finisher. Same three every week — that's the point. The weights move, you don't have to re-learn the session.</div>
+        <span class="hl-phase">${esc(phase)} · week ${wk}</span>
       </div>
-      <div class="hl-week"><div class="wn">${wk}</div><div class="wl">of 7 weeks</div></div>
+      <div class="hl-week"><div class="wn">${wk}</div><div class="wl">of ${TR_BLOCK.weeks} weeks</div></div>
     </div>
-    <div class="hl-bar"><i style="width:${Math.round(wk / 7 * 100)}%"></i></div>
-    <div class="hl-bar-lbl"><span>Week 1 — light on purpose</span><span>Week 7 — deload</span></div>
-    <div class="hl-sess">${HL_SESSIONS.map(s => `
-      <div class="hl-day ${s.opt ? "opt" : ""} ${done.includes(s.k) ? "done" : ""}" data-k="${s.k}">
+    <div class="hl-bar"><i style="width:${Math.round(wk / TR_BLOCK.weeks * 100)}%"></i></div>
+    <div class="hl-bar-lbl"><span>Weeks 1–2 groove</span><span>3–6 build</span><span>7 peak</span><span>8 deload</span></div>
+    <div class="hl-sess" style="grid-template-columns:repeat(3,1fr)">${HL_SESSIONS.map(s => `
+      <div class="hl-day ${done.includes(s.k) ? "done" : ""}" data-k="${s.k}">
         <div class="dk"><span class="dl">${s.k}</span><span class="tick">✓</span></div>
         <div class="dn2">${esc(s.name)}</div>
       </div>`).join("")}</div>
-    <div class="hl-bar-lbl" style="margin-top:12px"><span>${done.filter(k => k !== "D").length} of 3 core sessions done this week</span><span>Tap a session when it's finished</span></div>
-    <div class="hl-cheer" id="hlCheer"></div>`;
+    <div class="hl-bar-lbl" style="margin-top:12px"><span>${done.length} of 3 done this week</span><span>Tap a session when it's finished</span></div>
+    <div class="hl-cheer" id="hlCheer"></div>
+    <div class="tr-rules">${TR_RULES.map(r => `
+      <div class="tr-rule ${r.warn ? "warn" : "ok"}">
+        <div class="rt">${esc(r.t)}</div>
+        <ul>${r.items.map(i => `<li>${esc(i)}</li>`).join("")}</ul>
+      </div>`).join("")}</div>
+    <div class="mv-note">These rules are written from what you've told me — no barbell overhead, nothing from the floor, neutral grips. <b>Send me the shoulder report and I'll tighten them to what the doctor actually found.</b></div>`;
   document.querySelectorAll("#hlBlock .hl-day").forEach(el => { el.onclick = () => hlToggle(el.dataset.k); });
 
   renderHealthProgram(wk);
+  renderMovement();
 
   document.getElementById("hlPlans").innerHTML = HL_PLANS.map(p => `
     <div class="hl-plan" data-f="${esc(p.file)}"><span class="pic">📄</span>
@@ -2186,26 +2373,86 @@ function renderHealth() {
     }
   }
 }
+// The program computes this week from the phase, so it never goes stale and
+// never needs rewriting by hand — the sets change, the movements don't.
 function renderHealthProgram(wk) {
   const wrap = document.getElementById("hlProgram");
   if (!wrap) return;
-  if (HL_PROGRAM.week !== wk) {
-    wrap.innerHTML = `<div class="empty"><div class="big">Week ${wk} isn't written yet.</div>Ask me to revise this week's program and it'll appear here.</div>`;
-    return;
-  }
+  const phase = hlPhase(wk);
   wrap.innerHTML = `
-    <div class="hl-prog-note">${esc(HL_PROGRAM.note)}</div>
+    <div class="hl-prog-note"><b>${esc(phase)} — week ${wk}.</b> ${esc(TR_PHASE_NOTE[phase])}</div>
     <div class="hl-prog">${HL_SESSIONS.map(s => `
-      <div class="hl-card ${s.opt ? "opt" : ""}">
+      <div class="hl-card">
         <div class="hc-top"><span class="hc-k">${s.k}</span><span class="hc-n">${esc(s.name)}</span></div>
-        <ul>${(HL_PROGRAM.sessions[s.k] || []).map(x => `<li>${esc(x)}</li>`).join("")}</ul>
+        ${(TR_PROGRAM[s.k] || []).map(x => {
+          const sets = x.t === "fin" ? "" : `${TR_SETS[x.t][phase]} × ${x.r}`;
+          const tag = x.t === "anchor" ? "Anchor" : x.t === "fin" ? "Finish" : "Work";
+          return `<div class="tr-ex">
+            <span class="tag ${x.t === "anchor" ? "anchor" : x.t === "fin" ? "fin" : "acc"}">${tag}</span>
+            <span class="nm2">${esc(x.n)}<span class="why">${esc(x.why)}</span></span>
+            <span class="set">${esc(sets || x.r)}</span>
+          </div>`;
+        }).join("")}
       </div>`).join("")}</div>`;
+}
+
+// ---------- Movement shelf — everything that isn't lifting ----------
+function mvWeek() {
+  if (!state.health.move) state.health.move = {};
+  const k = hlKey();
+  if (!state.health.move[k]) state.health.move[k] = {};
+  return state.health.move[k];
+}
+function mvKinds() {
+  const custom = (state.health.moveKinds || []).map(k => ({ k, i: "✦" }));
+  return [...MV_KINDS, ...custom];
+}
+function renderMovement() {
+  const wrap = document.getElementById("hlMove");
+  if (!wrap) return;
+  const week = mvWeek();
+  const total = Object.values(week).reduce((a, b) => a + b, 0);
+  wrap.innerHTML = `
+    <div class="mv-grid">
+      ${mvKinds().map(m => {
+        const n = week[m.k] || 0;
+        return `<button class="mv-chip ${n ? "on" : ""}" data-k="${esc(m.k)}">
+          <span class="ic2">${m.i}</span><span>${esc(m.k)}</span>
+          ${n ? `<span class="n2">${n}</span><span class="minus" data-minus="1" title="one fewer">−</span>` : ""}
+        </button>`;
+      }).join("")}
+      <button class="mv-chip" id="mvAdd"><span class="ic2">＋</span><span>Something else</span></button>
+    </div>
+    <div class="mv-note">${total
+      ? `<b>${total}</b> ${total === 1 ? "session" : "sessions"} of moving your body this week, on top of the lifting. Tap again for a second one; tap the − to take one back.`
+      : "Tap whatever you did this week. This isn't a target and nothing here is owed — it's just so the surf and the yoga stop being invisible next to the lifting."}</div>`;
+  wrap.querySelectorAll(".mv-chip[data-k]").forEach(el => {
+    el.onclick = (e) => {
+      const w = mvWeek(), k = el.dataset.k;
+      if (e.target.dataset.minus) {
+        w[k] = (w[k] || 0) - 1;
+        if (w[k] <= 0) delete w[k];
+      } else {
+        w[k] = (w[k] || 0) + 1;
+      }
+      save(); renderMovement();
+    };
+  });
+  const add = document.getElementById("mvAdd");
+  if (add) add.onclick = () => {
+    const name = (prompt("What else did you do?", "") || "").trim();
+    if (!name) return;
+    if (!state.health.moveKinds) state.health.moveKinds = [];
+    if (!mvKinds().some(m => m.k.toLowerCase() === name.toLowerCase())) state.health.moveKinds.push(name);
+    mvWeek()[name] = (mvWeek()[name] || 0) + 1;
+    save(); renderMovement();
+  };
 }
 function hlToggle(k) {
   const key = hlKey(), done = state.health.log[key] || [];
   const nowDone = !done.includes(k);
   state.health.log[key] = nowDone ? [...done, k] : done.filter(x => x !== k);
-  const core = state.health.log[key].filter(x => x !== "D").length;
+  const core = state.health.log[key].length;
   save(); renderHealth();
   if (nowDone) hlCheer(k, core);
 }
@@ -2213,8 +2460,7 @@ function hlCheer(k, core) {
   const el = document.getElementById("hlCheer");
   if (!el) return;
   let msg;
-  if (k === "D") msg = "Bonus session. Above and beyond 🌟";
-  else if (core === 3) msg = "Three for three — that's the week 🎉";
+  if (core === 3) msg = "Three for three — that's the week 🎉";
   else msg = HL_CHEERS[Math.floor(Math.random() * HL_CHEERS.length)];
   el.textContent = msg;
   el.classList.remove("show");
@@ -2265,8 +2511,15 @@ const CY_BLEED = [
   { v: 0, t: "None" }, { v: 1, t: "Spotting" }, { v: 2, t: "Light" },
   { v: 3, t: "Medium" }, { v: 4, t: "Heavy" },
 ];
-const CY_MOOD = ["Steady", "Bright", "Flat", "Tender", "Irritable", "Anxious", "Heavy"];
-const CY_BODY = ["Cramps", "Sore breasts", "Bloated", "Headache", "Slept badly", "Achy", "Wired"];
+const CY_MOOD = ["Steady", "Bright", "Flat", "Tender", "Irritable", "Anxious", "Heavy",
+                 "Restless", "Numb", "Soft", "Angry", "Clear", "Fragile", "Content"];
+const CY_BODY = ["Cramps", "Sore breasts", "Bloated", "Headache", "Slept badly", "Achy", "Wired",
+                 "Nauseous", "Dizzy", "Back ache", "Hungry", "Skin", "Heavy legs", "Cold"];
+// What else was true that day. This is the whole point: a hard day can belong to
+// her life rather than her hormones, and the log should be able to say so.
+const CY_CTX = ["Grief wave", "Missing Dad", "Barely slept", "Long work day", "Travelled",
+                "Unwell", "Trained hard", "Big social day", "Money/admin stress", "A good day",
+                "Nothing unusual"];
 const CY_ENERGY_LBL = { 1: "empty", 2: "low", 3: "okay", 4: "good", 5: "flying" };
 // The five-month runway — the same map as the guide, one line each.
 const CY_RUNWAY = [
@@ -2288,8 +2541,22 @@ const CY_EXPECT = [
 const cyKey = (d = new Date()) => d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
 const cyParse = (k) => { const [y, m, d] = k.split("-").map(Number); return new Date(y, m - 1, d); };
 const cyDaysBetween = (a, b) => Math.round((cyParse(b) - cyParse(a)) / 86400000);
+// Which day the log is currently pointed at. Defaults to today, but she can walk
+// back and fill in a day she missed — nothing here is time-locked.
+let cyViewing = null;
+const cyView = () => cyViewing || cyKey();
+function cyGoTo(k) {
+  const today = cyKey();
+  if (k > today) return;                       // no logging the future
+  cyViewing = (k === today) ? null : k;
+  renderCycle();
+}
+function cyShift(days) {
+  const d = cyParse(cyView());
+  cyGoTo(cyKey(new Date(d.getFullYear(), d.getMonth(), d.getDate() + days)));
+}
 function cyToday() {
-  const k = cyKey();
+  const k = cyView();
   if (!state.cycle.days[k]) state.cycle.days[k] = {};
   return state.cycle.days[k];
 }
@@ -2313,7 +2580,8 @@ function cyPeriodStarts() {
 function renderCycle() {
   const wrap = document.getElementById("cyBlock");
   if (!wrap) return;
-  const today = cyKey(), t = state.cycle.days[today] || {};
+  const today = cyKey(), viewing = cyView(), isToday = viewing === today;
+  const t = state.cycle.days[viewing] || {};
   const raw = cyDaysBetween(state.cycle.removal, today);   // negative before removal day
   const sinceRemoval = Math.max(0, raw);
   const weeks = Math.floor(sinceRemoval / 7);
@@ -2349,9 +2617,16 @@ function renderCycle() {
 
     <div class="cy-in">
       <div class="cy-in-h">
-        <span class="t">Today</span>
-        <span class="s">${esc(cyPretty(today))} · takes half a minute · nothing here is a score</span>
+        <span class="t">${isToday ? "Today" : "Filling in a day"}</span>
+        <span class="s">takes half a minute · nothing here is a score · you can fill in any day, any time</span>
       </div>
+      <div class="cy-nav">
+        <button id="cyPrev" title="The day before">←</button>
+        <span class="cy-when">${esc(cyPretty(viewing))}</span>
+        <button id="cyNext" title="The day after" ${isToday ? "disabled" : ""}>→</button>
+        ${isToday ? "" : `<button class="cy-back" id="cyBackToday">Back to today</button>`}
+      </div>
+      ${isToday ? "" : `<div class="cy-past">You're editing <b>${esc(cyPretty(viewing))}</b> — ${cyDaysBetween(viewing, today)} day${cyDaysBetween(viewing, today) === 1 ? "" : "s"} ago. Fill in as much or as little as you remember; a half-remembered day still counts.</div>`}
       <div class="cy-row">
         <div class="cy-lbl">Bleeding</div>
         <div class="cy-chips" id="cyBleed">${CY_BLEED.map(b => `
@@ -2368,22 +2643,34 @@ function renderCycle() {
         <div class="cy-lbl">Mood — the weather, not a verdict</div>
         <div class="cy-chips" id="cyMood">${CY_MOOD.map(m => `
           <button class="cy-chip v ${t.m === m ? "on" : ""}" data-v="${esc(m)}">${m}</button>`).join("")}</div>
+        <input class="cy-sub" id="cyMoodNote" placeholder="In your own words — what did it actually feel like?" value="${esc(t.mn || "")}" />
       </div>
       <div class="cy-row">
         <div class="cy-lbl">Body</div>
         <div class="cy-chips" id="cyBody">${CY_BODY.map(b => `
           <button class="cy-chip ${(t.body || []).includes(b) ? "on" : ""}" data-v="${esc(b)}">${b}</button>`).join("")}</div>
+        <input class="cy-sub" id="cyBodyNote" placeholder="Where, and how? Your words beat my chips." value="${esc(t.bn || "")}" />
+      </div>
+      <div class="cy-row">
+        <div class="cy-lbl">What else was true today</div>
+        <div class="cy-chips" id="cyCtx">${CY_CTX.map(c => `
+          <button class="cy-chip g ${(t.ctx || []).includes(c) ? "on" : ""}" data-v="${esc(c)}">${c}</button>`).join("")}</div>
+        <div class="cy-why">This row is the honest one. A flat, achy, exhausted day in your first autumn without your dad
+          is <b>not automatically hormonal</b> — grief does cramping, broken sleep, heaviness and rage too, and so does a
+          bad night or a hard week. Marking what else was going on is what stops this log quietly blaming your body for
+          your life. Later it can tell you which is which; today it just needs both halves written down.</div>
       </div>
       <div class="cy-row">
         <div class="cy-lbl">Anything else</div>
         <textarea class="cy-note-in" id="cyNote" rows="2" placeholder="A line if you want one. Skip it most days.">${esc(t.n || "")}</textarea>
       </div>
       <div class="cy-row">
-        <div class="cy-lbl">The last five weeks</div>
+        <div class="cy-lbl">The last five weeks — tap any day to fill it in</div>
         <div class="cy-strip" id="cyStrip"></div>
-        <div class="cy-legend">Peach = bleeding, deeper is heavier. Violet = a day you noted. Empty = a day you didn't, which is just a day.</div>
+        <div class="cy-legend">Watermelon = bleeding, deeper is heavier. Violet = a day you noted. Empty = a day you didn't, which is just a day. White ring = the day you're editing.</div>
       </div>
       ${cyHistory(starts)}
+      ${cyReadout()}
       <div class="cy-row">
         <button class="cy-chip" onclick="openBlob(CFG.dataRepo, CY_GUIDE)">📄 Read the full guide — the next five months</button>
       </div>
@@ -2406,12 +2693,33 @@ function renderCycle() {
       save(); renderCycle();
     };
   });
-  const note = document.getElementById("cyNote");
-  if (note) note.oninput = () => {
-    const d = cyToday();
-    d.n = note.value.trim() || undefined;
-    clearTimeout(note._t); note._t = setTimeout(() => save(false), 900);
+  document.querySelectorAll("#cyCtx .cy-chip").forEach(el => {
+    el.onclick = () => {
+      const d = cyToday(), v = el.dataset.v, cur = d.ctx || [];
+      d.ctx = cur.includes(v) ? cur.filter(x => x !== v) : [...cur, v];
+      if (!d.ctx.length) delete d.ctx;
+      save(); renderCycle();
+    };
+  });
+  // free-text fields: save quietly, never re-render mid-typing
+  const bindText = (id, field) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.oninput = () => {
+      const d = cyToday();
+      d[field] = el.value.trim() || undefined;
+      clearTimeout(el._t); el._t = setTimeout(() => save(false), 900);
+    };
   };
+  bindText("cyNote", "n");
+  bindText("cyMoodNote", "mn");
+  bindText("cyBodyNote", "bn");
+
+  document.getElementById("cyPrev").onclick = () => cyShift(-1);
+  document.getElementById("cyNext").onclick = () => cyShift(1);
+  const back = document.getElementById("cyBackToday");
+  if (back) back.onclick = () => cyGoTo(cyKey());
+
   cyStrip();
 }
 function cyPretty(k) {
@@ -2421,7 +2729,7 @@ function cyPretty(k) {
 function cyStrip() {
   const el = document.getElementById("cyStrip");
   if (!el) return;
-  const today = new Date();
+  const today = new Date(), viewing = cyView();
   let html = "";
   for (let i = 34; i >= 0; i--) {
     const d = new Date(today.getFullYear(), today.getMonth(), today.getDate() - i);
@@ -2430,13 +2738,38 @@ function cyStrip() {
     if (day) {
       const b = day.b || 0;
       if (b >= 3) cls += " b3"; else if (b === 2) cls += " b2"; else if (b === 1) cls += " b1";
-      else if (day.b === 0 || day.e || day.m || day.body || day.n) cls += " logged";
+      else if (day.b === 0 || day.e || day.m || day.body || day.n || day.mn || day.bn || day.ctx) cls += " logged";
     }
     if (i === 0) cls += " today";
-    html += `<span class="${cls}" title="${esc(cyPretty(k))}"></span>`;
+    if (k === viewing) cls += " viewing";
+    html += `<span class="${cls}" data-k="${k}" title="${esc(cyPretty(k))} — tap to fill in"></span>`;
   }
   el.innerHTML = html;
+  el.querySelectorAll(".cy-dot").forEach(dot => { dot.onclick = () => cyGoTo(dot.dataset.k); });
 }
+// The attribution question, answered with her own data instead of a guess.
+// It counts, it never concludes — "this many hard days also had a life reason"
+// is a fact; "your mood is hormonal" would be a claim this log can't make.
+const CY_HARD_MOODS = ["Flat", "Heavy", "Irritable", "Anxious", "Tender", "Fragile", "Numb", "Angry"];
+function cyReadout() {
+  const today = cyKey();
+  const days = Object.entries(state.cycle.days).filter(([k]) => k <= today);
+  const hard = days.filter(([, d]) =>
+    (d.m && CY_HARD_MOODS.includes(d.m)) || (d.e && d.e <= 2) || (d.body || []).length >= 3);
+  if (hard.length < 4) return "";
+  const lifeTags = (d) => (d.ctx || []).filter(c => c !== "Nothing unusual" && c !== "A good day");
+  const withLife = hard.filter(([, d]) => lifeTags(d).length);
+  const grief = hard.filter(([, d]) => (d.ctx || []).some(c => c === "Grief wave" || c === "Missing Dad"));
+  const untagged = hard.length - withLife.length;
+  return `<div class="cy-why" style="border-left-color:var(--violet);margin-top:16px">
+    <b>Reading the hard days.</b> You've logged <b>${hard.length}</b> heavy or low-energy days so far.
+    ${withLife.length ? `<b>${withLife.length}</b> of them also had something else going on that day${grief.length ? `, and <b>${grief.length}</b> were days you named grief` : ""}.` : "None of them have anything marked in the row above yet."}
+    ${untagged ? `${untagged} ${untagged === 1 ? "day has" : "days have"} nothing else marked.` : ""}
+    That's a count, not a cause — but it's the count you'd want before deciding a week was hormonal.
+    ${grief.length >= 2 ? " Grief and the first months off Mirena produce a lot of the same weather; the honest answer is usually both." : ""}
+  </div>`;
+}
+
 // Only speaks once there is genuinely something to say.
 function cyHistory(starts) {
   if (starts.length < 2) return "";
