@@ -108,6 +108,58 @@
   }
   header h2 { font-family: var(--serif); font-weight: 600; font-size: 22px; letter-spacing: -0.3px; color: var(--ink); }
   .datenote { color: var(--muted); font-size: 13px; }
+  .head-right { display: flex; align-items: center; gap: 18px; margin-left: auto; }
+
+  /* ---------- Work time (the strip at the top, on every view) ----------
+     Watermelon, not peach: this is the "happening right now" accent. */
+  .wt {
+    display: none; align-items: center; gap: 11px;
+    padding: 7px 15px 7px 12px; border-radius: 999px;
+    background: rgba(255,255,255,0.05); border: 1px solid var(--line);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.07);
+    font-family: var(--font); color: var(--ink); cursor: pointer;
+    transition: background .18s, border-color .18s, transform .12s;
+  }
+  .wt.ready { display: flex; }
+  .wt:hover { background: rgba(255,255,255,0.09); border-color: rgba(255,255,255,0.20); }
+  .wt:active { transform: scale(0.985); }
+  .wt-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--faint); flex: none; }
+  .wt.on .wt-dot { background: var(--rind); animation: wtPulse 2.4s infinite; }
+  @keyframes wtPulse { 0% { box-shadow: 0 0 0 0 rgba(70,201,139,0.55); }
+                       70%,100% { box-shadow: 0 0 0 8px rgba(70,201,139,0); } }
+  .wt-time { font-size: 14.5px; font-variant-numeric: tabular-nums; letter-spacing: -0.2px; }
+  .wt-time i { font-style: normal; color: var(--muted); font-size: 11.5px; margin: 0 1px 0 1px; }
+  .wt-lab { font-size: 10.5px; letter-spacing: 0.11em; text-transform: uppercase; color: var(--muted); }
+  .wt-spark { display: block; flex: none; opacity: .95; }
+
+  .wt-pop {
+    position: fixed; z-index: 95; width: 350px; max-width: calc(100vw - 24px);
+    background: var(--panel); border: 1px solid var(--line); border-radius: 18px;
+    box-shadow: 0 26px 60px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.07);
+    padding: 22px 22px 18px; opacity: 0; transform: translateY(-6px);
+    pointer-events: none; transition: opacity .16s, transform .16s;
+  }
+  .wt-pop.show { opacity: 1; transform: translateY(0); pointer-events: auto; }
+  .wt-pop .big { font-size: 34px; font-weight: 300; letter-spacing: -0.02em; line-height: 1; }
+  .wt-pop .big i { font-style: normal; font-size: 17px; color: var(--muted); }
+  .wt-pop .st { color: var(--muted); font-size: 12.5px; margin-top: 9px; }
+  .wt-pop .hd { font-size: 10.5px; letter-spacing: 0.12em; text-transform: uppercase;
+                color: var(--muted); margin: 20px 0 10px; }
+  .wt-pop .tot { display: flex; gap: 26px; margin-top: 14px; }
+  .wt-pop .tot b { display: block; font-size: 18px; font-weight: 400; }
+  .wt-pop .tot span { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+  .wt-row { display: grid; grid-template-columns: 96px 1fr auto; align-items: center;
+            gap: 11px; margin-bottom: 8px; }
+  .wt-row .n { font-size: 12.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .wt-row .v { font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .wt-bar { height: 8px; border-radius: 4px; background: rgba(255,255,255,0.07); overflow: hidden; }
+  .wt-bar i { display: block; height: 100%; border-radius: 4px; background: var(--melon); }
+  @media (max-width: 760px) {
+    .head-right { gap: 10px; }
+    .wt { padding: 6px 12px 6px 10px; gap: 8px; }
+    .wt-lab, .wt-spark { display: none; }
+    .datenote { display: none; }
+  }
 
   /* ---------- Toolbar ---------- */
   .toolbar {
@@ -1070,8 +1122,17 @@
     <main class="main">
       <header>
         <h2 id="viewTitle">Projects</h2>
-        <div class="datenote" id="dateNote"></div>
+        <div class="head-right">
+          <button class="wt" id="wtPill" type="button" aria-label="Time on the laptop today">
+            <span class="wt-dot"></span>
+            <span class="wt-time" id="wtTime">—</span>
+            <span class="wt-lab">on the clock</span>
+            <span class="wt-spark" id="wtSpark"></span>
+          </button>
+          <div class="datenote" id="dateNote"></div>
+        </div>
       </header>
+      <div class="wt-pop" id="wtPop"></div>
 
       <!-- ---- MISSION CONTROL (OVERVIEW) ---- -->
       <section id="view-overview" class="view">
@@ -3134,6 +3195,7 @@ function applyHash() {
 function bootView() {
   const v = (location.hash || "").replace("#", "");
   switchView(VALID_VIEWS.includes(v) ? v : "overview");
+  startWorkTime();
 }
 window.addEventListener("hashchange", applyHash);
 
@@ -3163,13 +3225,140 @@ function greeting(){
   const h = new Date().getHours();
   return h<5?"Still up":h<12?"Good morning":h<18?"Good afternoon":"Good evening";
 }
+// One shared read of status.json — the top strip and Mission Control both want it,
+// and the Mac only rewrites it once a minute.
+let statusCache = { at: 0, val: null };
+async function fetchStatus(maxAgeMs = 30000){
+  if (statusCache.val && Date.now() - statusCache.at < maxAgeMs) return statusCache.val;
+  try {
+    const s = JSON.parse(b64decodeUtf8(await GH.getB64(STATUS.repo, STATUS.path, STATUS.ref)));
+    statusCache = { at: Date.now(), val: s };
+  } catch (e) { /* keep whatever we had */ }
+  return statusCache.val;
+}
+
+// ---------- Work time: the strip at the top ----------
+// Fed by the tracker on the Mac (~/.studio/worktime), which starts and stops itself
+// from keyboard/trackpad idle time. Nothing here to start or stop by hand.
+function wtHM(sec, small){
+  sec = Math.max(0, Math.round(sec || 0));
+  const h = Math.floor(sec / 3600), m = Math.floor((sec % 3600) / 60);
+  const u = small ? (x) => `<i>${x}</i>` : (x) => x;
+  if (h && m) return `${h}${u("h")} ${String(m).padStart(2,"0")}${u("m")}`;
+  if (h) return `${h}${u("h")}`;
+  return `${m}${u("m")}`;
+}
+function wtSparkline(week){
+  const peak = Math.max(...week.map(d => d.s), 3600);
+  const W = 4, G = 3, H = 20, n = week.length;
+  const bars = week.map((d, i) => {
+    const h = Math.max(2, (d.s / peak) * H);
+    return `<rect x="${i*(W+G)}" y="${(H-h).toFixed(1)}" width="${W}" height="${h.toFixed(1)}"
+      rx="1.5" fill="var(--melon)" opacity="${i === n-1 ? 1 : 0.45}"/>`;
+  }).join("");
+  return `<svg width="${n*(W+G)-G}" height="${H}" viewBox="0 0 ${n*(W+G)-G} ${H}"
+    role="img" aria-label="Time on the laptop, last 7 days">${bars}</svg>`;
+}
+// A stale feed means the Mac is asleep or off — she can't be on the clock, whatever
+// the last published tick said. Totals stay valid; only "working now" is gated.
+function wtFromStatus(s){
+  if (!s || !s.worktime) return null;
+  const fresh = s.updated && (Date.now() - new Date(s.updated).getTime() < 4*60*1000);
+  return { ...s.worktime, working: !!s.worktime.working && fresh, stale: !fresh, seen: s.updated };
+}
+function wtRender(w){
+  const pill = document.getElementById("wtPill");
+  if (!pill || !w) return;
+  pill.classList.add("ready");
+  pill.classList.toggle("on", !!w.working);
+  document.getElementById("wtTime").innerHTML = wtHM(w.today, true);
+  document.getElementById("wtSpark").innerHTML = wtSparkline(w.week || []);
+  pill.title = w.working
+    ? "On the clock now" + (w.app ? " · " + w.app : "")
+    : (w.stale ? "Your Mac is asleep — the clock is stopped" : "The clock is stopped");
+  wtPopFill(w);
+}
+function wtPopFill(w){
+  const pop = document.getElementById("wtPop");
+  if (!pop) return;
+  const week = w.week || [];
+  const total = week.reduce((s, d) => s + d.s, 0);
+  const peak = Math.max(...week.map(d => d.s), 3600);
+  const dayName = (iso) => new Date(iso + "T12:00:00").toLocaleDateString(undefined, { weekday: "short" });
+
+  let status;
+  if (w.working) status = "On the clock now" + (w.app ? " · " + w.app : "");
+  else if (w.stale) status = "Your Mac is asleep or off · last seen " + agoText(w.seen);
+  else if (w.last) status = "Paused · last stretch ended " + agoText(w.last);
+  else status = "The clock starts on its own when you use the Mac.";
+
+  const days = week.map((d, i) => `
+    <div class="wt-row">
+      <div class="n" style="${i === week.length-1 ? "" : "color:var(--muted)"}">${dayName(d.d)}${i === week.length-1 ? " · today" : ""}</div>
+      <div class="wt-bar"><i style="width:${Math.max(1.5, d.s/peak*100).toFixed(1)}%;opacity:${i === week.length-1 ? 1 : .55}"></i></div>
+      <div class="v">${d.s ? wtHM(d.s) : "—"}</div>
+    </div>`).join("");
+
+  const apps = (w.apps || []).length ? (w.apps || []).map(a => `
+    <div class="wt-row">
+      <div class="n">${esc(a.n)}</div>
+      <div class="wt-bar"><i style="width:${Math.max(1.5, a.s/(w.apps[0].s||1)*100).toFixed(1)}%"></i></div>
+      <div class="v">${wtHM(a.s)}</div>
+    </div>`).join("") : `<div class="st">Nothing tracked yet today.</div>`;
+
+  pop.innerHTML = `
+    <div class="big">${wtHM(w.today, true)}</div>
+    <div class="st">${esc(status)}</div>
+    ${w.sessions ? `<div class="st">${w.sessions} session${w.sessions === 1 ? "" : "s"} today · longest stretch ${wtHM(w.longest)}${w.started ? " · started " + new Date(w.started).toLocaleTimeString(undefined,{hour:"numeric",minute:"2-digit"}).toLowerCase() : ""}</div>` : ""}
+    <div class="hd">Last 7 days</div>
+    ${days}
+    <div class="tot">
+      <div><b>${wtHM(total)}</b><span>This week</span></div>
+      <div><b>${wtHM(total/7)}</b><span>Daily average</span></div>
+    </div>
+    <div class="hd">Where it went today</div>
+    ${apps}`;
+}
+function wtPopToggle(force){
+  const pop = document.getElementById("wtPop"), pill = document.getElementById("wtPill");
+  const open = force !== undefined ? force : !pop.classList.contains("show");
+  if (open) {
+    const r = pill.getBoundingClientRect();
+    pop.style.top = (r.bottom + 10) + "px";
+    if (window.innerWidth <= 760) { pop.style.left = "12px"; pop.style.right = "12px"; pop.style.width = "auto"; }
+    else { pop.style.right = (window.innerWidth - r.right) + "px"; pop.style.left = "auto"; pop.style.width = "350px"; }
+  }
+  pop.classList.toggle("show", open);
+}
+async function renderWorkTime(){
+  const w = wtFromStatus(await fetchStatus());
+  if (w) wtRender(w);
+}
+function startWorkTime(){
+  const pill = document.getElementById("wtPill");
+  if (pill) pill.onclick = (e) => { e.stopPropagation(); wtPopToggle(); };
+  document.addEventListener("click", (e) => {
+    const pop = document.getElementById("wtPop");
+    if (pop && pop.classList.contains("show") && !pop.contains(e.target)) wtPopToggle(false);
+  });
+  window.addEventListener("keydown", (e) => { if (e.key === "Escape") wtPopToggle(false); });
+  // Reposition rather than close: on a phone, resize fires whenever the URL bar
+  // slides in or out, and closing on that would feel like a glitch.
+  window.addEventListener("resize", () => {
+    if (document.getElementById("wtPop").classList.contains("show")) wtPopToggle(true);
+  });
+  renderWorkTime();
+  setInterval(() => { if (!document.hidden) renderWorkTime(); }, 60000);
+  document.addEventListener("visibilitychange", () => { if (!document.hidden) renderWorkTime(); });
+}
+
 let mcTimer = null;
 async function renderOverview(){
   document.getElementById("mcGreet").textContent = greeting()+", Aysha";
   renderHorizon(); renderGlance(); renderMomentum();   // draw instantly, before the network
-  let status = null;
-  try { status = JSON.parse(b64decodeUtf8(await GH.getB64(STATUS.repo, STATUS.path, STATUS.ref))); }
-  catch(e){ status = null; }
+  const status = await fetchStatus();
+  const wtNow = wtFromStatus(status);
+  if (wtNow) wtRender(wtNow);
   const fresh = status && status.updated && (Date.now()-new Date(status.updated).getTime() < 4*60*1000);
   const terminals = (fresh && Array.isArray(status.terminals)) ? status.terminals : [];
   const liveAgents = (status && Array.isArray(status.agents)) ? status.agents : [];
