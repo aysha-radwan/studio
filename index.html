@@ -53,7 +53,7 @@
   [hidden] { display: none !important; }
 
   /* ---------- App shell ---------- */
-  .app { display: block; min-height: 100vh; }
+  .app { display: block; min-height: 100vh; position: relative; z-index: 1; }
 
   /* ---------- Top bar ----------
      Two rows: the mark + counts + phone link, then the nav as its own row of
@@ -731,14 +731,13 @@
      Purely decorative — no pointer events, and it stops painting the moment
      it scrolls out of view. */
   .sky-field {
-    position: absolute; top: -22px; left: 0; right: 0; height: 350px;
-    overflow: hidden; pointer-events: none; z-index: 0;
-    /* the edge fade is computed per element in the canvas, NOT with a CSS mask:
+    /* z-index 0 + .app above it, NOT z-index -1: a negative layer paints behind
+       body's own opaque background and vanishes */
+    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    /* the fade is computed per element in the canvas, NOT with a CSS mask:
        masking a layer this size re-composites it every frame (~145ms/frame) */
   }
   .sky-field canvas { display: block; width: 100%; height: 100%; }
-  .mc-hero, .mc-stats { position: relative; z-index: 1; }
-  @media (max-width: 760px) { .sky-field { height: 290px; } }
   .mc-hero { padding: 22px 34px 6px; display: flex; align-items: flex-start; justify-content: space-between; gap: 18px; position: relative; }
   .mc-greet { font-family: var(--serif); font-size: 27px; font-weight: 600; letter-spacing: -0.4px; color: #fff; }
   .mc-tag { color: var(--muted); font-size: 13.5px; margin-top: 5px; max-width: 560px; line-height: 1.5; }
@@ -750,12 +749,21 @@
   .mc-live.quiet .mc-dot { background: var(--faint); }
   @keyframes pulse { 0%{box-shadow:0 0 0 0 rgba(87,214,166,0.55)} 70%{box-shadow:0 0 0 7px rgba(87,214,166,0)} 100%{box-shadow:0 0 0 0 rgba(87,214,166,0)} }
 
-  .mc-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; padding: 16px 34px 6px; }
-  .mc-stat { border: 1px solid var(--line); border-radius: 14px; padding: 15px 17px; background: linear-gradient(160deg, rgba(255,255,255,0.045), rgba(255,255,255,0.015)); }
-  .mc-stat .n { font-family: var(--serif); font-size: 27px; color: #fff; line-height: 1; }
+  /* the four numbers used to be big tiles across the top; two of them are
+     usually zero, so they're a quiet line under the greeting instead */
+  .mc-hero-l { min-width: 0; }
+  .mc-stats { display: flex; flex-wrap: wrap; gap: 20px; margin-top: 15px; }
+  .mc-stat { display: flex; align-items: baseline; gap: 7px; }
+  .mc-stat .n { font-family: var(--serif); font-size: 19px; color: #fff; line-height: 1; }
   .mc-stat .n.peach { color: var(--peach); }
   .mc-stat .n.violet { color: var(--violet); }
-  .mc-stat .l { font-size: 10.5px; letter-spacing: 1.4px; text-transform: uppercase; color: var(--faint); margin-top: 8px; }
+  .mc-stat .l { font-size: 10px; letter-spacing: 1.3px; text-transform: uppercase; color: var(--faint); }
+  .mc-running { display: grid; grid-template-columns: 1.35fr 1fr; gap: 14px; align-items: start; }
+  .mc-running .mc-grid { padding-left: 0; padding-right: 0; }
+  .mc-running > .mc-grid:first-child { padding-left: 34px; }
+  .mc-running > .mc-grid:last-child { padding-right: 34px; }
+  @media (max-width: 900px) { .mc-running { grid-template-columns: 1fr; }
+    .mc-running > .mc-grid { padding-left: 34px; padding-right: 34px; } }
 
   .mc-sec-head { padding: 24px 34px 0; font-family: var(--serif); font-size: 15px; font-weight: 600; color: var(--ink-2); }
   .mc-sec-head .fx { color: var(--peach); margin-right: 6px; }
@@ -851,6 +859,36 @@
   .hz-node .ht { font-size: 12.5px; color: var(--ink-2); line-height: 1.35; margin-top: 4px; }
   .hz-node.soon .hd { color: var(--peach); }
   .hz-node .hn { font-size: 11px; color: var(--violet); margin-top: 4px; }
+  /* body + wellness milestones ride the same spine, in the green of the rind */
+  .hz-node.body i { border-color: var(--rind); background: var(--rind); }
+  .hz-node.body.soon i { box-shadow: 0 0 0 5px rgba(70,201,139,0.18); }
+  .hz-node.body .hd { color: var(--rind); }
+  .hz-key { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 16px; }
+  .hz-key span { font-size: 10.5px; letter-spacing: 0.06em; color: var(--faint); display: flex; align-items: center; gap: 6px; }
+  .hz-key i { width: 7px; height: 7px; border-radius: 50%; display: block; }
+
+  /* what you're carrying: the things that run the whole length, not on a date */
+  .hz-carry { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
+  .hz-chip { display: flex; align-items: center; gap: 9px; padding: 8px 13px; border-radius: 999px;
+    border: 1px solid var(--line); background: rgba(255,255,255,0.035); cursor: pointer;
+    font-family: var(--font); font-size: 12.5px; color: var(--ink-2); text-align: left; transition: all .13s ease; }
+  .hz-chip:hover { border-color: rgba(255,255,255,0.24); background: rgba(255,255,255,0.07); }
+  .hz-chip i { width: 7px; height: 7px; border-radius: 50%; flex: none; }
+  .hz-chip b { font-weight: 600; }
+  .hz-chip .c { color: var(--faint); font-size: 11.5px; }
+  .hz-chip.still { cursor: default; }
+  .hz-sub-h { font-size: 10.5px; letter-spacing: 0.13em; text-transform: uppercase; color: var(--muted);
+    margin: 22px 0 9px; display: flex; align-items: baseline; gap: 9px; }
+  .hz-sub-h em { font-style: normal; text-transform: none; letter-spacing: 0; font-size: 11.5px; color: var(--faint); }
+
+  /* the becoming band — deliberately not a deadline */
+  .hz-becoming { margin-top: 10px; border-radius: 14px; padding: 15px 17px;
+    border: 1px solid rgba(70,201,139,0.20);
+    background: linear-gradient(100deg, rgba(70,201,139,0.10), rgba(191,169,242,0.09) 55%, rgba(226,97,103,0.07)); }
+  .hz-becoming .bl { display: flex; flex-wrap: wrap; gap: 9px; }
+  .hz-becoming .bw { font-family: var(--serif); font-size: 15px; color: #fff; padding: 5px 13px;
+    border-radius: 999px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.10); }
+  .hz-becoming .bn { font-size: 11.5px; color: var(--muted); margin-top: 11px; line-height: 1.5; }
   .hz-now { position: absolute; top: -30px; transform: translateX(-50%); font-size: 10.5px;
     letter-spacing: 1.4px; text-transform: uppercase; color: var(--peach); white-space: nowrap; }
   .hz-now:after { content: ""; display: block; width: 1px; height: 20px; margin: 5px auto 0;
@@ -1138,6 +1176,7 @@
 </style>
 </head>
 <body>
+  <div class="sky-field" aria-hidden="true"><canvas id="skyCanvas"></canvas></div>
   <div class="app">
     <!-- ============ SIDEBAR ============ -->
     <aside class="sidebar">
@@ -1184,17 +1223,16 @@
 
       <!-- ---- MISSION CONTROL (OVERVIEW) ---- -->
       <section id="view-overview" class="view">
-        <div class="sky-field" aria-hidden="true"><canvas id="skyCanvas"></canvas></div>
         <div class="mc-hero">
-          <div>
+          <div class="mc-hero-l">
             <div class="mc-greet" id="mcGreet">Welcome back</div>
-            <div class="mc-tag">Your studio, in motion. You’re the manager — here’s the whole operation.</div>
+            <div class="mc-tag">Everything you’re carrying, and where it’s all headed.</div>
+            <div class="mc-stats" id="mcStats"></div>
           </div>
           <div class="mc-live" id="mcLive"><span class="mc-dot"></span><span id="mcLiveText">Syncing…</span></div>
         </div>
-        <div class="mc-stats" id="mcStats"></div>
 
-        <div class="mc-sec-head"><span class="fx">◈</span> The horizon <span class="mc-sub">— where you are in the plan, and what’s next</span></div>
+        <div class="mc-sec-head"><span class="fx">◈</span> The horizon <span class="mc-sub">— all of it: the ventures, the work, and you</span></div>
         <div class="mc-horizon"><div class="hz" id="mcHorizon"></div></div>
 
         <div class="mc-sec-head"><span class="fx">◍</span> Projects at a glance <span class="mc-sub">— progress, and the next thing on each</span></div>
@@ -1203,11 +1241,11 @@
         <div class="mc-sec-head"><span class="fx">▮</span> Momentum <span class="mc-sub">— what you finished, day by day</span></div>
         <div class="mc-mo"><div class="mo-box" id="mcMomentum"></div></div>
 
-        <div class="mc-sec-head"><span class="fx">▹</span> Workstations <span class="mc-sub">— projects you’re actively working</span></div>
-        <div class="mc-grid" id="mcTerminals"></div>
-
-        <div class="mc-sec-head"><span class="fx">✦</span> Your team <span class="mc-sub">— agents working to finish the projects</span></div>
-        <div class="mc-grid" id="mcAgents"></div>
+        <div class="mc-sec-head"><span class="fx">▹</span> Running now <span class="mc-sub">— workstations open, and the agents on call</span></div>
+        <div class="mc-running">
+          <div class="mc-grid" id="mcTerminals"></div>
+          <div class="mc-grid" id="mcAgents"></div>
+        </div>
       </section>
 
       <!-- ---- THE MAP (mind map of the whole studio) ---- -->
@@ -3247,7 +3285,8 @@ function startStarLanes(){
   let w = 0, h = 0, raf = null, visible = true, last = 0, t = 0, nextMote = 1.5;
 
   function seed(){
-    const n = Math.max(40, Math.min(80, Math.round(w / 17)));
+    // density from area now that it covers the page, not a single band
+    const n = Math.max(55, Math.min(150, Math.round((w * h) / 13500)));
     stars = [];
     for (let i = 0; i < n; i++){
       // three depth planes: the far ones are smaller, dimmer and slower, which
@@ -3259,7 +3298,7 @@ function startStarLanes(){
         x: Math.random() * w, y: Math.random() * h,
         vx: Math.cos(dir) * spd, vy: Math.sin(dir) * spd * 0.5,
         r: 0.5 + depth * 1.2,
-        a: (0.2 + Math.random() * 0.5) * depth,
+        a: (0.15 + Math.random() * 0.38) * depth,   // dimmer: it sits under everything now
         c: STAR[(Math.random() * STAR.length) | 0],
         tw: Math.random() * Math.PI * 2,
         d: depth,
@@ -3296,14 +3335,13 @@ function startStarLanes(){
              y: q*q*a.y + 2*q*p*c.cy + p*p*b.y };
   }
 
-  // Soft vignette so the chart melts into the page instead of ending on the
-  // edge of its box. Folded into each element's alpha — see the CSS note above.
+  // Full strength over the page, easing off under the top bar and page title so
+  // the busiest strip of chrome stays clean. Folded into each element's alpha —
+  // never do this with a CSS mask, see the note above.
   function fade(x, y){
-    const nx = (x - w * 0.5) / (w * 0.60);
-    const ny = (y - h * 0.34) / (h * 0.66);
-    const d = Math.sqrt(nx * nx + ny * ny);
-    if (d >= 1) return 0;
-    return d <= 0.45 ? 1 : 1 - (d - 0.45) / 0.55;
+    if (y >= 210) return 1;
+    if (y <= 96) return 0.10;
+    return 0.10 + 0.90 * ((y - 96) / 114);
   }
 
   function resize(){
@@ -3320,6 +3358,10 @@ function startStarLanes(){
 
   function paint(now){
     raf = null;
+    if (visible && !document.hidden) raf = requestAnimationFrame(paint);
+    // ~32fps: the drift is slow enough that nobody can tell, and it halves the
+    // cost of repainting a full-page canvas on battery
+    if (last && now - last < 30) return;
     const dt = last ? Math.min(0.05, (now - last) / 1000) : 0.016;
     last = now;
     t += dt * RATE;
@@ -3358,7 +3400,7 @@ function startStarLanes(){
     for (let k = 0; k < BUCKETS; k++){
       const lane = lanes[k];
       if (!lane.length) continue;
-      ctx.strokeStyle = "rgba(" + LINK + "," + (0.035 + k * 0.038).toFixed(3) + ")";
+      ctx.strokeStyle = "rgba(" + LINK + "," + (0.028 + k * 0.030).toFixed(3) + ")";
       ctx.beginPath();
       for (let m = 0; m < lane.length; m += 4){
         ctx.moveTo(lane[m], lane[m+1]); ctx.lineTo(lane[m+2], lane[m+3]);
@@ -3419,16 +3461,14 @@ function startStarLanes(){
       if (fv <= 0.02) continue;
       const g = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, 16);
       g.addColorStop(0, p.c); g.addColorStop(1, "rgba(0,0,0,0)");
-      ctx.globalAlpha = 0.20 * fv; ctx.fillStyle = g;
+      ctx.globalAlpha = 0.13 * fv; ctx.fillStyle = g;
       ctx.beginPath(); ctx.arc(p.x, p.y, 16, 0, Math.PI * 2); ctx.fill();
-      ctx.globalAlpha = 0.30 * fv; ctx.strokeStyle = p.c; ctx.lineWidth = 0.7;
+      ctx.globalAlpha = 0.18 * fv; ctx.strokeStyle = p.c; ctx.lineWidth = 0.7;
       ctx.beginPath(); ctx.arc(p.x, p.y, 7.5, 0, Math.PI * 2); ctx.stroke();
-      ctx.globalAlpha = 0.85 * fv; ctx.fillStyle = p.c;
+      ctx.globalAlpha = 0.55 * fv; ctx.fillStyle = p.c;
       ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); ctx.fill();
     }
     ctx.globalAlpha = 1;
-
-    if (visible && !document.hidden) raf = requestAnimationFrame(paint);
   }
 
   function run(){
@@ -3605,25 +3645,38 @@ function gotoProject(id){
 function renderHorizon(){
   const box = document.getElementById("mcHorizon");
   if (!box) return;
-  const n = MILESTONES.length;
-  const at = i => 5 + (i / (n - 1)) * 90;                 // % along the line, with margins
-  let nextIdx = MILESTONES.findIndex(m => daysUntil(m.d) >= 0);
+
+  // The spine carries the ventures AND her own checkpoints. Anything personal
+  // (the body targets, the words below) lives in her private data, never in
+  // this public app shell — goals is read from state, not hard-coded here.
+  const goals = state.goals || {};
+  const marks = MILESTONES.map(m => ({ ...m, kind: "venture" }))
+    .concat((goals.checkins || []).map(c => ({ ...c, kind: c.kind || "body" })))
+    .sort((a, b) => a.d < b.d ? -1 : a.d > b.d ? 1 : 0);
+
+  const n = marks.length;
+  const at = i => 5 + (i / Math.max(1, n - 1)) * 90;      // % along the line, with margins
+  let nextIdx = marks.findIndex(m => daysUntil(m.d) >= 0);
 
   let nowPct;
   if (nextIdx < 0) nowPct = 100;
   else if (nextIdx === 0) nowPct = at(0);
   else {
-    const prev = daysUntil(MILESTONES[nextIdx-1].d), next = daysUntil(MILESTONES[nextIdx].d);
+    const prev = daysUntil(marks[nextIdx-1].d), next = daysUntil(marks[nextIdx].d);
     const span = Math.max(1, next - prev);
     nowPct = at(nextIdx-1) + ((-prev) / span) * (at(nextIdx) - at(nextIdx-1));
   }
 
-  box.innerHTML = `
-    <div class="hz-line">
+  const spine = `
+    <div class="hz-key">
+      <span><i style="background:var(--melon)"></i> The ventures</span>
+      <span><i style="background:var(--rind)"></i> You</span>
+    </div>
+    <div class="hz-line" style="min-width:${Math.max(620, n * 128)}px">
       <div class="hz-now" style="left:${nowPct.toFixed(1)}%">You are here</div>
-      ${MILESTONES.map((m, i) => {
+      ${marks.map((m, i) => {
         const away = daysUntil(m.d);
-        const cls = away < 0 ? "past" : (i === nextIdx ? "soon" : "");
+        const cls = [m.kind === "body" ? "body" : "", away < 0 ? "past" : (i === nextIdx ? "soon" : "")].join(" ");
         return `<div class="hz-node ${cls}" style="left:${at(i).toFixed(1)}%">
           <i></i>
           <div class="hd">${esc(m.k)}</div>
@@ -3633,7 +3686,32 @@ function renderHorizon(){
       }).join("")}
     </div>
     <div class="hz-spacer"></div>`;
+
+  // Everything she's carrying the whole way along — every project, plus the body
+  // targets. These have no single date, so they sit under the line, not on it.
+  const projChips = state.projects.map(p => {
+    const open = (p.todos || []).filter(t => !t.done).length;
+    const next = (p.todos || []).find(t => !t.done);
+    return `<button class="hz-chip" onclick="gotoProject('${esc(p.id)}')" title="${esc(next ? next.text : "All clear")}">
+      <i style="background:${esc(p.color || "var(--peach)")}"></i>
+      <b>${esc(p.name)}</b><span class="c">${open ? open + " open" : "all clear ✓"}</span></button>`;
+  }).join("");
+
+  const bodyChips = (goals.body || []).map(b =>
+    `<span class="hz-chip still"><i style="background:var(--rind)"></i><b>${esc(b)}</b></span>`).join("");
+
+  const becoming = (goals.becoming || []).length ? `
+    <div class="hz-sub-h">The becoming <em>— no dates on these</em></div>
+    <div class="hz-becoming">
+      <div class="bl">${goals.becoming.map(b => `<span class="bw">${esc(b)}</span>`).join("")}</div>
+      <div class="bn">${esc(goals.becomingNote || "Not milestones. The ground you're walking on the whole way — every date above happens on top of these.")}</div>
+    </div>` : "";
+
+  box.innerHTML = spine + `
+    <div class="hz-sub-h">What you're carrying <em>— all the way along, not on a date</em></div>
+    <div class="hz-carry">${projChips}${bodyChips}</div>` + becoming;
 }
+
 
 function renderGlance(){
   const g = document.getElementById("mcGlance");
