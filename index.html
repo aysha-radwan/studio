@@ -1322,7 +1322,7 @@
 
       <!-- ---- ENTREPRENEURSHIP VIEW ---- -->
       <section id="view-entre" class="view" hidden>
-        <div class="view-intro">The business side. Research, ventures and the money &mdash; kept separate from the creative work on purpose. Three tracks running in parallel: <b>a caf&eacute; in Riyadh</b>, <b>a condo in Riyadh</b> and <b>the AI-UGC business</b>, plus the call on which one starts first.</div>
+        <div class="view-intro">The business side. Research, ventures and the money &mdash; kept separate from the creative work on purpose. In priority order: <b>the AI-UGC business</b> and everything it needs first, then <b>a condo in Riyadh</b>, the call on <b>which one starts first</b>, and <b>a caf&eacute; in Riyadh</b>.</div>
         <div class="plan-wrap">
           <div class="ent-docs" id="entDocs"></div>
           <div class="plan-bar">
@@ -1958,53 +1958,53 @@ async function renderPlan() {
 // Same pattern as The Plan: the guide lives in the PRIVATE data repo and is
 // fetched with her key into a blob URL, so nothing business-y sits in the public app.
 const ENT_DOCS = [
-  { id: "cafe",  n: "1", path: "files/entrepreneurship/Riyadh-Coffee-Dossier.html",
-    title: "A café in Riyadh",
-    sub: "Coffee by day, the room the rave crowd doesn't have by night — market, money, licences, the map",
-    pill: "Researching",
-    meta: "Trip window 24 Nov – 8 Dec · XP Music Futures + Coffee Expo + Soundstorm 26" },
-  { id: "condo", n: "2", path: "files/entrepreneurship/Riyadh-Condo-Dossier.html",
-    title: "A condo in Riyadh",
-    sub: "Where to buy, what SAR 5,000/month buys, and every support you qualify for",
-    pill: "Sakani first",
-    meta: "Apply to Sakani this month · rent freeze runs to Sept 2030" },
-  { id: "which", n: "3", path: "files/entrepreneurship/Cafe-or-Condo.html",
-    title: "Which one first",
-    sub: "The comparison, the cost of waiting each way, and my recommendation",
-    pill: "Decide in Jan",
-    meta: "Short answer: condo first, café second — start the paperwork now" },
-  { id: "ugc",   n: "4", path: "files/entrepreneurship/AI-UGC-Business-Plan.html",
+  { id: "ugc",   n: "1", path: "files/entrepreneurship/AI-UGC-Business-Plan.html",
     title: "The AI-UGC business",
     sub: "Sell creative volume, not videos — the market, the pay, the route, the tested ad framework, Aug→Dec",
     pill: "Active",
     meta: "3 angles × 5 hooks = 15 variants · never start from a blank page · $1,200 test pack → $2,200/mo" },
-  { id: "leads", n: "5", path: "files/entrepreneurship/Finding-Clients.html",
+  { id: "leads", n: "2", path: "files/entrepreneurship/Finding-Clients.html",
     title: "AI-UGC · Finding clients",
     sub: "Why the marketplaces stopped working, what replaces them, where to look, and the three emails",
     pill: "Do this next",
     meta: "Agencies over marketplaces · Meta Ad Library, 6+ variants · Gulf brands · smallest possible ask" },
-  { id: "licence", n: "6", path: "files/entrepreneurship/Content-Licence-Agreement.html",
+  { id: "licence", n: "3", path: "files/entrepreneurship/Content-Licence-Agreement.html",
     title: "AI-UGC · The licence agreement",
     sub: "You keep the copyright. They licence it for a window. Signed before anything is produced",
     pill: "Use before client 1",
     meta: "Clause 5 is the one never to trade away · rate card: 30d = 1× base, perpetual = 5×+" },
-  { id: "ckday", n: "7", path: "files/entrepreneurship/Creator-Kit-Day.html",
+  { id: "ckday", n: "4", path: "files/entrepreneurship/Creator-Kit-Day.html",
     title: "AI-UGC · Creator Kit day",
     sub: "Tomorrow, top to bottom — the shoot spec, the Soul retrain, the sheet, the Kit. Tap to tick off",
     pill: "Tomorrow",
     meta: "Back camera · portrait mode off · one Soul, one look, one era · three options then move on" },
-  { id: "kit", n: "8", path: "files/entrepreneurship/Creator-Kit.html",
+  { id: "kit", n: "5", path: "files/entrepreneurship/Creator-Kit.html",
     title: "AI-UGC · The Creator Kit",
     sub: "The spec everything is built from — locked references, capsules, lighting, the recipe",
     pill: "Open before every brief",
     meta: "3 locked references · one light per prompt · portrait ratio always · never Creative upscale" },
-  { id: "leadlist", n: "9", path: "files/entrepreneurship/Lead-List.html",
+  { id: "leadlist", n: "6", path: "files/entrepreneurship/Lead-List.html",
     title: "AI-UGC · Lead list",
     sub: "Who's hiring and which brands to email — rewritten automatically every Sunday morning",
     pill: "Weekly",
     meta: "Look for 6+ active variants in the Ad Library · any post naming creatives/month is a retainer" },
+  { id: "condo", n: "7", path: "files/entrepreneurship/Riyadh-Condo-Dossier.html",
+    title: "A condo in Riyadh",
+    sub: "Where to buy, what SAR 5,000/month buys, and every support you qualify for",
+    pill: "Sakani first",
+    meta: "Apply to Sakani this month · rent freeze runs to Sept 2030" },
+  { id: "which", n: "8", path: "files/entrepreneurship/Cafe-or-Condo.html",
+    title: "Which one first",
+    sub: "The comparison, the cost of waiting each way, and my recommendation",
+    pill: "Decide in Jan",
+    meta: "Short answer: condo first, café second — start the paperwork now" },
+  { id: "cafe",  n: "9", path: "files/entrepreneurship/Riyadh-Coffee-Dossier.html",
+    title: "A café in Riyadh",
+    sub: "Coffee by day, the room the rave crowd doesn't have by night — market, money, licences, the map",
+    pill: "Researching",
+    meta: "Trip window 24 Nov – 8 Dec · XP Music Futures + Coffee Expo + Soundstorm 26" },
 ];
-let entDoc = "cafe";
+let entDoc = "ugc";
 const entLoaded = {};
 function currentEntDoc() { return ENT_DOCS.find(d => d.id === entDoc) || ENT_DOCS[0]; }
 function openEntreFull() { openBlob(CFG.dataRepo, currentEntDoc().path); }
@@ -3689,7 +3689,8 @@ function renderHorizon(){
 
   // Everything she's carrying the whole way along — every project, plus the body
   // targets. These have no single date, so they sit under the line, not on it.
-  const projChips = state.projects.map(p => {
+  // same order she's set on the Projects board, so priority is consistent
+  const projChips = sortedProjects().map(p => {
     const open = (p.todos || []).filter(t => !t.done).length;
     const next = (p.todos || []).find(t => !t.done);
     return `<button class="hz-chip" onclick="gotoProject('${esc(p.id)}')" title="${esc(next ? next.text : "All clear")}">
