@@ -1012,6 +1012,27 @@
   .cv .cvn { font-size: 12px; color: #fff; width: 18px; text-align: right; font-variant-numeric: tabular-nums; }
   .cv-foot { font-size: 11.5px; color: var(--faint); line-height: 1.6; margin-top: 12px; }
 
+  /* ---------- Vaelor (training lives there now) ---------- */
+  .vl-card { border: 1px solid var(--line); border-radius: 16px; padding: 20px 22px;
+    background: linear-gradient(150deg, rgba(226,97,103,0.10), rgba(191,169,242,0.07) 55%, rgba(255,255,255,0.02));
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.08); }
+  .vl-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 18px; flex-wrap: wrap; }
+  .vl-name { font-family: var(--serif); font-size: 21px; font-weight: 600; color: #fff; letter-spacing: -0.3px; }
+  .vl-tag { font-family: var(--font); font-size: 10.5px; letter-spacing: 1.5px; text-transform: uppercase;
+    color: var(--peach); font-weight: 600; margin-left: 10px; vertical-align: 3px; }
+  .vl-note { color: var(--muted); font-size: 13.5px; line-height: 1.6; margin-top: 6px; max-width: 560px; }
+  .vl-go { flex-shrink: 0; text-decoration: none; font-size: 13.5px; font-weight: 600; color: #2a0713;
+    background: linear-gradient(120deg, var(--peach), var(--melon)); border-radius: 10px; padding: 10px 16px;
+    box-shadow: 0 4px 20px rgba(226,97,103,0.28); }
+  .vl-go:hover { filter: brightness(1.07); }
+  .vl-pending { margin-top: 16px; font-size: 12.5px; color: var(--faint); line-height: 1.6;
+    border-left: 2px solid rgba(255,255,255,0.18); padding-left: 13px; }
+  .vl-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 11px; margin-top: 18px; }
+  .vl-stat { border: 1px solid var(--line); border-radius: 12px; padding: 13px 14px; background: rgba(255,255,255,0.03); }
+  .vl-stat .n { font-family: var(--serif); font-size: 22px; color: var(--peach); line-height: 1; }
+  .vl-stat .l { font-size: 10.5px; letter-spacing: 1.2px; text-transform: uppercase; color: var(--faint); margin-top: 7px; }
+  .vl-sync { font-size: 11.5px; color: var(--faint); margin-top: 12px; }
+
   /* ---------- Movement shelf ---------- */
   .mv-grid { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 4px; }
   .mv-chip { display: inline-flex; align-items: center; gap: 9px; border: 1px solid var(--line);
@@ -1230,10 +1251,8 @@
         <div class="hl-wrap">
           <h3 class="hl-h">Your rhythm <span class="hl-sub">coming off Mirena &middot; log the weather, not a verdict &middot; any day, any time</span></h3>
           <div class="cy-block" id="cyBlock"></div>
-          <h3 class="hl-h">Training block</h3>
-          <div class="hl-block" id="hlBlock"></div>
-          <h3 class="hl-h">This week <span class="hl-sub">the same three sessions &mdash; only the numbers move</span></h3>
-          <div id="hlProgram"></div>
+          <h3 class="hl-h">Training <span class="hl-sub">lives in Vaelor now</span></h3>
+          <div id="hlTrain"></div>
           <h3 class="hl-h">Movement <span class="hl-sub">everything that isn&rsquo;t lifting &mdash; counted, never owed</span></h3>
           <div id="hlMove"></div>
           <h3 class="hl-h">The plan</h3>
@@ -2364,130 +2383,7 @@ function renderDocs() {
 
 // ---------- Health view (training block, week log, plans & shelf) ----------
 const HL_PLANS = [
-  { file: "Aysha-Training-Plan-Back-to-Strong.pdf", title: "Back to Strong — the previous block", sub: "Archive · superseded by The Anchor Block above" },
-];
-// ---- The Anchor Block ----------------------------------------------------
-// Three sessions, each built on two anchor lifts she chases for the whole block,
-// two accessories, and a six-minute finisher. Written around a vulnerable low back
-// and left shoulder: nothing overhead with a barbell, nothing from the floor,
-// no loaded spinal flexion, neutral grips throughout.
-const HL_SESSIONS = [
-  { k: "A", name: "Squat + press" },
-  { k: "B", name: "Hinge + pull" },
-  { k: "C", name: "Glutes + upper" },
-];
-const TR_BLOCK = { id: "anchor-1", name: "The Anchor Block", weeks: 8 };
-const TR_PHASES = { 1: "Groove", 2: "Groove", 3: "Build", 4: "Build", 5: "Build", 6: "Build", 7: "Peak", 8: "Deload" };
-const TR_PHASE_NOTE = {
-  Groove: "Two weeks to find the groove. Three sets on the anchors, stop three reps short of failure every set — you're learning the movements again, not testing them.",
-  Build: "The working stretch. Four sets on the anchors, two reps left in the tank. When you hit the top of the rep range on every set, add 10 lb lower / 5 lb upper next time. That's the whole progression rule.",
-  Peak: "One heavier week. Anchor one goes to one rep in reserve — the top set should feel genuinely hard. Everything else stays where it was.",
-  Deload: "Half the sets, same weights, four in the tank. This is part of the plan, not a week off from it.",
-};
-// sets by item type and phase
-const TR_SETS = {
-  anchor: { Groove: 3, Build: 4, Peak: 4, Deload: 2 },
-  acc:    { Groove: 2, Build: 3, Peak: 3, Deload: 1 },
-};
-const TR_PROGRAM = {
-  A: [
-    { t: "anchor", n: "Front-foot-elevated split squat (DBs)", r: "8 / side", mus: ["Quads", "Glutes"],
-      why: "Single leg means half the spinal load for the same leg work." },
-    { t: "anchor", n: "Neutral-grip DB bench press", r: "6–8", mus: ["Chest", "Triceps"],
-      why: "Neutral grip keeps the shoulder out of the painful arc." },
-    { t: "acc", n: "Chest-supported DB row", r: "10–12", mus: ["Back"],
-      why: "Pulls match presses in the same session — that's what keeps a shoulder happy." },
-    { t: "acc", n: "Seated hamstring curl", r: "10–12", mus: ["Hamstrings"],
-      why: "The hinge work is glute-heavy; this is the hamstrings' own slot." },
-    { t: "acc", n: "Cable lateral raise, stop at shoulder height", r: "15", mus: ["Side delts"],
-      why: "90° cap: your acromion downslopes, and above that is where the space narrows." },
-    { t: "acc", n: "Rope pushdown + DB hammer curl (superset)", r: "12 + 12", mus: ["Triceps", "Biceps"],
-      why: "Direct arms, elbows in, nothing that loads an overhead position." },
-    { t: "acc", n: "Pallof press", r: "12 / side", mus: ["Core"],
-      why: "Core that resists rotation instead of crunching the spine." },
-    { t: "fin", n: "Sled push — 6 min, heavy, walk back", r: "6 min", mus: ["Quads", "Conditioning"],
-      why: "All legs and lungs, zero spinal load. The sweaty part." },
-  ],
-  B: [
-    { t: "anchor", n: "Trap-bar deadlift, from blocks", r: "5", mus: ["Glutes", "Hamstrings", "Back"],
-      why: "High handles, load close to you — the hinge without the floor-height back risk." },
-    { t: "anchor", n: "Neutral-grip lat pulldown (or assisted pull-up)", r: "8–10", mus: ["Back"],
-      why: "Vertical pull without the shoulder-jamming wide bar." },
-    { t: "acc", n: "Half-kneeling landmine press", r: "8 / side", mus: ["Front delts", "Core"],
-      why: "Your overhead press for now — safe arc, and the core has to work." },
-    { t: "acc", n: "Leg press — feet high, no lumbar rounding", r: "10–12", mus: ["Quads", "Glutes"],
-      why: "Quad volume with your back fully supported." },
-    { t: "acc", n: "Face pull + band external rotation (superset)", r: "15 + 15", mus: ["Rear delts", "Rotator cuff"],
-      why: "Cuff and scapular work — the evidence's actual first-line for this kind of shoulder pain." },
-    { t: "acc", n: "Seated calf raise", r: "12–15", mus: ["Calves"],
-      why: "Knee bent — the soleus, which the standing version misses." },
-    { t: "acc", n: "Dead bug", r: "8 / side", mus: ["Core"],
-      why: "Anti-extension. Ribs down, back flat, slow." },
-    { t: "fin", n: "Farmer carry ladder — 4 × 40 m, rest 45 s", r: "6 min", mus: ["Grip", "Core", "Conditioning"],
-      why: "Grip, traps, ribs-down bracing. Best low-back insurance there is." },
-  ],
-  C: [
-    { t: "anchor", n: "Barbell hip thrust", r: "8", mus: ["Glutes"],
-      why: "Heavy glute work with the spine neutral the whole way." },
-    { t: "anchor", n: "Incline neutral-grip DB press", r: "8–10", mus: ["Chest", "Front delts"],
-      why: "The second chest session of the week — frequency is what grows it." },
-    { t: "acc", n: "Seated cable row, wide-neutral", r: "12", mus: ["Back"],
-      why: "Third pull of the week. Back volume is deliberately the highest here." },
-    { t: "acc", n: "Single-leg RDL from knee-height blocks", r: "10 / side", mus: ["Hamstrings", "Glutes"],
-      why: "Hamstring length and balance, nowhere near the floor." },
-    { t: "acc", n: "Rear-delt fly + cable lateral raise (superset)", r: "15 + 15", mus: ["Rear delts", "Side delts"],
-      why: "Shoulders get their second dose; laterals still stop at 90°." },
-    { t: "acc", n: "Standing calf raise", r: "12–15", mus: ["Calves"],
-      why: "Knee straight — the gastroc half of the pair." },
-    { t: "acc", n: "Neutral-grip DB curl", r: "10–12", mus: ["Biceps"],
-      why: "Hammer grip so the shoulder stays quiet while the arm works." },
-    { t: "fin", n: "KB swing 10 × 10, EMOM (build to 6 min hard)", r: "6 min", mus: ["Glutes", "Hamstrings", "Conditioning"],
-      why: "Explosive hinge, braced, no grinding. Finish there." },
-  ],
-};
-// The evidence the programme is built on, named so it can be argued with.
-const TR_EVIDENCE = [
-  "Volume: hypertrophy improves reliably past ~10 hard sets per muscle per week, with 12–20 the usual band for a trained lifter and clear diminishing returns above that (2022 systematic review; 2025 dose–response meta-regression).",
-  "Frequency: those sets work better spread over 2–3 sessions per muscle than dumped into one — which is why these three days are full-body rather than a lower/push/pull split.",
-  "Shoulder: for subacromial-type pain with clean imaging, scapular stabilisation plus cuff strengthening is the first-line intervention, and loading progresses by symptoms rather than avoiding the position forever (2024–2025 RCTs and meta-analysis).",
-  "Low back: progressive loading — including trap-bar and block pulls — builds spinal capacity better than isolation core work; the risk is loading too fast, not the lift itself (2020–2026 reviews).",
-];
-// What her imaging actually shows — quoted, so the rules can't drift into folklore.
-const TR_IMAGING = {
-  title: "What your imaging actually says",
-  lines: [
-    "MRI right shoulder, 30 Jul 2025 — no full or partial rotator cuff tear, no cuff atrophy, no labral or bony glenoid lesion, long head of biceps intact and in place, AC joint preserved.",
-    "The one structural note: a type 1 acromion with mild lateral downsloping — slightly less room overhead, on that side.",
-    "X-ray right shoulder, 29 Apr 2025 — no fracture, no significant arthritis, everything else unremarkable.",
-    "So: nothing is torn. This plan is managing a space and a loading habit, not protecting damage. That's why overhead is earned back rather than banned.",
-    "The left has never been imaged — the scans are the right side, which then settled. Worth telling your doctor the same pattern has arrived on the left; an exam beats another scan.",
-  ],
-};
-const TR_RULES = [
-  { t: "Shoulder — still out", warn: true, items: [
-    "Upright rows and behind-the-neck anything — the two that squeeze that space most",
-    "Dips, and wide-grip flat barbell bench",
-    "Lateral raises above shoulder height — stop at 90°, thumb up",
-    "Kipping, snatching, anything ballistic overhead",
-  ]},
-  { t: "Shoulder — earn it back", ok: true, items: [
-    "Overhead is not banned: landmine → neutral DB press → back to full overhead if it stays quiet",
-    "Pain rule: ≤ 3/10 during, gone by next morning. Lingers past 24 h → drop back one step",
-    "Cuff + serratus every push day (band external rotation, wall slides), 2 × 15",
-    "Pull volume ≥ push volume, every single week",
-  ]},
-  { t: "Low back — never", warn: true, items: [
-    "Deadlifts from floor height — blocks or trap bar only",
-    "Loaded spinal flexion: sit-ups, Russian twists, weighted crunches",
-    "Good mornings, heavy bent-over barbell rows",
-    "Training a red-light day heavy because it's on the schedule",
-  ]},
-  { t: "Low back — always", ok: true, items: [
-    "Brace before the weight moves: ribs down, breath in, then lift",
-    "Carries and anti-rotation over crunches, every time",
-    "Hips and T-spine opened before session A",
-    "Green / amber / red — amber means same session, lighter. Red means walk and go home.",
-  ]},
+  { file: "Aysha-Training-Plan-Back-to-Strong.pdf", title: "Back to Strong — the previous block", sub: "Archive · from before Vaelor" },
 ];
 // Anything that isn't lifting. Counted, never owed.
 const MV_KINDS = [
@@ -2503,63 +2399,9 @@ function hlMonday(d = new Date()) {
   return x;
 }
 const hlKey = (d) => { const m = hlMonday(d); return m.getFullYear() + "-" + String(m.getMonth() + 1).padStart(2, "0") + "-" + String(m.getDate()).padStart(2, "0"); };
-function hlWeekNo() {
-  // a new block restarts the clock, without touching what she's already logged
-  if (state.health.block !== TR_BLOCK.id) {
-    state.health.block = TR_BLOCK.id;
-    state.health.start = hlKey();
-    save(false);
-  }
-  if (!state.health.start) { state.health.start = hlKey(); save(false); }
-  const [y, m, d] = state.health.start.split("-").map(Number);
-  const diff = Math.round((hlMonday() - new Date(y, m - 1, d)) / 604800000);
-  return Math.min(TR_BLOCK.weeks, Math.max(1, diff + 1));
-}
-const hlPhase = (wk) => TR_PHASES[wk] || "Build";
-// Weekly hard sets per muscle, counted straight off the programme for the phase
-// she's actually in — so the claim "it covers everything" is checkable, not trusted.
-function trCoverage(phase) {
-  const tally = {};
-  Object.values(TR_PROGRAM).forEach(list => list.forEach(x => {
-    if (!x.mus) return;
-    const sets = x.t === "fin" ? 2 : TR_SETS[x.t][phase];
-    x.mus.forEach(m => { tally[m] = (tally[m] || 0) + sets; });
-  }));
-  return Object.entries(tally).sort((a, b) => b[1] - a[1]);
-}
 function renderHealth() {
   renderCycle();
-  const wk = hlWeekNo(), key = hlKey(), done = state.health.log[key] || [], phase = hlPhase(wk);
-  document.getElementById("hlBlock").innerHTML = `
-    <div class="hl-top">
-      <div>
-        <div class="hl-title">${esc(TR_BLOCK.name)}</div>
-        <div class="hl-note">Three full-body sessions, each built on two anchor lifts you chase for the whole block, five working sets around them and a six-minute finisher. Full-body on purpose: three days spread over every muscle twice beats a split that hits each once.</div>
-        <span class="hl-phase">${esc(phase)} · week ${wk}</span>
-      </div>
-      <div class="hl-week"><div class="wn">${wk}</div><div class="wl">of ${TR_BLOCK.weeks} weeks</div></div>
-    </div>
-    <div class="hl-bar"><i style="width:${Math.round(wk / TR_BLOCK.weeks * 100)}%"></i></div>
-    <div class="hl-bar-lbl"><span>Weeks 1–2 groove</span><span>3–6 build</span><span>7 peak</span><span>8 deload</span></div>
-    <div class="hl-sess" style="grid-template-columns:repeat(3,1fr)">${HL_SESSIONS.map(s => `
-      <div class="hl-day ${done.includes(s.k) ? "done" : ""}" data-k="${s.k}">
-        <div class="dk"><span class="dl">${s.k}</span><span class="tick">✓</span></div>
-        <div class="dn2">${esc(s.name)}</div>
-      </div>`).join("")}</div>
-    <div class="hl-bar-lbl" style="margin-top:12px"><span>${done.length} of 3 done this week</span><span>Tap a session when it's finished</span></div>
-    <div class="hl-cheer" id="hlCheer"></div>
-    <div class="tr-rules">${TR_RULES.map(r => `
-      <div class="tr-rule ${r.warn ? "warn" : "ok"}">
-        <div class="rt">${esc(r.t)}</div>
-        <ul>${r.items.map(i => `<li>${esc(i)}</li>`).join("")}</ul>
-      </div>`).join("")}</div>
-    <div class="tr-img">
-      <div class="rt2">${esc(TR_IMAGING.title)}</div>
-      ${TR_IMAGING.lines.map(l => `<p>${esc(l)}</p>`).join("")}
-    </div>`;
-  document.querySelectorAll("#hlBlock .hl-day").forEach(el => { el.onclick = () => hlToggle(el.dataset.k); });
-
-  renderHealthProgram(wk);
+  renderTraining();
   renderMovement();
 
   document.getElementById("hlPlans").innerHTML = HL_PLANS.map(p => `
@@ -2588,41 +2430,44 @@ function renderHealth() {
     }
   }
 }
-// The program computes this week from the phase, so it never goes stale and
-// never needs rewriting by hand — the sets change, the movements don't.
-function renderHealthProgram(wk) {
-  const wrap = document.getElementById("hlProgram");
+
+// Her shoulder imaging, kept when the training block moved out — it's medical
+// reference, not programming, and it's the only place she has it written down.
+const TR_IMAGING = {
+  title: "What your shoulder imaging says",
+  lines: [
+    "MRI right shoulder, 30 Jul 2025 — no full or partial rotator cuff tear, no cuff atrophy, no labral or bony glenoid lesion, long head of biceps intact and in place, AC joint preserved.",
+    "The one structural note: a type 1 acromion with mild lateral downsloping — slightly less room overhead, on that side.",
+    "X-ray right shoulder, 29 Apr 2025 — no fracture, no significant arthritis, everything else unremarkable.",
+    "So nothing is torn. What you're managing is a space and a loading habit — which is why the answer was never to avoid overhead forever.",
+    "The left has never been imaged — the scans are the right side, which then settled. Worth telling your doctor the same pattern arrived on the left; an exam beats another scan.",
+  ],
+};
+
+// Training moved out to Vaelor (train.caminovia.ai). This card is the doorway;
+// her week appears here once state.training is being synced in.
+function renderTraining() {
+  const wrap = document.getElementById("hlTrain");
   if (!wrap) return;
-  const phase = hlPhase(wk);
+  const t = state.training || null;
   wrap.innerHTML = `
-    <div class="hl-prog-note"><b>${esc(phase)} — week ${wk}.</b> ${esc(TR_PHASE_NOTE[phase])}</div>
-    <div class="tr-cov">
-      <div class="cv-h">Hard sets per muscle, this week — <span>the line is 10, where the research says hypertrophy reliably improves</span></div>
-      <div class="cv-grid">${trCoverage(phase).map(([m, n]) => `
-        <div class="cv">
-          <span class="cvm">${esc(m)}</span>
-          <span class="cvbar"><i style="width:${Math.min(100, n / 16 * 100)}%;background:${n >= 10 ? "var(--rind)" : n >= 6 ? "var(--peach)" : "var(--muted)"}"></i></span>
-          <span class="cvn">${n}</span>
-        </div>`).join("")}</div>
-      <div class="cv-foot">Green = at or past 10 · peach = 6–9, enough to hold and build slowly · grey = a top-up. Calves, arms and cuff sit lower on purpose: three days is three days, and the big patterns get the room.</div>
-    </div>
-    <div class="tr-img" style="margin-top:12px">
-      <div class="rt2">What this is built on</div>
-      ${TR_EVIDENCE.map(l => `<p>${esc(l)}</p>`).join("")}
-    </div>
-    <div class="hl-prog">${HL_SESSIONS.map(s => `
-      <div class="hl-card">
-        <div class="hc-top"><span class="hc-k">${s.k}</span><span class="hc-n">${esc(s.name)}</span></div>
-        ${(TR_PROGRAM[s.k] || []).map(x => {
-          const sets = x.t === "fin" ? "" : `${TR_SETS[x.t][phase]} × ${x.r}`;
-          const tag = x.t === "anchor" ? "Anchor" : x.t === "fin" ? "Finish" : "Work";
-          return `<div class="tr-ex">
-            <span class="tag ${x.t === "anchor" ? "anchor" : x.t === "fin" ? "fin" : "acc"}">${tag}</span>
-            <span class="nm2">${esc(x.n)}<span class="why">${esc(x.why)}</span></span>
-            <span class="set">${esc(sets || x.r)}</span>
-          </div>`;
-        }).join("")}
-      </div>`).join("")}</div>`;
+    <div class="vl-card">
+      <div class="vl-top">
+        <div>
+          <div class="vl-name">Vaelor <span class="vl-tag">adaptive AI training</span></div>
+          <div class="vl-note">Training, food and readiness live in Vaelor now. This is the door to it — and where your week will show up here once the two are connected.</div>
+        </div>
+        <a class="vl-go" href="https://train.caminovia.ai" target="_blank" rel="noopener">Open Vaelor ↗</a>
+      </div>
+      ${t ? `<div class="vl-stats">${(t.stats || []).map(x => `
+          <div class="vl-stat"><div class="n">${esc(String(x.v))}</div><div class="l">${esc(x.l)}</div></div>`).join("")}
+        </div><div class="vl-sync">Last synced ${esc(t.synced || "—")}</div>`
+      : `<div class="vl-pending">Not connected yet — nothing is being read from Vaelor. Connecting it needs one thing from you; it's in my note.</div>`}
+      ${TR_IMAGING ? `<div class="tr-img" style="margin-top:14px">
+        <div class="rt2">${esc(TR_IMAGING.title)}</div>
+        ${TR_IMAGING.lines.map(l => `<p>${esc(l)}</p>`).join("")}
+      </div>` : ""}
+    </div>`;
 }
 
 // ---------- Movement shelf — everything that isn't lifting ----------
@@ -2676,27 +2521,6 @@ function renderMovement() {
     mvWeek()[name] = (mvWeek()[name] || 0) + 1;
     save(); renderMovement();
   };
-}
-function hlToggle(k) {
-  const key = hlKey(), done = state.health.log[key] || [];
-  const nowDone = !done.includes(k);
-  state.health.log[key] = nowDone ? [...done, k] : done.filter(x => x !== k);
-  const core = state.health.log[key].length;
-  save(); renderHealth();
-  if (nowDone) hlCheer(k, core);
-}
-function hlCheer(k, core) {
-  const el = document.getElementById("hlCheer");
-  if (!el) return;
-  let msg;
-  if (core === 3) msg = "Three for three — that's the week 🎉";
-  else msg = HL_CHEERS[Math.floor(Math.random() * HL_CHEERS.length)];
-  el.textContent = msg;
-  el.classList.remove("show");
-  void el.offsetWidth;           // restart the animation on rapid taps
-  el.classList.add("show");
-  clearTimeout(el._t);
-  el._t = setTimeout(() => el.classList.remove("show"), 2000);
 }
 function addHealthLink() {
   let url = (prompt("Paste the link (URL):", "https://") || "").trim();
