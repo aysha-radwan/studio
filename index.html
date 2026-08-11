@@ -758,12 +758,62 @@
   .mc-stat .n.peach { color: var(--peach); }
   .mc-stat .n.violet { color: var(--violet); }
   .mc-stat .l { font-size: 10px; letter-spacing: 1.3px; text-transform: uppercase; color: var(--faint); }
-  .mc-running { display: grid; grid-template-columns: 1.35fr 1fr; gap: 14px; align-items: start; }
-  .mc-running .mc-grid { padding-left: 0; padding-right: 0; }
-  .mc-running > .mc-grid:first-child { padding-left: 34px; }
-  .mc-running > .mc-grid:last-child { padding-right: 34px; }
-  @media (max-width: 900px) { .mc-running { grid-template-columns: 1fr; }
-    .mc-running > .mc-grid { padding-left: 34px; padding-right: 34px; } }
+  /* ---------- Bento ----------
+     Mission Control as tiles of different weights rather than one long stack.
+     The sky shows through the gaps, so keep surfaces translucent. */
+  .bento {
+    display: grid; grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: 14px; padding: 6px 34px 10px; align-items: start;
+  }
+  .bx {
+    border: 1px solid var(--line); border-radius: 18px; padding: 18px 20px;
+    background: linear-gradient(160deg, rgba(255,255,255,0.05), rgba(255,255,255,0.017));
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.06); min-width: 0;
+  }
+  .bh { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted);
+    font-weight: 600; margin: 0 0 14px; display: flex; align-items: baseline; gap: 9px; }
+  .bh .fx { color: var(--melon); font-size: 12px; }
+  .bh em { font-style: normal; text-transform: none; letter-spacing: 0; font-size: 11.5px; color: var(--faint); }
+  /* the timeline is the widest thing here and needs the room; everything else
+     sits under it as a 3-up */
+  .bx-horizon  { grid-column: 1 / -1; }
+  .bx-clock    { grid-column: span 4; }
+  .bx-mo       { grid-column: span 4; }
+  .bx-running  { grid-column: span 4; }
+  .bx-becoming { grid-column: 1 / -1; }
+  .bx-projects { grid-column: 1 / -1; display: grid; gap: 14px;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); }
+  /* the horizon keeps its own frame off — the tile is the frame now */
+  .bx-horizon .hz { border: 0; background: none; padding: 0; border-radius: 0; }
+  .bx-mo .mo-box, .bx-running .mc-grid { border: 0; background: none; padding: 0; }
+  .bx-mo .mo-top { margin-bottom: 10px; }
+  .bx-mo .mo-bars { height: 72px; }
+  .bx-running .mc-grid { display: grid; gap: 10px; grid-template-columns: minmax(0, 1fr); }
+  .bx-running .mc-grid + .mc-grid { margin-top: 10px; }
+
+  /* the clock tile */
+  .ck-big { font-size: 40px; font-weight: 300; letter-spacing: -0.02em; line-height: 1; }
+  .ck-big i { font-style: normal; font-size: 19px; color: var(--muted); }
+  .ck-sub { color: var(--muted); font-size: 12px; margin-top: 9px; line-height: 1.5; }
+  .ck-week { display: flex; align-items: flex-end; gap: 5px; height: 44px; margin-top: 16px; }
+  .ck-day { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 5px; min-width: 0; }
+  .ck-day i { display: block; width: 100%; border-radius: 3px; background: var(--melon); opacity: .45; }
+  .ck-day.today i { opacity: 1; }
+  .ck-day span { font-size: 9px; color: var(--faint); }
+
+  /* the tile is the frame — don't draw a second one inside it */
+  .bx-becoming .hz-becoming { border: 0; padding: 0; background: none; margin-top: 0; }
+  .bx-becoming { background: linear-gradient(100deg, rgba(70,201,139,0.09), rgba(191,169,242,0.07) 55%, rgba(226,97,103,0.05)); }
+  .bx-running .mo-empty, .bx-running .empty { padding: 18px 4px; }
+  @media (max-width: 1180px) {
+    .bx-clock, .bx-mo { grid-column: span 6; }
+    .bx-running { grid-column: 1 / -1; }
+  }
+  @media (max-width: 900px) {
+    .bento { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+    .bx-horizon, .bx-becoming, .bx-clock, .bx-mo, .bx-running { grid-column: span 6; }
+  }
+  @media (max-width: 760px) { .bento { padding-left: 20px; padding-right: 20px; } }
 
   .mc-sec-head { padding: 24px 34px 0; font-family: var(--serif); font-size: 15px; font-weight: 600; color: var(--ink-2); }
   .mc-sec-head .fx { color: var(--peach); margin-right: 6px; }
@@ -1232,22 +1282,32 @@
           <div class="mc-live" id="mcLive"><span class="mc-dot"></span><span id="mcLiveText">Syncing…</span></div>
         </div>
 
-        <div class="mc-sec-head"><span class="fx">◈</span> The horizon <span class="mc-sub">— all of it: the ventures, the work, and you</span></div>
-        <div class="mc-horizon"><div class="hz" id="mcHorizon"></div></div>
+        <div class="bento">
+          <section class="bx bx-horizon">
+            <h3 class="bh"><span class="fx">◈</span> The horizon <em>— all of it: the ventures, the work, and you</em></h3>
+            <div class="hz" id="mcHorizon"></div>
+          </section>
 
-        <div class="mc-sec-head"><span class="fx">◍</span> Projects at a glance <span class="mc-sub">— progress, and the next thing on each</span></div>
-        <div class="mc-glance" id="mcGlance"></div>
+          <section class="bx bx-clock">
+            <h3 class="bh"><span class="fx">◔</span> On the clock</h3>
+            <div id="mcClock"></div>
+          </section>
 
-        <div class="mc-sec-head"><span class="fx">▮</span> Momentum <span class="mc-sub">— what you finished, day by day</span></div>
-        <div class="mc-mo"><div class="mo-box" id="mcMomentum"></div></div>
+          <section class="bx bx-mo">
+            <h3 class="bh"><span class="fx">▮</span> Momentum <em>— day by day</em></h3>
+            <div class="mo-box" id="mcMomentum"></div>
+          </section>
 
-        <div class="mc-sec-head"><span class="fx">▹</span> Running now <span class="mc-sub">— workstations open, and the agents on call</span></div>
-        <div class="mc-running">
-          <div class="mc-grid" id="mcTerminals"></div>
-          <div class="mc-grid" id="mcAgents"></div>
+          <section class="bx bx-running">
+            <h3 class="bh"><span class="fx">▹</span> Running now</h3>
+            <div class="mc-grid" id="mcTerminals"></div>
+            <div class="mc-grid" id="mcAgents"></div>
+          </section>
+          <div class="bx-projects" id="mcGlance"></div>
+
+          <section class="bx bx-becoming" id="mcBecoming"></section>
+
         </div>
-      </section>
-
       <!-- ---- THE MAP (mind map of the whole studio) ---- -->
       <section id="view-map" class="view" hidden>
         <div class="view-intro">Everything you’re carrying, in one picture. The centre is you; the dotted orbit is the studio itself; the outer nodes are your projects, sized by how much is open — with the next thing on each hanging off it &mdash; and along the bottom, the plan&rsquo;s five phases with where you are now. <b>Click any node to go there.</b></div>
@@ -3100,7 +3160,7 @@ function bootView() {
   switchView(VALID_VIEWS.includes(v) ? v : "overview");
   startWorkTime();
   trackTopBarHeight();
-  startStarLanes();
+  startOrrery();
 }
 window.addEventListener("hashchange", applyHash);
 
@@ -3257,16 +3317,12 @@ function startWorkTime(){
   document.addEventListener("visibilitychange", () => { if (!document.hidden) renderWorkTime(); });
 }
 
-// ---------- Orbit field ----------
-// Specks scattered along a wide ellipse, each drifting round it at its own pace,
-// so the ring never looks like it's rotating as one rigid piece.
-// ---------- Star lanes ----------
-// A working chart of the sky rather than a pattern: stars drift on three depth
-// planes, drawing a constellation line to any neighbour they wander close to,
-// so the shapes form and dissolve on their own. Four brighter waypoints hold
-// station, and every so often a mote of light travels the curved route between
-// two of them — the "points between locations" part.
-function startStarLanes(){
+// ---------- The orrery ----------
+// A star chart behind the whole app: concentric orbits seen at an angle, each
+// carrying a planet that tracks around it. Outer orbits move slower than inner
+// ones, the way a real system does, so the whole thing never turns as one piece.
+// A soft light sits at the centre — أنا الكون, the thing everything orbits.
+function startOrrery(){
   const cv = document.getElementById("skyCanvas");
   if (!cv || !cv.getContext) return;
   const ctx = cv.getContext("2d");
@@ -3276,69 +3332,60 @@ function startStarLanes(){
   const calm = matchMedia("(prefers-reduced-motion: reduce)").matches;
   const RATE = calm ? 0.45 : 1;
 
-  const STAR = ["#ffffff", "#ffffff", "#dfe4ff", "#abb2da", "#E26167", "#bfa9f2"];
-  const HUB  = ["#E26167", "#bfa9f2", "#ff4d7e", "#ffffff"];
-  const LINK = "191, 169, 242";   // violet, as rgb parts for alpha blending
+  const TILT = -0.22;              // the whole system leans, so it reads as a plane
+  const SQUASH = 0.42;             // how far over the plane is tipped
+  const PLANET = ["#E26167", "#bfa9f2", "#ff4d7e", "#ffffff", "#46c98b", "#abb2da"];
+  const STAR = ["#ffffff", "#dfe4ff", "#abb2da", "#bfa9f2"];
 
-  let stars = [], hubs = [], routes = [], motes = [];
-  const lanes = [[], [], [], [], []];   // reused per frame, one per opacity bucket
-  let w = 0, h = 0, raf = null, visible = true, last = 0, t = 0, nextMote = 1.5;
+  let rings = [], stars = [], w = 0, h = 0, cx = 0, cy = 0, unit = 0;
+  let raf = null, visible = true, last = 0, t = 0;
 
   function seed(){
-    // density from area now that it covers the page, not a single band
-    const n = Math.max(55, Math.min(150, Math.round((w * h) / 13500)));
-    stars = [];
+    // anchored off to one side: the orbits sweep across the page rather than
+    // sitting as a bullseye behind the middle of the content
+    cx = w * 0.74; cy = h * 0.34;
+    unit = Math.max(w, h) * 0.115;
+
+    rings = [];
+    const n = 7;
     for (let i = 0; i < n; i++){
-      // three depth planes: the far ones are smaller, dimmer and slower, which
-      // is what stops the whole field reading as one flat sheet sliding along
-      const depth = 0.35 + Math.random() * 0.65;
-      const dir = Math.random() * Math.PI * 2;
-      const spd = (2 + Math.random() * 5) * depth;
-      stars.push({
-        x: Math.random() * w, y: Math.random() * h,
-        vx: Math.cos(dir) * spd, vy: Math.sin(dir) * spd * 0.5,
-        r: 0.5 + depth * 1.2,
-        a: (0.15 + Math.random() * 0.38) * depth,   // dimmer: it sits under everything now
-        c: STAR[(Math.random() * STAR.length) | 0],
-        tw: Math.random() * Math.PI * 2,
-        d: depth,
+      const r = unit * (0.75 + i * 0.62);
+      rings.push({
+        r,
+        // outer orbits sweep slower, like the real thing
+        sp: (0.30 / Math.pow(r / unit, 1.45)) * (i % 5 === 3 ? -1 : 1),
+        a: (i * 2.1) % (Math.PI * 2),
+        pr: i % 3 === 0 ? 2.6 : (i % 3 === 1 ? 1.9 : 1.4),
+        c: PLANET[i % PLANET.length],
+        dim: 0.05 + (i % 3) * 0.012,
+        moon: i === 2 || i === 5,
       });
     }
 
-    // waypoints sit on a wide arc across the band, each breathing on its own
-    // sine so they never line up into a static row
-    const spots = [[0.16, 0.30], [0.40, 0.66], [0.63, 0.26], [0.86, 0.58]];
-    hubs = spots.map((s, i) => ({
-      bx: s[0] * w, by: s[1] * h,
-      x: s[0] * w, y: s[1] * h,
-      ph: i * 1.7, amp: 9 + i * 3,
-      r: 2 + (i % 2) * 0.8,
-      c: HUB[i % HUB.length],
-    }));
-    routes = [[0, 1], [1, 2], [2, 3], [0, 2]];
-    motes = [];
-    nextMote = 0.6;
+    const sn = Math.max(30, Math.min(90, Math.round((w * h) / 26000)));
+    stars = [];
+    for (let i = 0; i < sn; i++){
+      stars.push({
+        x: Math.random() * w, y: Math.random() * h,
+        r: Math.random() < 0.2 ? 1.3 : 0.8,
+        a: 0.12 + Math.random() * 0.35,
+        c: STAR[(Math.random() * STAR.length) | 0],
+        tw: Math.random() * Math.PI * 2,
+      });
+    }
   }
 
-  // a route bows outward so it reads as a path between two places rather than
-  // a wire strung between them
-  function curve(a, b){
-    const mx = (a.x + b.x) / 2, my = (a.y + b.y) / 2;
-    const dx = b.x - a.x, dy = b.y - a.y;
-    const len = Math.hypot(dx, dy) || 1;
-    const bow = Math.min(56, len * 0.17);
-    return { cx: mx - (dy / len) * bow, cy: my + (dx / len) * bow };
-  }
-  function at(a, c, b, p){
-    const q = 1 - p;
-    return { x: q*q*a.x + 2*q*p*c.cx + p*p*b.x,
-             y: q*q*a.y + 2*q*p*c.cy + p*p*b.y };
+  // a point on a ring, after the plane is squashed and the system tilted
+  function pt(r, a){
+    const x = Math.cos(a) * r, y = Math.sin(a) * r * SQUASH;
+    return { x: cx + x * Math.cos(TILT) - y * Math.sin(TILT),
+             y: cy + x * Math.sin(TILT) + y * Math.cos(TILT) };
   }
 
-  // Full strength over the page, easing off under the top bar and page title so
-  // the busiest strip of chrome stays clean. Folded into each element's alpha —
-  // never do this with a CSS mask, see the note above.
-  function fade(x, y){
+  // Ease off under the top bar and page title so the busiest strip of chrome
+  // stays clean. Folded into each element's alpha — never a CSS mask, which
+  // re-composites a layer this size every frame.
+  function fade(y){
     if (y >= 210) return 1;
     if (y <= 96) return 0.10;
     return 0.10 + 0.90 * ((y - 96) / 114);
@@ -3347,8 +3394,6 @@ function startStarLanes(){
   function resize(){
     const r = cv.getBoundingClientRect();
     if (!r.width || !r.height) return;
-    // 1.5x rather than full retina: this is a soft background, and the backing
-    // store is what costs to raster every frame
     const dpr = Math.min(1.5, window.devicePixelRatio || 1);
     w = r.width; h = r.height;
     cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr);
@@ -3367,106 +3412,60 @@ function startStarLanes(){
     t += dt * RATE;
     ctx.clearRect(0, 0, w, h);
 
-    // stars drift and wrap
+    // quiet stars behind everything
     for (const s of stars){
-      s.x += s.vx * dt * RATE; s.y += s.vy * dt * RATE;
-      if (s.x < -12) s.x = w + 12; else if (s.x > w + 12) s.x = -12;
-      if (s.y < -12) s.y = h + 12; else if (s.y > h + 12) s.y = -12;
-    }
-
-    // Constellation lines — only between near neighbours, brightest when closest.
-    // Segments are bucketed by opacity and each bucket is stroked as ONE path:
-    // a stroke() per pair means hundreds of draw calls a frame and locks up the
-    // renderer on a wide screen.
-    const D = Math.min(132, Math.max(84, w / 12));
-    const D2 = D * D, BUCKETS = 5;
-    for (let k = 0; k < BUCKETS; k++) lanes[k].length = 0;
-    for (let i = 0; i < stars.length; i++){
-      const a = stars[i];
-      for (let j = i + 1; j < stars.length; j++){
-        const b = stars[j];
-        const dx = a.x - b.x, dy = a.y - b.y;
-        if (dx > D || dx < -D || dy > D || dy < -D) continue;   // cheap reject
-        const d2 = dx * dx + dy * dy;
-        if (d2 > D2) continue;
-        const near = 1 - Math.sqrt(d2) / D;
-        const wgt = near * Math.min(a.d, b.d) * fade((a.x + b.x) / 2, (a.y + b.y) / 2);
-        if (wgt <= 0.03) continue;
-        const k = Math.min(BUCKETS - 1, (wgt * BUCKETS) | 0);
-        lanes[k].push(a.x, a.y, b.x, b.y);
-      }
-    }
-    ctx.lineWidth = 0.7;
-    for (let k = 0; k < BUCKETS; k++){
-      const lane = lanes[k];
-      if (!lane.length) continue;
-      ctx.strokeStyle = "rgba(" + LINK + "," + (0.028 + k * 0.030).toFixed(3) + ")";
-      ctx.beginPath();
-      for (let m = 0; m < lane.length; m += 4){
-        ctx.moveTo(lane[m], lane[m+1]); ctx.lineTo(lane[m+2], lane[m+3]);
-      }
-      ctx.stroke();
-    }
-
-    // stars
-    for (const s of stars){
-      const tw = calm ? 1 : 0.7 + 0.3 * Math.sin(t * 1.3 + s.tw);
-      ctx.globalAlpha = Math.max(0, s.a * tw * fade(s.x, s.y));
+      const tw = calm ? 1 : 0.7 + 0.3 * Math.sin(t * 1.2 + s.tw);
+      ctx.globalAlpha = s.a * tw * fade(s.y);
       ctx.fillStyle = s.c;
       ctx.beginPath(); ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2); ctx.fill();
     }
-    ctx.globalAlpha = 1;
 
-    // waypoints drift on their own sine
-    for (const p of hubs){
-      p.x = p.bx + Math.sin(t * 0.28 + p.ph) * p.amp;
-      p.y = p.by + Math.cos(t * 0.21 + p.ph) * p.amp * 0.55;
+    // the centre light — everything turns around it
+    const gl = ctx.createRadialGradient(cx, cy, 0, cx, cy, unit * 0.9);
+    gl.addColorStop(0, "rgba(226,97,103,0.16)");
+    gl.addColorStop(0.45, "rgba(191,169,242,0.06)");
+    gl.addColorStop(1, "rgba(0,0,0,0)");
+    ctx.globalAlpha = fade(cy);
+    ctx.fillStyle = gl;
+    ctx.beginPath(); ctx.arc(cx, cy, unit * 0.9, 0, Math.PI * 2); ctx.fill();
+
+    // the orbits
+    ctx.lineWidth = 0.9;
+    for (const g of rings){
+      ctx.globalAlpha = g.dim * fade(cy);
+      ctx.strokeStyle = "rgba(191,169,242,1)";
+      ctx.beginPath();
+      ctx.ellipse(cx, cy, g.r, g.r * SQUASH, TILT, 0, Math.PI * 2);
+      ctx.stroke();
     }
 
-    // routes
-    ctx.lineWidth = 0.8;
-    for (const [i, j] of routes){
-      const a = hubs[i], b = hubs[j], c = curve(a, b);
-      ctx.strokeStyle = "rgba(" + LINK + ",0.16)";
-      ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.quadraticCurveTo(c.cx, c.cy, b.x, b.y); ctx.stroke();
-    }
+    // planets, each with the arc of orbit it just came along
+    for (const g of rings){
+      const a = g.a + t * g.sp;
+      const p = pt(g.r, a);
+      const f = fade(p.y);
+      if (f > 0.02){
+        for (let i = 1; i <= 14; i++){
+          const q = pt(g.r, a - i * 0.035 * Math.sign(g.sp || 1));
+          ctx.globalAlpha = (1 - i / 14) * 0.30 * f;
+          ctx.fillStyle = g.c;
+          ctx.beginPath(); ctx.arc(q.x, q.y, g.pr * (1 - i / 20), 0, Math.PI * 2); ctx.fill();
+        }
+        const pg = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, g.pr * 6);
+        pg.addColorStop(0, g.c); pg.addColorStop(1, "rgba(0,0,0,0)");
+        ctx.globalAlpha = 0.22 * f; ctx.fillStyle = pg;
+        ctx.beginPath(); ctx.arc(p.x, p.y, g.pr * 6, 0, Math.PI * 2); ctx.fill();
+        ctx.globalAlpha = 0.9 * f; ctx.fillStyle = g.c;
+        ctx.beginPath(); ctx.arc(p.x, p.y, g.pr, 0, Math.PI * 2); ctx.fill();
 
-    // a mote sets off along a route now and then
-    nextMote -= dt * RATE;
-    if (nextMote <= 0){
-      const r = routes[(Math.random() * routes.length) | 0];
-      motes.push({ r, p: 0, sp: 0.12 + Math.random() * 0.1, c: hubs[r[1]].c });
-      nextMote = 1.6 + Math.random() * 2.6;
-    }
-    for (let k = motes.length - 1; k >= 0; k--){
-      const m = motes[k];
-      m.p += m.sp * dt * RATE;
-      if (m.p >= 1){ motes.splice(k, 1); continue; }
-      const a = hubs[m.r[0]], b = hubs[m.r[1]], c = curve(a, b);
-      // a short tail behind the head, fading out
-      for (let s = 0; s < 9; s++){
-        const p = m.p - s * 0.016;
-        if (p <= 0) break;
-        const q = at(a, c, b, p);
-        ctx.globalAlpha = (1 - s / 9) * 0.5 * Math.sin(Math.PI * m.p) * fade(q.x, q.y);
-        ctx.fillStyle = m.c;
-        ctx.beginPath(); ctx.arc(q.x, q.y, 1.5 - s * 0.12, 0, Math.PI * 2); ctx.fill();
+        // a couple of them carry a moon
+        if (g.moon){
+          const m = 9 + g.pr * 2, ma = a * 6.5;
+          const mx = p.x + Math.cos(ma) * m, my = p.y + Math.sin(ma) * m * 0.5;
+          ctx.globalAlpha = 0.55 * f; ctx.fillStyle = "#ffffff";
+          ctx.beginPath(); ctx.arc(mx, my, 1.1, 0, Math.PI * 2); ctx.fill();
+        }
       }
-      ctx.globalAlpha = 1;
-    }
-
-    // waypoints last, so they sit on top of their own routes
-    for (const p of hubs){
-      const fv = fade(p.x, p.y);
-      if (fv <= 0.02) continue;
-      const g = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, 16);
-      g.addColorStop(0, p.c); g.addColorStop(1, "rgba(0,0,0,0)");
-      ctx.globalAlpha = 0.13 * fv; ctx.fillStyle = g;
-      ctx.beginPath(); ctx.arc(p.x, p.y, 16, 0, Math.PI * 2); ctx.fill();
-      ctx.globalAlpha = 0.18 * fv; ctx.strokeStyle = p.c; ctx.lineWidth = 0.7;
-      ctx.beginPath(); ctx.arc(p.x, p.y, 7.5, 0, Math.PI * 2); ctx.stroke();
-      ctx.globalAlpha = 0.55 * fv; ctx.fillStyle = p.c;
-      ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); ctx.fill();
     }
     ctx.globalAlpha = 1;
   }
@@ -3482,8 +3481,6 @@ function startStarLanes(){
   resize();
   run();
 
-  // Stop painting when it isn't on screen — switching views hides the whole
-  // section, so this covers both scrolling away and leaving Mission Control.
   if (window.IntersectionObserver) {
     new IntersectionObserver(es => {
       visible = es[es.length - 1].isIntersecting;
@@ -3512,10 +3509,11 @@ function trackTopBarHeight(){
 let mcTimer = null;
 async function renderOverview(){
   document.getElementById("mcGreet").textContent = greeting()+", Aysha";
-  renderHorizon(); renderGlance(); renderMomentum();   // draw instantly, before the network
+  renderHorizon(); renderBecoming(); renderGlance(); renderMomentum();   // draw instantly, before the network
   const status = await fetchStatus();
   const wtNow = wtFromStatus(status);
   if (wtNow) wtRender(wtNow);
+  renderClockTile(wtNow);
   const fresh = status && status.updated && (Date.now()-new Date(status.updated).getTime() < 4*60*1000);
   const terminals = (fresh && Array.isArray(status.terminals)) ? status.terminals : [];
   const liveAgents = (status && Array.isArray(status.agents)) ? status.agents : [];
@@ -3536,10 +3534,10 @@ async function renderOverview(){
   const openTasks = state.projects.reduce((s,p)=>s+(p.todos||[]).filter(t=>!t.done).length,0);
 
   document.getElementById("mcStats").innerHTML = `
-    <div class="mc-stat"><div class="n peach">${terminals.length}</div><div class="l">Workstations live</div></div>
-    <div class="mc-stat"><div class="n ${workingCount?'violet':''}">${workingCount}</div><div class="l">Team working</div></div>
-    <div class="mc-stat"><div class="n">${state.projects.length}</div><div class="l">Projects</div></div>
-    <div class="mc-stat"><div class="n">${openTasks}</div><div class="l">Open tasks</div></div>`;
+    <div class="mc-stat"><span class="n peach">${state.projects.length}</span><span class="l">Projects</span></div>
+    <div class="mc-stat"><span class="n">${openTasks}</span><span class="l">Open tasks</span></div>
+    <div class="mc-stat"><span class="n ${terminals.length ? "violet" : ""}">${terminals.length}</span><span class="l">Workstations live</span></div>
+    ${workingCount ? `<div class="mc-stat"><span class="n violet">${workingCount}</span><span class="l">Team working</span></div>` : ""}`;
 
   const tg = document.getElementById("mcTerminals");
   if (!terminals.length) {
@@ -3687,31 +3685,56 @@ function renderHorizon(){
     </div>
     <div class="hz-spacer"></div>`;
 
-  // Everything she's carrying the whole way along — every project, plus the body
-  // targets. These have no single date, so they sit under the line, not on it.
-  // same order she's set on the Projects board, so priority is consistent
-  const projChips = sortedProjects().map(p => {
-    const open = (p.todos || []).filter(t => !t.done).length;
-    const next = (p.todos || []).find(t => !t.done);
-    return `<button class="hz-chip" onclick="gotoProject('${esc(p.id)}')" title="${esc(next ? next.text : "All clear")}">
-      <i style="background:${esc(p.color || "var(--peach)")}"></i>
-      <b>${esc(p.name)}</b><span class="c">${open ? open + " open" : "all clear ✓"}</span></button>`;
-  }).join("");
+  // The body targets have no single date, so they ride under the line rather
+  // than on it. Projects have their own tiles in the grid now.
+  const bodyChips = (goals.body || []).map(bb =>
+    `<span class="hz-chip still"><i style="background:var(--rind)"></i><b>${esc(bb)}</b></span>`).join("");
 
-  const bodyChips = (goals.body || []).map(b =>
-    `<span class="hz-chip still"><i style="background:var(--rind)"></i><b>${esc(b)}</b></span>`).join("");
-
-  const becoming = (goals.becoming || []).length ? `
-    <div class="hz-sub-h">The becoming <em>— no dates on these</em></div>
-    <div class="hz-becoming">
-      <div class="bl">${goals.becoming.map(b => `<span class="bw">${esc(b)}</span>`).join("")}</div>
-      <div class="bn">${esc(goals.becomingNote || "Not milestones. The ground you're walking on the whole way — every date above happens on top of these.")}</div>
-    </div>` : "";
-
-  box.innerHTML = spine + `
-    <div class="hz-sub-h">What you're carrying <em>— all the way along, not on a date</em></div>
-    <div class="hz-carry">${projChips}${bodyChips}</div>` + becoming;
+  box.innerHTML = spine + (bodyChips ? `
+    <div class="hz-sub-h">Alongside it <em>\u2014 all the way, not on a date</em></div>
+    <div class="hz-carry">${bodyChips}</div>` : "");
 }
+
+// The becoming gets its own tile: deliberately no dates, and not a progress bar.
+function renderBecoming(){
+  const box = document.getElementById("mcBecoming");
+  if (!box) return;
+  const g = state.goals || {};
+  if (!(g.becoming || []).length) { box.hidden = true; return; }
+  box.hidden = false;
+  box.innerHTML = `
+    <h3 class="bh"><span class="fx">\u2727</span> The becoming <em>\u2014 no dates on these</em></h3>
+    <div class="hz-becoming">
+      <div class="bl">${g.becoming.map(bb => `<span class="bw">${esc(bb)}</span>`).join("")}</div>
+      <div class="bn">${esc(g.becomingNote || "")}</div>
+    </div>`;
+}
+
+// Today's time on the laptop, from the same feed as the pill in the top bar.
+function renderClockTile(w){
+  const box = document.getElementById("mcClock");
+  if (!box) return;
+  if (!w) { box.innerHTML = `<div class="ck-sub">Waiting for your Mac\u2026</div>`; return; }
+  const week = w.week || [];
+  const peak = Math.max(...week.map(d => d.s), 3600);
+  const total = week.reduce((acc, d) => acc + d.s, 0);
+  let line;
+  if (w.working) line = "On the clock now" + (w.app ? " \u00b7 " + w.app : "");
+  else if (w.stale) line = "Your Mac is asleep \u00b7 last seen " + agoText(w.seen);
+  else if (w.sessions) line = w.sessions + " session" + (w.sessions === 1 ? "" : "s") + " today \u00b7 longest " + wtHM(w.longest);
+  else line = "The clock starts on its own when you use the Mac.";
+  box.innerHTML = `
+    <div class="ck-big">${wtHM(w.today, true)}</div>
+    <div class="ck-sub">${esc(line)}</div>
+    <div class="ck-week">
+      ${week.map((d, i) => `<div class="ck-day ${i === week.length-1 ? "today" : ""}" title="${esc(d.d)} \u2014 ${wtHM(d.s)}">
+        <i style="height:${Math.max(3, (d.s / peak) * 34).toFixed(1)}px"></i>
+        <span>${new Date(d.d + "T12:00:00").toLocaleDateString(undefined,{weekday:"narrow"})}</span>
+      </div>`).join("")}
+    </div>
+    <div class="ck-sub">${wtHM(total)} this week \u00b7 ${wtHM(total/7)} a day</div>`;
+}
+
 
 
 function renderGlance(){
