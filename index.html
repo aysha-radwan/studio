@@ -724,20 +724,21 @@
     background: url("icons/alkoun-mark-white.png") no-repeat center / contain; opacity: 0.06; pointer-events: none; }
   @media (max-width: 1000px) { #view-overview:before { display: none; } }
 
-  /* ---------- Orbit field ----------
-     A slow ring of drifting specks behind the greeting and the stat tiles.
-     Purely decorative: no pointer events, sits under everything, and the
-     canvas stops painting whenever it scrolls out of view. */
-  .orbit-field {
-    position: absolute; top: -18px; left: 0; right: 0; height: 360px;
+  /* ---------- Star lanes ----------
+     A chart of the sky behind the greeting: drifting stars that draw
+     constellation lines to whichever neighbours they pass, a handful of
+     brighter waypoints, and light that travels the routes between them.
+     Purely decorative — no pointer events, and it stops painting the moment
+     it scrolls out of view. */
+  .sky-field {
+    position: absolute; top: -22px; left: 0; right: 0; height: 350px;
     overflow: hidden; pointer-events: none; z-index: 0;
-    /* dissolve the lowest arc so it doesn't speckle through the card below */
-    -webkit-mask-image: linear-gradient(180deg, #000 78%, transparent 99%);
-            mask-image: linear-gradient(180deg, #000 78%, transparent 99%);
+    /* the edge fade is computed per element in the canvas, NOT with a CSS mask:
+       masking a layer this size re-composites it every frame (~145ms/frame) */
   }
-  .orbit-field canvas { display: block; width: 100%; height: 100%; }
+  .sky-field canvas { display: block; width: 100%; height: 100%; }
   .mc-hero, .mc-stats { position: relative; z-index: 1; }
-  @media (max-width: 760px) { .orbit-field { height: 270px; } }
+  @media (max-width: 760px) { .sky-field { height: 290px; } }
   .mc-hero { padding: 22px 34px 6px; display: flex; align-items: flex-start; justify-content: space-between; gap: 18px; position: relative; }
   .mc-greet { font-family: var(--serif); font-size: 27px; font-weight: 600; letter-spacing: -0.4px; color: #fff; }
   .mc-tag { color: var(--muted); font-size: 13.5px; margin-top: 5px; max-width: 560px; line-height: 1.5; }
@@ -1181,7 +1182,7 @@
 
       <!-- ---- MISSION CONTROL (OVERVIEW) ---- -->
       <section id="view-overview" class="view">
-        <div class="orbit-field" aria-hidden="true"><canvas id="orbitCanvas"></canvas></div>
+        <div class="sky-field" aria-hidden="true"><canvas id="skyCanvas"></canvas></div>
         <div class="mc-hero">
           <div>
             <div class="mc-greet" id="mcGreet">Welcome back</div>
@@ -3046,7 +3047,7 @@ function bootView() {
   switchView(VALID_VIEWS.includes(v) ? v : "overview");
   startWorkTime();
   trackTopBarHeight();
-  startOrbitField();
+  startStarLanes();
 }
 window.addEventListener("hashchange", applyHash);
 
@@ -3206,68 +3207,215 @@ function startWorkTime(){
 // ---------- Orbit field ----------
 // Specks scattered along a wide ellipse, each drifting round it at its own pace,
 // so the ring never looks like it's rotating as one rigid piece.
-function startOrbitField(){
-  const cv = document.getElementById("orbitCanvas");
+// ---------- Star lanes ----------
+// A working chart of the sky rather than a pattern: stars drift on three depth
+// planes, drawing a constellation line to any neighbour they wander close to,
+// so the shapes form and dissolve on their own. Four brighter waypoints hold
+// station, and every so often a mote of light travels the curved route between
+// two of them — the "points between locations" part.
+function startStarLanes(){
+  const cv = document.getElementById("skyCanvas");
   if (!cv || !cv.getContext) return;
   const ctx = cv.getContext("2d");
-  // She asked for this to move. Her Mac has Reduce Motion on, so rather than
-  // freezing outright we drift slowly and drop the twinkle — motion small enough
-  // to stay calm, but still alive.
+
+  // Her Mac runs with Reduce Motion on, so this drifts slowly rather than
+  // freezing — the movement is the whole point of it.
   const calm = matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const RATE = calm ? 0.4 : 1;
-  const COLORS = ["#E26167", "#bfa9f2", "#ffffff", "#ff4d7e", "#abb2da"];
-  let dots = [], w = 0, h = 0, raf = null, visible = true, last = 0, t = 0;
+  const RATE = calm ? 0.45 : 1;
+
+  const STAR = ["#ffffff", "#ffffff", "#dfe4ff", "#abb2da", "#E26167", "#bfa9f2"];
+  const HUB  = ["#E26167", "#bfa9f2", "#ff4d7e", "#ffffff"];
+  const LINK = "191, 169, 242";   // violet, as rgb parts for alpha blending
+
+  let stars = [], hubs = [], routes = [], motes = [];
+  const lanes = [[], [], [], [], []];   // reused per frame, one per opacity bucket
+  let w = 0, h = 0, raf = null, visible = true, last = 0, t = 0, nextMote = 1.5;
 
   function seed(){
-    const n = Math.max(90, Math.min(260, Math.round(w / 5.5)));
-    dots = [];
+    const n = Math.max(40, Math.min(80, Math.round(w / 17)));
+    stars = [];
     for (let i = 0; i < n; i++){
-      // bias the scatter tight to the ring, with a few strays drifting off it
-      const stray = Math.pow(Math.random(), 3);
-      dots.push({
-        a: Math.random() * Math.PI * 2,
-        rf: 1 + (Math.random() < 0.5 ? -1 : 1) * stray * 0.17,
-        sp: (0.018 + Math.random() * 0.055) * (Math.random() < 0.5 ? -1 : 1),
-        sz: Math.random() < 0.18 ? 2 : (Math.random() < 0.5 ? 1 : 1.5),
-        c: COLORS[(Math.random() * COLORS.length) | 0],
-        o: 0.3 + Math.random() * 0.62,
+      // three depth planes: the far ones are smaller, dimmer and slower, which
+      // is what stops the whole field reading as one flat sheet sliding along
+      const depth = 0.35 + Math.random() * 0.65;
+      const dir = Math.random() * Math.PI * 2;
+      const spd = (2 + Math.random() * 5) * depth;
+      stars.push({
+        x: Math.random() * w, y: Math.random() * h,
+        vx: Math.cos(dir) * spd, vy: Math.sin(dir) * spd * 0.5,
+        r: 0.5 + depth * 1.2,
+        a: (0.2 + Math.random() * 0.5) * depth,
+        c: STAR[(Math.random() * STAR.length) | 0],
         tw: Math.random() * Math.PI * 2,
+        d: depth,
       });
     }
+
+    // waypoints sit on a wide arc across the band, each breathing on its own
+    // sine so they never line up into a static row
+    const spots = [[0.16, 0.30], [0.40, 0.66], [0.63, 0.26], [0.86, 0.58]];
+    hubs = spots.map((s, i) => ({
+      bx: s[0] * w, by: s[1] * h,
+      x: s[0] * w, y: s[1] * h,
+      ph: i * 1.7, amp: 9 + i * 3,
+      r: 2 + (i % 2) * 0.8,
+      c: HUB[i % HUB.length],
+    }));
+    routes = [[0, 1], [1, 2], [2, 3], [0, 2]];
+    motes = [];
+    nextMote = 0.6;
   }
+
+  // a route bows outward so it reads as a path between two places rather than
+  // a wire strung between them
+  function curve(a, b){
+    const mx = (a.x + b.x) / 2, my = (a.y + b.y) / 2;
+    const dx = b.x - a.x, dy = b.y - a.y;
+    const len = Math.hypot(dx, dy) || 1;
+    const bow = Math.min(56, len * 0.17);
+    return { cx: mx - (dy / len) * bow, cy: my + (dx / len) * bow };
+  }
+  function at(a, c, b, p){
+    const q = 1 - p;
+    return { x: q*q*a.x + 2*q*p*c.cx + p*p*b.x,
+             y: q*q*a.y + 2*q*p*c.cy + p*p*b.y };
+  }
+
+  // Soft vignette so the chart melts into the page instead of ending on the
+  // edge of its box. Folded into each element's alpha — see the CSS note above.
+  function fade(x, y){
+    const nx = (x - w * 0.5) / (w * 0.60);
+    const ny = (y - h * 0.34) / (h * 0.66);
+    const d = Math.sqrt(nx * nx + ny * ny);
+    if (d >= 1) return 0;
+    return d <= 0.45 ? 1 : 1 - (d - 0.45) / 0.55;
+  }
+
   function resize(){
     const r = cv.getBoundingClientRect();
     if (!r.width || !r.height) return;
-    const dpr = Math.min(2, window.devicePixelRatio || 1);
+    // 1.5x rather than full retina: this is a soft background, and the backing
+    // store is what costs to raster every frame
+    const dpr = Math.min(1.5, window.devicePixelRatio || 1);
     w = r.width; h = r.height;
     cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr);
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     seed();
   }
+
   function paint(now){
     raf = null;
-    const dt = last ? Math.min(0.1, (now - last) / 1000) : 0.016;
+    const dt = last ? Math.min(0.05, (now - last) / 1000) : 0.016;
     last = now;
     t += dt * RATE;
     ctx.clearRect(0, 0, w, h);
-    // a wide ellipse the greeting and the stat tiles sit inside; the arcs pass
-    // behind the tiles rather than being masked away
-    // near-circular, sized off the field height so it always reads as a ring
-    // rather than a wide band; the greeting and tiles sit over it
-    const cx = w * 0.5, cy = h * 0.45;
-    const ry = h * 0.46, rx = Math.min(ry * 1.9, w * 0.42);
-    for (const d of dots){
-      const a = d.a + t * d.sp;
-      const x = cx + Math.cos(a) * rx * d.rf;
-      const y = cy + Math.sin(a) * ry * d.rf;
-      const tw = calm ? 1 : 0.62 + 0.38 * Math.sin(t * 1.1 + d.tw);
-      ctx.globalAlpha = Math.max(0, d.o * tw);
-      ctx.fillStyle = d.c;
-      ctx.fillRect(x, y, d.sz, d.sz);
+
+    // stars drift and wrap
+    for (const s of stars){
+      s.x += s.vx * dt * RATE; s.y += s.vy * dt * RATE;
+      if (s.x < -12) s.x = w + 12; else if (s.x > w + 12) s.x = -12;
+      if (s.y < -12) s.y = h + 12; else if (s.y > h + 12) s.y = -12;
+    }
+
+    // Constellation lines — only between near neighbours, brightest when closest.
+    // Segments are bucketed by opacity and each bucket is stroked as ONE path:
+    // a stroke() per pair means hundreds of draw calls a frame and locks up the
+    // renderer on a wide screen.
+    const D = Math.min(132, Math.max(84, w / 12));
+    const D2 = D * D, BUCKETS = 5;
+    for (let k = 0; k < BUCKETS; k++) lanes[k].length = 0;
+    for (let i = 0; i < stars.length; i++){
+      const a = stars[i];
+      for (let j = i + 1; j < stars.length; j++){
+        const b = stars[j];
+        const dx = a.x - b.x, dy = a.y - b.y;
+        if (dx > D || dx < -D || dy > D || dy < -D) continue;   // cheap reject
+        const d2 = dx * dx + dy * dy;
+        if (d2 > D2) continue;
+        const near = 1 - Math.sqrt(d2) / D;
+        const wgt = near * Math.min(a.d, b.d) * fade((a.x + b.x) / 2, (a.y + b.y) / 2);
+        if (wgt <= 0.03) continue;
+        const k = Math.min(BUCKETS - 1, (wgt * BUCKETS) | 0);
+        lanes[k].push(a.x, a.y, b.x, b.y);
+      }
+    }
+    ctx.lineWidth = 0.7;
+    for (let k = 0; k < BUCKETS; k++){
+      const lane = lanes[k];
+      if (!lane.length) continue;
+      ctx.strokeStyle = "rgba(" + LINK + "," + (0.035 + k * 0.038).toFixed(3) + ")";
+      ctx.beginPath();
+      for (let m = 0; m < lane.length; m += 4){
+        ctx.moveTo(lane[m], lane[m+1]); ctx.lineTo(lane[m+2], lane[m+3]);
+      }
+      ctx.stroke();
+    }
+
+    // stars
+    for (const s of stars){
+      const tw = calm ? 1 : 0.7 + 0.3 * Math.sin(t * 1.3 + s.tw);
+      ctx.globalAlpha = Math.max(0, s.a * tw * fade(s.x, s.y));
+      ctx.fillStyle = s.c;
+      ctx.beginPath(); ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2); ctx.fill();
     }
     ctx.globalAlpha = 1;
+
+    // waypoints drift on their own sine
+    for (const p of hubs){
+      p.x = p.bx + Math.sin(t * 0.28 + p.ph) * p.amp;
+      p.y = p.by + Math.cos(t * 0.21 + p.ph) * p.amp * 0.55;
+    }
+
+    // routes
+    ctx.lineWidth = 0.8;
+    for (const [i, j] of routes){
+      const a = hubs[i], b = hubs[j], c = curve(a, b);
+      ctx.strokeStyle = "rgba(" + LINK + ",0.16)";
+      ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.quadraticCurveTo(c.cx, c.cy, b.x, b.y); ctx.stroke();
+    }
+
+    // a mote sets off along a route now and then
+    nextMote -= dt * RATE;
+    if (nextMote <= 0){
+      const r = routes[(Math.random() * routes.length) | 0];
+      motes.push({ r, p: 0, sp: 0.12 + Math.random() * 0.1, c: hubs[r[1]].c });
+      nextMote = 1.6 + Math.random() * 2.6;
+    }
+    for (let k = motes.length - 1; k >= 0; k--){
+      const m = motes[k];
+      m.p += m.sp * dt * RATE;
+      if (m.p >= 1){ motes.splice(k, 1); continue; }
+      const a = hubs[m.r[0]], b = hubs[m.r[1]], c = curve(a, b);
+      // a short tail behind the head, fading out
+      for (let s = 0; s < 9; s++){
+        const p = m.p - s * 0.016;
+        if (p <= 0) break;
+        const q = at(a, c, b, p);
+        ctx.globalAlpha = (1 - s / 9) * 0.5 * Math.sin(Math.PI * m.p) * fade(q.x, q.y);
+        ctx.fillStyle = m.c;
+        ctx.beginPath(); ctx.arc(q.x, q.y, 1.5 - s * 0.12, 0, Math.PI * 2); ctx.fill();
+      }
+      ctx.globalAlpha = 1;
+    }
+
+    // waypoints last, so they sit on top of their own routes
+    for (const p of hubs){
+      const fv = fade(p.x, p.y);
+      if (fv <= 0.02) continue;
+      const g = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, 16);
+      g.addColorStop(0, p.c); g.addColorStop(1, "rgba(0,0,0,0)");
+      ctx.globalAlpha = 0.20 * fv; ctx.fillStyle = g;
+      ctx.beginPath(); ctx.arc(p.x, p.y, 16, 0, Math.PI * 2); ctx.fill();
+      ctx.globalAlpha = 0.30 * fv; ctx.strokeStyle = p.c; ctx.lineWidth = 0.7;
+      ctx.beginPath(); ctx.arc(p.x, p.y, 7.5, 0, Math.PI * 2); ctx.stroke();
+      ctx.globalAlpha = 0.85 * fv; ctx.fillStyle = p.c;
+      ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+
     if (visible && !document.hidden) raf = requestAnimationFrame(paint);
   }
+
   function run(){
     if (!w) resize();          // boot can land before the canvas has a size
     if (raf || !visible || document.hidden || !w) return;
@@ -3283,7 +3431,7 @@ function startOrbitField(){
   // section, so this covers both scrolling away and leaving Mission Control.
   if (window.IntersectionObserver) {
     new IntersectionObserver(es => {
-      visible = es[0].isIntersecting;
+      visible = es[es.length - 1].isIntersecting;
       visible ? run() : stop();
     }, { threshold: 0 }).observe(cv);
   }
