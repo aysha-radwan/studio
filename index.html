@@ -4000,15 +4000,38 @@ function showKeyGate(msg = "") {
       #keyGate .kg-cam video{width:100%;border-radius:12px;background:#000;aspect-ratio:1/1;object-fit:cover}
       #keyGate .kg-camnote{color:#abb2da;font-size:12.5px;margin:10px 0 12px}`;
     document.head.appendChild(style);
+    // Unlock used to be: if the box was empty it silently did nothing, and the error
+    // line from the previous attempt stayed on screen. Together that read as "it
+    // rejected me again" when in fact nothing had been submitted at all. Now an empty
+    // box says so, a malformed key says so, and the message only ever describes THIS
+    // attempt — the gate stays up until the key is proven to work.
+    const kgErr = () => g.querySelector(".kg-err");
     const submit = () => {
-      const v = document.getElementById("kgInput").value.trim();
-      if (!v) return;
-      GH.token = v; localStorage.setItem("studio_gh_token", v);
-      g.remove();
-      loadData().then(bootView);
+      const input = document.getElementById("kgInput");
+      const err = kgErr();
+      const v = input.value.trim();
+      if (!v) { err.textContent = "The box is empty — paste your key first."; input.focus(); return; }
+      if (!/^gh[pousr]_|^github_pat_/.test(v)) {
+        err.textContent = "That doesn\u2019t look like a GitHub key. It should start with github_pat_ or ghp_.";
+        input.focus(); input.select(); return;
+      }
+      err.textContent = "Checking your key\u2026";
+      const prev = GH.token;
+      GH.token = v;
+      GH.getData().then((data) => {
+        localStorage.setItem("studio_gh_token", v);   // only persist a key that WORKS
+        g.remove();
+        adoptState(data);
+        bootView();
+      }).catch((e) => {
+        GH.token = prev;
+        err.textContent = e && e.auth ? authMsg(e) : "Couldn\u2019t reach GitHub. Check your connection and try again.";
+      });
     };
     document.getElementById("kgBtn").onclick = submit;
     document.getElementById("kgInput").onkeydown = (e) => { if (e.key === "Enter") submit(); };
+    // a stale message must never outlive the thing it described
+    document.getElementById("kgInput").oninput = () => { const e2 = kgErr(); if (e2) e2.textContent = ""; };
 
     // Scan the code shown on her Mac, so she never types a 90-character key on a phone.
     const cam = document.getElementById("kgCam");
