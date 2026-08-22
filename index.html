@@ -1542,7 +1542,16 @@ const GH = {
   async getData(){
     const r = await this.api(`repos/${CFG.dataRepo}/contents/data.json?ts=${Date.now()}`, { cache:"no-store" });
     if (r.status === 401 || r.status === 403) { const e=new Error("auth"); e.auth=true; throw e; }
-    if (r.status === 404) { this.dataSha=null; return { projects: [] }; }
+    if (r.status === 404) {
+      // A 404 here is ambiguous, and guessing wrong is dangerous: it means EITHER
+      // data.json doesn't exist yet (brand-new studio) OR the key can't see the repo
+      // at all — fine-grained tokens 404 out-of-scope repos instead of 403ing. We used
+      // to assume the first, so a scoping mistake rendered a convincingly EMPTY studio.
+      // Probe the repo itself to tell the two apart.
+      const probe = await this.api(`repos/${CFG.dataRepo}`);
+      if (!probe.ok) { const e=new Error("scope"); e.auth=true; e.scope=true; throw e; }
+      this.dataSha=null; return { projects: [] };
+    }
     if (!r.ok) throw new Error("data load "+r.status);
     const j = await r.json();
     this.dataSha = j.sha;
@@ -1634,9 +1643,16 @@ function adoptState(fresh, refreshView = false) {
   render();
   if (refreshView && currentView && currentView !== "projects") switchView(currentView);  // refresh whichever view she's on
 }
+// Why the key failed, in her words. A key that is merely scoped wrong is NOT
+// "rejected" — telling her to paste a new one sends her minting tokens forever.
+function authMsg(e) {
+  return e && e.scope
+    ? "This key can't reach your studio-data. Open the token on GitHub and give it access to studio-data and studio-brain (Contents: Read and write)."
+    : "Your key was rejected. Paste a valid one.";
+}
 async function loadData() {
   try { adoptState(await GH.getData()); }
-  catch (e) { if (e.auth) { showKeyGate("Your key was rejected. Paste a valid one."); return; } throw e; }
+  catch (e) { if (e.auth) { showKeyGate(authMsg(e)); return; } throw e; }
 }
 
 // ---------- live sync (this device ⇄ her other device) ----------
@@ -1672,7 +1688,7 @@ async function doSave(flash) {
     await GH.putData(state);
     if (flash) showFlash();
   } catch (e) {
-    if (e.auth) { showKeyGate("Your key was rejected. Paste a valid one."); }
+    if (e.auth) { showKeyGate(authMsg(e)); }
     else { showFlash("Save failed — retrying…"); saveAgain = true; }
   } finally {
     saving = false;
