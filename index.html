@@ -378,6 +378,77 @@
   .jr-rm { font-size: 12px; color: var(--faint); }
   .jr-empty { padding: 16px 2px; color: var(--faint); font-size: 13px; }
 
+  /* ---- Decision log ----
+     Three lines per decision: what you chose, what you were feeling, what you expect
+     to be true in 30 days. The feeling is recorded on purpose — a decision made from
+     fear reads as certainty at the time and only looks different later. */
+  .dc-wrap { padding: 16px 34px 40px; max-width: 1460px; }
+  .dc-head { margin-bottom: 20px; }
+  .dc-title { font-family: var(--serif); font-size: 21px; font-weight: 600; letter-spacing: -0.4px; color: var(--ink); }
+  .dc-hint { font-size: 13px; color: var(--faint); margin-top: 4px; max-width: 640px; line-height: 1.5; }
+  .dc-grid { display: grid; grid-template-columns: minmax(0,1fr); gap: 22px; }
+  @media (min-width: 1180px) { .dc-grid { grid-template-columns: minmax(0,420px) minmax(0,1fr); gap: 28px; align-items: start; } }
+
+  .dc-card { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 20px 22px; }
+  .dc-card h3 { font-family: var(--serif); font-size: 16px; font-weight: 600; color: var(--ink); margin-bottom: 3px; }
+  .dc-card .dc-sub { font-size: 12.5px; color: var(--faint); line-height: 1.45; margin-bottom: 15px; }
+  .dc-label { font-size: 11.5px; letter-spacing: 0.9px; text-transform: uppercase; color: var(--faint); margin: 14px 0 6px; }
+  .dc-card input[type=text], .dc-card select, .dc-card textarea {
+    width: 100%; background: var(--bg); color: var(--ink-2); border: 1px solid var(--line);
+    border-radius: 10px; padding: 11px 12px; font: inherit; font-size: 14px; outline: none;
+  }
+  .dc-card textarea { min-height: 74px; line-height: 1.6; resize: vertical; }
+  .dc-card input:focus, .dc-card select:focus, .dc-card textarea:focus { border-color: rgba(226,97,103,0.5); }
+  .dc-card input::placeholder, .dc-card textarea::placeholder { color: var(--faint); }
+  .dc-btn {
+    margin-top: 16px; width: 100%; padding: 11px 14px; border-radius: 11px; cursor: pointer;
+    background: var(--peach); color: #1a0d0e; border: none; font: inherit; font-size: 14px; font-weight: 600;
+  }
+  .dc-btn:hover { filter: brightness(1.06); }
+  .dc-note { font-size: 12px; color: var(--faint); margin-top: 10px; text-align: center; }
+
+  .dc-sec-label { font-size: 11.5px; letter-spacing: 1px; text-transform: uppercase; color: var(--faint); margin: 2px 0 11px; }
+  .dc-due { border-color: rgba(226,97,103,0.42); }
+  .dc-item { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px 18px; margin-bottom: 11px; }
+  .dc-item.due { border-color: rgba(226,97,103,0.42); }
+  .dc-item.closed { opacity: 0.72; }
+  .dc-it-top { display: flex; align-items: baseline; gap: 10px; margin-bottom: 7px; flex-wrap: wrap; }
+  .dc-it-title { font-family: var(--serif); font-size: 15px; font-weight: 600; color: var(--ink); }
+  .dc-cat { font-size: 11px; letter-spacing: 0.6px; text-transform: uppercase; color: var(--violet);
+            border: 1px solid rgba(191,169,242,0.35); border-radius: 999px; padding: 2px 8px; }
+  .dc-when { margin-left: auto; font-size: 12px; color: var(--faint); white-space: nowrap; }
+  .dc-line { font-size: 13.2px; line-height: 1.6; color: var(--muted); margin-top: 4px; }
+  .dc-line b { color: var(--faint); font-weight: 400; }
+  .dc-out { margin-top: 11px; padding-top: 11px; border-top: 1px solid var(--line-soft); }
+  .dc-out .dc-line b { color: var(--violet); }
+  .dc-ask { display: flex; gap: 8px; margin-top: 11px; }
+  .dc-ask input {
+    flex: 1; background: var(--bg); color: var(--ink-2); border: 1px solid rgba(226,97,103,0.32);
+    border-radius: 10px; padding: 9px 11px; font: inherit; font-size: 13.5px; outline: none;
+  }
+  .dc-ask input:focus { border-color: var(--peach); }
+  .dc-ask button {
+    background: transparent; color: var(--peach); border: 1px solid rgba(226,97,103,0.42);
+    border-radius: 10px; padding: 9px 14px; font: inherit; font-size: 13px; cursor: pointer; white-space: nowrap;
+  }
+  .dc-ask button:hover { background: var(--gold-soft); }
+  .dc-empty { color: var(--faint); font-size: 13px; padding: 14px 2px; }
+
+  /* the nudge that sits at the top of Mission Control */
+  .mc-dec {
+    display: flex; align-items: center; gap: 13px; margin: 0 0 18px;
+    background: var(--panel); border: 1px solid rgba(226,97,103,0.35);
+    border-radius: var(--radius); padding: 13px 17px; cursor: pointer;
+  }
+  .mc-dec:hover { border-color: var(--peach); }
+  .mc-dec .d { width: 7px; height: 7px; border-radius: 50%; background: var(--peach); flex-shrink: 0; }
+  .mc-dec-t { font-size: 13.5px; color: var(--ink-2); }
+  .mc-dec-s { margin-left: auto; font-size: 12.5px; color: var(--faint); white-space: nowrap; }
+  @media (max-width: 760px) {
+    .dc-wrap { padding: 12px 16px 30px; }
+    .mc-dec-s { display: none; }
+  }
+
   /* Wide screens: the journal used to sit in an 820px column with the right half of
      the screen empty. Fill the space without stretching the writing line-length —
      the page keeps its readable measure and the gratitude panel moves up beside it.
@@ -1264,6 +1335,7 @@
         <button class="nav-item" data-view="plan"><span class="nic">✧</span><span>The Plan</span></button>
         <button class="nav-item" data-view="entre"><span class="nic">◈</span><span>Entrepreneurship</span></button>
         <button class="nav-item" data-view="journal"><span class="nic">❧</span><span>Journal</span></button>
+        <button class="nav-item" data-view="decisions"><span class="nic">◆</span><span>Decisions</span></button>
         <button class="nav-item" data-view="projects"><span class="nic">▦</span><span>Projects</span></button>
         <button class="nav-item" data-view="fuel"><span class="nic">✦</span><span>Creative Fuel</span></button>
         <button class="nav-item" data-view="health"><span class="nic">✚</span><span>Health</span></button>
@@ -1418,6 +1490,52 @@
           </div>
           <iframe id="entFrame" title="Entrepreneurship guide"></iframe>
           <div class="plan-loading" id="entLoading">Opening your guide&hellip;</div>
+        </div>
+      </section>
+
+
+      <!-- ---- DECISION LOG ---- -->
+      <section id="view-decisions" class="view" hidden>
+        <div class="dc-wrap">
+          <div class="dc-head">
+            <div class="dc-title" id="dcTitle">Decisions</div>
+            <div class="dc-hint">Log it if it is hard to reverse, if you made it feeling something strong, or if you would want to know later <em>why</em> you chose. Each one comes back in 30 days to ask what actually happened.</div>
+          </div>
+
+          <div class="dc-grid">
+            <div class="dc-card" id="dcForm">
+              <h3>Log a decision</h3>
+              <div class="dc-sub">Three lines. It does not have to be tidy.</div>
+
+              <div class="dc-label">What did you decide</div>
+              <input type="text" id="dcWhat" placeholder="Said no to the retainer at 800" />
+
+              <div class="dc-label">What kind</div>
+              <select id="dcCat">
+                <option value="Quitting or closing">Quitting or closing</option>
+                <option value="Money">Money</option>
+                <option value="Client &amp; terms">Client &amp; terms</option>
+                <option value="Creative direction">Creative direction</option>
+                <option value="Body &amp; capacity">Body &amp; capacity</option>
+                <option value="Other">Other</option>
+              </select>
+
+              <div class="dc-label">What were you feeling</div>
+              <input type="text" id="dcFeel" placeholder="Tired of being underpriced. A bit afraid there is nothing after it." />
+
+              <div class="dc-label">What you expect to be true in 30 days</div>
+              <textarea id="dcExpect" placeholder="I will have found one client at my real rate, and I will not regret this."></textarea>
+
+              <button class="dc-btn" onclick="addDecision()">Log it</button>
+              <div class="dc-note" id="dcNote"></div>
+            </div>
+
+            <div>
+              <div id="dcDue"></div>
+              <div class="dc-sec-label">Everything you have decided</div>
+              <div id="dcList"></div>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -1661,6 +1779,7 @@ function adoptState(fresh, refreshView = false) {
   if (!state.cycle) state.cycle = {};
   if (!state.cycle.removal) state.cycle.removal = "2026-08-04";   // Mirena out, after 6 years
   if (!state.cycle.days) state.cycle.days = {};   // "YYYY-MM-DD" -> { b, e, m, body[], n }
+  if (!Array.isArray(state.decisions)) state.decisions = [];
   if (!state.journal) state.journal = {};
   if (!state.journal.days) state.journal.days = {};   // "YYYY-MM-DD" -> { mode, words }
   if (state.sortMode) sortMode = state.sortMode;
@@ -1729,7 +1848,7 @@ function showFlash(msg = "Saved") {
 const uid = () => Math.random().toString(36).slice(2, 9);
 
 // ---------- view switching ----------
-const VIEW_TITLES = { overview: "Mission Control", map: "The Map", plan: "The Plan", entre: "Entrepreneurship", journal: "Journal", projects: "Projects", fuel: "Creative Fuel", health: "Health", learning: "Learning", docs: "Documents" };
+const VIEW_TITLES = { overview: "Mission Control", map: "The Map", plan: "The Plan", entre: "Entrepreneurship", journal: "Journal", decisions: "Decisions", projects: "Projects", fuel: "Creative Fuel", health: "Health", learning: "Learning", docs: "Documents" };
 function switchView(name) {
   currentView = name;
   document.querySelectorAll(".view").forEach(v => { v.hidden = (v.id !== "view-" + name); });
@@ -1740,6 +1859,7 @@ function switchView(name) {
   if (name === "plan") renderPlan();
   if (name === "entre") renderEntre();
   if (name === "journal") renderJournal();
+  if (name === "decisions") renderDecisions();
   if (name === "fuel") renderFuel();
   if (name === "health") renderHealth();
   if (name === "learning") renderLearning();
@@ -1748,6 +1868,146 @@ function switchView(name) {
 document.getElementById("sideNav").querySelectorAll(".nav-item").forEach(b => {
   b.onclick = () => switchView(b.dataset.view);
 });
+
+
+// ---------- Decision log ----------
+// The point is not the record, it's the 30-day return. A decision made from fear
+// reads as clear-eyed at the time; the only thing that separates the two is what
+// you wrote down about how you felt, read back when the feeling has passed.
+const DC_REVISIT_DAYS = 30;
+const DC_QUIET_DAYS = 7;   // nudge if nothing has been logged in this long
+
+function dcEsc(t) {
+  return String(t == null ? "" : t).replace(/[&<>"']/g, c =>
+    ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+}
+function dcDays(iso) {
+  const then = new Date(iso + "T00:00:00");
+  return Math.floor((new Date(dcToday() + "T00:00:00") - then) / 86400000);
+}
+function dcToday() {
+  const d = new Date();
+  return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+}
+function dcPretty(iso) {
+  const d = new Date(iso + "T00:00:00");
+  return d.toLocaleDateString(undefined, { month: "long", day: "numeric" });
+}
+function dcDueList() {
+  return (state.decisions || []).filter(d => !d.outcome && dcDays(d.date) >= DC_REVISIT_DAYS);
+}
+
+function addDecision() {
+  const what = document.getElementById("dcWhat").value.trim();
+  const note = document.getElementById("dcNote");
+  if (!what) { note.textContent = "Write what you decided first."; document.getElementById("dcWhat").focus(); return; }
+  state.decisions.unshift({
+    id: "d" + Date.now(),
+    date: dcToday(),
+    what,
+    cat: document.getElementById("dcCat").value,
+    feel: document.getElementById("dcFeel").value.trim(),
+    expect: document.getElementById("dcExpect").value.trim(),
+    outcome: "",
+  });
+  ["dcWhat", "dcFeel", "dcExpect"].forEach(id => document.getElementById(id).value = "");
+  note.textContent = "Logged. It comes back on " + dcPretty(dcAddDays(dcToday(), DC_REVISIT_DAYS)) + ".";
+  setTimeout(() => { note.textContent = ""; }, 6000);
+  save();
+  renderDecisions();
+}
+function dcAddDays(iso, n) {
+  const d = new Date(iso + "T00:00:00");
+  d.setDate(d.getDate() + n);
+  return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+}
+
+function answerDecision(id) {
+  const inp = document.getElementById("dcans-" + id);
+  if (!inp) return;
+  const v = inp.value.trim();
+  if (!v) { inp.focus(); return; }
+  const d = (state.decisions || []).find(x => x.id === id);
+  if (!d) return;
+  d.outcome = v;
+  d.closedAt = dcToday();
+  save();
+  renderDecisions();
+}
+
+function dcItem(d) {
+  const due = !d.outcome && dcDays(d.date) >= DC_REVISIT_DAYS;
+  const age = dcDays(d.date);
+  const when = age === 0 ? "today" : age === 1 ? "yesterday" : dcPretty(d.date);
+  let h = '<div class="dc-item' + (due ? " due" : "") + (d.outcome ? " closed" : "") + '">';
+  h += '<div class="dc-it-top"><span class="dc-it-title">' + dcEsc(d.what) + '</span>';
+  h += '<span class="dc-cat">' + dcEsc(d.cat) + '</span>';
+  h += '<span class="dc-when">' + when + '</span></div>';
+  if (d.feel)   h += '<div class="dc-line"><b>Feeling —</b> ' + dcEsc(d.feel) + '</div>';
+  if (d.expect) h += '<div class="dc-line"><b>Expected in 30 days —</b> ' + dcEsc(d.expect) + '</div>';
+  if (d.outcome) {
+    h += '<div class="dc-out"><div class="dc-line"><b>What actually happened —</b> ' + dcEsc(d.outcome) + '</div></div>';
+  } else if (due) {
+    h += '<div class="dc-ask"><input id="dcans-' + d.id + '" type="text" placeholder="' + age + ' days on — what actually happened?" ' +
+         'onkeydown="if(event.key===\'Enter\')answerDecision(\'' + d.id + '\')" />' +
+         '<button onclick="answerDecision(\'' + d.id + '\')">Answer</button></div>';
+  }
+  return h + "</div>";
+}
+
+function renderDecisions() {
+  const all = state.decisions || [];
+  const due = dcDueList();
+
+  const dueBox = document.getElementById("dcDue");
+  dueBox.innerHTML = due.length
+    ? '<div class="dc-sec-label">Waiting on you &mdash; ' + due.length + ' to revisit</div>' + due.map(dcItem).join("")
+    : "";
+
+  const rest = all.filter(d => !due.includes(d));
+  document.getElementById("dcList").innerHTML = rest.length
+    ? rest.map(dcItem).join("")
+    : '<div class="dc-empty">Nothing logged yet. The next real one counts &mdash; especially if it is a no.</div>';
+
+  document.getElementById("dcTitle").textContent =
+    all.length ? "Decisions · " + all.length : "Decisions";
+}
+
+// The nudge on Mission Control: something to revisit, or it has gone quiet.
+function renderDecisionNudge() {
+  const host = document.getElementById("view-overview");
+  if (!host) return;
+  let el = document.getElementById("mcDecNudge");
+  const all = state.decisions || [];
+  const due = dcDueList();
+  const last = all.length ? Math.min.apply(null, all.map(d => dcDays(d.date))) : null;
+
+  let text = "", side = "";
+  if (due.length) {
+    text = due.length === 1 ? "One decision is ready to be looked at again."
+                            : due.length + " decisions are ready to be looked at again.";
+    side = "Sit with them";
+  } else if (last === null) {
+    text = "Start the decision log with the next real choice you make.";
+    side = "Open it";
+  } else if (last >= DC_QUIET_DAYS) {
+    text = "It has been " + last + " days since you logged a decision. Made any?";
+    side = "Write them down";
+  } else {
+    if (el) el.remove();
+    return;
+  }
+
+  if (!el) {
+    el = document.createElement("div");
+    el.id = "mcDecNudge";
+    el.className = "mc-dec";
+    el.onclick = () => switchView("decisions");
+    host.insertBefore(el, host.firstChild);
+  }
+  el.innerHTML = '<span class="d"></span><span class="mc-dec-t">' + dcEsc(text) +
+                 '</span><span class="mc-dec-s">' + side + ' &rarr;</span>';
+}
 
 // ---------- Journal ----------
 // Entries live in the PRIVATE brain repo at journal/YYYY-MM-DD.md — that's the repo
@@ -3192,7 +3452,7 @@ document.getElementById("sortSeg").querySelectorAll("button").forEach(b=>{
 function esc(s){ return String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
 
 // deep-linking: /#fuel, /#docs, /#projects
-const VALID_VIEWS = ["overview", "map", "plan", "entre", "journal", "projects", "fuel", "health", "learning", "docs"];
+const VALID_VIEWS = ["overview", "map", "plan", "entre", "journal", "decisions", "projects", "fuel", "health", "learning", "docs"];
 function applyHash() {
   const v = (location.hash || "").replace("#", "");
   if (VALID_VIEWS.includes(v) && v !== currentView) switchView(v);
@@ -3551,6 +3811,7 @@ function trackTopBarHeight(){
 let mcTimer = null;
 async function renderOverview(){
   document.getElementById("mcGreet").textContent = greeting()+", Aysha";
+  renderDecisionNudge();
   renderHorizon(); renderBecoming(); renderGlance(); renderMomentum();   // draw instantly, before the network
   const status = await fetchStatus();
   const wtNow = wtFromStatus(status);
