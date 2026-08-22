@@ -387,12 +387,19 @@
     .jr-wrap { max-width: 1460px; display: grid; align-items: start;
                grid-template-columns: minmax(0, 1.22fr) minmax(0, 1fr); column-gap: 28px; }
     .jr-head, .jr-modes { grid-column: 1 / -1; }
-    .jr-text, .jr-split  { grid-column: 1; grid-row: 3; }
-    .jr-grat             { grid-column: 2; grid-row: 3; margin-top: 0; align-self: stretch; }
-    .jr-text             { min-height: 64vh; }
-    .jr-split textarea   { min-height: 56vh; }
-    .jr-grat-grid        { grid-template-columns: 1fr; gap: 9px; }
-    .jr-grat-free textarea { min-height: 150px; }
+    /* the writing area fills whatever height the row ends up being, so there is
+       never dead space under it when the gratitude panel is the taller of the two */
+    .jr-text, .jr-split  { grid-column: 1; grid-row: 3; align-self: stretch; }
+    .jr-text             { min-height: 64vh; height: 100%; }
+    .jr-split            { align-content: stretch; }
+    .jr-split textarea   { min-height: 56vh; height: 100%; }
+    /* the panel matches the writing column's height; "in your own words" takes up
+       whatever slack is left, so neither column ends in dead space */
+    .jr-grat             { grid-column: 2; grid-row: 3; margin-top: 0; align-self: stretch;
+                           display: flex; flex-direction: column; }
+    .jr-grat-free        { display: flex; flex-direction: column; flex: 1 1 auto; }
+    .jr-grat-free textarea { flex: 1 1 auto; min-height: 150px; }
+    .jr-foot, .jr-list   { grid-column: 1 / -1; }
   }
 
   @media (max-width: 760px) {
